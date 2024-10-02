@@ -7,7 +7,7 @@ async function initMap(): Promise<void> {
     //mapId: "a026940006728352e",
     mapId: "6e310d529ec45c8",
   });
-  let layer = map.getDatasetFeatureLayer("aa920d72-66af-4c1b-975a-20c1d16df3de");
+  //let layer = map.getDatasetFeatureLayer("aa920d72-66af-4c1b-975a-20c1d16df3de");
 
 }
 
