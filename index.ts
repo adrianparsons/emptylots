@@ -12,4 +12,4 @@ async function initMap(): Promise<void> {
   layer.style = { strokeColor: "green", strokeWeight: 2 };
 }
 
-//initMap();
+initMap();
