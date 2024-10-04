@@ -40,7 +40,8 @@ function showInfo(position, feature) {
       <p>${lotArea} square feet</p>
       <p>community board ${feature.getProperty('community board')}</p>
       <p>precinct ${feature.getProperty('policeprct')}</p>
-      <p>council district ${feature.getProperty('council district')}</p>  
+      <p>council district ${feature.getProperty('council district')}</p>
+      <p><a href="https://zola.planning.nyc.gov/l/lot/1/${feature.getProperty('Tax block')}/${feature.getProperty('Tax lot')}" target="_blank"}>ZoLa ⤴</a></p>
     </div>
   `;
   // feature.forEachProperty(console.log)
