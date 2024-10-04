@@ -18,7 +18,11 @@ async function initMap(): Promise<void> {
 
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
-  map.data.addListener('click', (e) => showInfo(e.latLng, e.feature));
+  map.data.addListener('click', (e) => {
+    showInfo(e.latLng, e.feature);
+    showStreetView(e.latLng, e.feature);
+  }
+);
 
   //await map.data.addGeoJson(geojson);
 
@@ -43,6 +47,20 @@ function showInfo(position, feature) {
 
   infoWindow.setOptions({content, position});
   infoWindow.open({map, shouldFocus: false});
+}
+
+function showStreetView(position, feature) {
+  const panorama = new google.maps.StreetViewPanorama(
+    document.getElementById("streetview"),
+    {
+      position: position,
+      pov: {
+        heading: 34,
+        pitch: 10,
+      },
+    },
+  );
+  map.setStreetView(panorama)
 }
 
 initMap();
