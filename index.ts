@@ -16,12 +16,7 @@ async function initMap(): Promise<void> {
   //layer.style = { fillColor: "blue", pointRadius: 4 };
 
 
-  await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"}, (feature) => {
-    for (let ft in feature) {
-      console.log("feature!", ft)
-    }
-    console.log("fuuutuuuures featuressssss!", feature)
-  });
+  await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
   map.data.addListener('click', (e) => showInfo(e.latLng, e.feature));
 
