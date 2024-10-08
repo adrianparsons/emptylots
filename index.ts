@@ -15,12 +15,11 @@ async function initMap(): Promise<void> {
   //let layer = map.getDatasetFeatureLayer("aa920d72-66af-4c1b-975a-20c1d16df3de");
   //layer.style = { fillColor: "blue", pointRadius: 4 };
 
-
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
   map.data.addListener('click', (e) => {
     showInfo(e.latLng, e.feature);
-    showStreetView(e.latLng, e.feature);
+    showStreetViewPanorama(e.latLng, e.feature);
   }
 );
 
@@ -50,18 +49,25 @@ function showInfo(position, feature) {
   infoWindow.open({map, shouldFocus: false});
 }
 
-function showStreetView(position, feature) {
-  const panorama = new google.maps.StreetViewPanorama(
-    document.getElementById("streetview"),
-    {
-      position: position,
-      pov: {
-        heading: 34,
-        pitch: 10,
-      },
-    },
-  );
-  map.setStreetView(panorama)
+async function showStreetViewPanorama(position, feature)  {
+
+
+  const streetView = new google.maps.StreetViewService();
+
+  const panoramaData = await streetView.getPanorama({
+    location: position,
+    // will need to use the different streetViewService method of grabbing panoramas with this outdoor classification.
+    sources: [google.maps.StreetViewSource.OUTDOOR]
+  }, (panoData){
+    const panorama = new google.maps.StreetViewPanorama(
+      document.getElementById("streetview") as HTMLElement,
+      panoData
+    );
+    panorama.setPano(panoData.location.pano)
+    panorama.setPov({heading: 34, pitch: 10})
+    panorama.setVisible(true);
+    console.log(panoData)
+  })
 }
 
 initMap();
