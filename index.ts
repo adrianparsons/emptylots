@@ -1,5 +1,7 @@
 let map: google.maps.Map;
 let infoWindow;
+let panorama;
+let streetview;
 
 async function initMap(): Promise<void> {
   const { Map, InfoWindow } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
@@ -12,6 +14,11 @@ async function initMap(): Promise<void> {
 
   infoWindow = new InfoWindow({pixelOffset: {height: -37}});
 
+  panorama = new google.maps.StreetViewPanorama(
+    document.getElementById("streetview") as HTMLElement);
+
+  streetview = new google.maps.StreetViewService();
+
   //let layer = map.getDatasetFeatureLayer("aa920d72-66af-4c1b-975a-20c1d16df3de");
   //layer.style = { fillColor: "blue", pointRadius: 4 };
 
@@ -22,8 +29,6 @@ async function initMap(): Promise<void> {
     showStreetViewPanorama(e.latLng, e.feature);
   }
 );
-
-  //await map.data.addGeoJson(geojson);
 
   // TODO REMOVE THIS
   globalThis.googlemap = map;
@@ -49,24 +54,12 @@ function showInfo(position, feature) {
   infoWindow.open({map, shouldFocus: false});
 }
 
-async function showStreetViewPanorama(position, feature)  {
-
-
-  const streetView = new google.maps.StreetViewService();
-
-  const panoramaData = await streetView.getPanorama({
+function showStreetViewPanorama(position, feature)  {
+  streetview.getPanorama({
     location: position,
-    // will need to use the different streetViewService method of grabbing panoramas with this outdoor classification.
     sources: [google.maps.StreetViewSource.OUTDOOR]
   }, (panoData){
-    const panorama = new google.maps.StreetViewPanorama(
-      document.getElementById("streetview") as HTMLElement,
-      panoData
-    );
     panorama.setPano(panoData.location.pano)
-    panorama.setPov({heading: 34, pitch: 10})
-    panorama.setVisible(true);
-    console.log(panoData)
   })
 }
 
