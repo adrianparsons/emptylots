@@ -54,7 +54,7 @@ function showInfo(position, feature) {
   infoWindow.open({map, shouldFocus: false});
 }
 
-function showStreetViewPanorama(position, feature)  {
+function showStreetViewPanorama(position)  {
   streetview.getPanorama({
     location: position,
     sources: [google.maps.StreetViewSource.OUTDOOR]
