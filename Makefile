@@ -14,6 +14,9 @@ watch:
 clean:
 	rm -r dist/*
 
+serve:
+	python3 -m http.server -d dist/
+
 # rsync the dist directory on a remote server, including symlinked directory
 deploy:
 	rsync -av --delete dist/ \
