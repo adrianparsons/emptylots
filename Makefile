@@ -1,4 +1,7 @@
-# Makefile for basic project
+# Makefile for this project
+
+clean:
+	rm -r dist/*
 
 # Symlink the folder of geojson outputs to the dist/ folder
 link_json:
@@ -11,9 +14,7 @@ build: link_json
 watch:
 	tsc -watch
 
-clean:
-	rm -r dist/*
-
+# Spin up static server for local development
 serve:
 	python3 -m http.server -d dist/
 
