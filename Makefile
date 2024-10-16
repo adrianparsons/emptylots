@@ -18,7 +18,7 @@ watch:
 serve:
 	python3 -m http.server -d dist/
 
-# rsync the dist directory on a remote server, including symlinked directory
+# rsync the dist directory on a remote server, ignore dotfiles, include symlinked directory
 deploy:
 	rsync -av --delete dist/ \
 	amp926@adrianparsons.com:/home/amp926/emptylots.adrianparsons.com \
