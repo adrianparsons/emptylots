@@ -38,3 +38,8 @@ data.limit_columns:
 	 ./venv/bin/python3 scripts/limit_columns.py \
 	 data/Vacant_Lots_Manhattan.number_address.csv \
 	 --output_file data/Vacant_Lots_Manhattan.number_address_limit_cols.csv
+
+data.csv_to_geojson:
+	 ./venv/bin/python3 scripts/csv_to_geojson.py \
+	 data/Vacant_Lots_Manhattan.less_columns.csv \
+	 --output_file data/json/less_columns.json
