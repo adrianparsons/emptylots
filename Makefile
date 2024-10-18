@@ -34,11 +34,13 @@ data.clean_filter:
 	 data/Vacant_Lots_Manhattan.original.csv \
 	 --output_file data/Vacant_Lots_Manhattan.number_address.csv
 
+# selects fewer columns. not sure if we even need this.
 data.limit_columns:
 	 ./venv/bin/python3 scripts/limit_columns.py \
 	 data/Vacant_Lots_Manhattan.number_address.csv \
 	 --output_file data/Vacant_Lots_Manhattan.number_address_limit_cols.csv
 
+# converts our csv to geojson. TODO: double-check the input file is what we want
 data.csv_to_geojson:
 	 ./venv/bin/python3 scripts/csv_to_geojson.py \
 	 data/Vacant_Lots_Manhattan.less_columns.csv \
