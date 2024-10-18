@@ -27,3 +27,14 @@ deploy:
 	--exclude="\.*" \
 	--verbose \
 	--copy-unsafe-links
+
+# cleans up raw data
+data.clean_filter:
+	 ./venv/bin/python3 scripts/basic_filter_transform.py \
+	 data/Vacant_Lots_Manhattan.original.csv \
+	 --output_file data/Vacant_Lots_Manhattan.number_address.csv
+
+data.limit_columns:
+	 ./venv/bin/python3 scripts/limit_columns.py \
+	 data/Vacant_Lots_Manhattan.number_address.csv \
+	 --output_file data/Vacant_Lots_Manhattan.number_address_limit_cols.csv
