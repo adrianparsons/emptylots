@@ -11,12 +11,6 @@ def clean_data(df):
     df = df.rename(columns={'ycoord': 'y'})
     # Drop rows with missing data in column: 'latitude'
     df = df.dropna(subset=['latitude'])
-    # Replace missing values with "NY" in column: 'state'
-    df = df.fillna({'state': "NY"})
-    # Drop duplicate rows across all columns
-    df = df.drop_duplicates()
-    # Replace missing values with "NY" in column: 'state'
-    df = df.fillna({'state': "NY"})
     # Replace all instances of "" with "NY" in column: 'state'
     df.loc[df['state'].str.lower() == "".lower(), 'state'] = "NY"
     # Clone column 'state' as 'city'
@@ -37,7 +31,7 @@ def main():
 
     df = pd.read_csv(args.input_file)
     df_clean = clean_data(df.copy())
-    df_clean.to_csv(output_file, index=False)
+    df_clean.to_csv(args.output_file, index=False)
 
 if __name__ == '__main__':
     main()
