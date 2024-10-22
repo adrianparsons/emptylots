@@ -13,11 +13,11 @@ def clean_data(df):
     # Derive column 'state' from column: 'address'
     df.insert(15, 'state', df.apply(lambda row : "", axis=1))
     # Replace all instances of "" with "NY" in column: 'state'
-    df.loc[df['state'].str.lower() == "".lower(), 'state'] = "NY"
+    df.loc[df['state'] == "", 'state'] = "NY"
     # Clone column 'state' as 'city'
     df['city'] = df.loc[:, 'state']
     # Replace all instances of "NY" with "New York" in column: 'city'
-    df.loc[df['city'].str.lower() == "NY".lower(), 'city'] = "New York"
+    df.loc[df['city'] == "NY", 'city'] = "New York"
 
     # Drop duplicate rows in column: 'address'
     df = df.drop_duplicates(subset=['address'])
