@@ -1,12 +1,11 @@
 # Makefile for this project
-
 clean:
 	rm -rf node_modules/
 	rm -r dist/*
 
 # Symlink the folder of geojson outputs to the dist/ folder
 link_json:
-	ln -s ../data/json dist/json
+	ln -nfvs ../data/json dist/json
 
 # TODO: don't copy .ts TypeScript files into dist directory
 build: link_json
