@@ -38,6 +38,13 @@ data.limit_columns:
 	 ./venv/bin/python3 scripts/limit_columns.py \
 	 data/Vacant_Lots_Manhattan.number_address.csv \
 	 --output_file data/Vacant_Lots_Manhattan.number_address_limit_cols.csv
+	 data/vacant_lots_filtered.csv \
+	 --output_file data/vacant_lots_filtered_limit_cols.csv
+
+data.split_by_borough:
+	./venv/bin/python3 scripts/split_by_borough.py \
+	data/vacant_lots_filtered_limit_cols.csv \
+	--output_prefix data/vacant_borough
 
 # converts our csv to geojson. TODO: double-check the input file is what we want
 data.csv_to_geojson:
