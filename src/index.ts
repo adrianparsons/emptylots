@@ -1,7 +1,7 @@
 let map: google.maps.Map;
-let infoWindow;
-let panorama;
-let streetview;
+let infoWindow: google.maps.InfoWindow;
+let panorama: google.maps.StreetViewPanorama;
+let streetview: google.maps.StreetViewService;
 
 async function initMap(): Promise<void> {
   const { Map, InfoWindow } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
@@ -24,17 +24,17 @@ async function initMap(): Promise<void> {
 
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
-  map.data.addListener('click', (e) => {
-    showInfo(e.latLng, e.feature);
+  map.data.addListener('click', (e: Event) => {
+    showInfo(e.latLng, e.feature );
     showStreetViewPanorama(e.latLng, e.feature);
   }
 );
 
   // TODO REMOVE THIS
-  globalThis.googlemap = map;
+  //globalThis.googlemap = map;
 }
 
-function showInfo(position, feature) {
+function showInfo(position: google.maps.LatLng, feature: google.maps.Feature {
   const lotArea = Number(feature.getProperty('lotarea')).toLocaleString();
 
   const content = `
@@ -54,7 +54,7 @@ function showInfo(position, feature) {
   infoWindow.open({map, shouldFocus: false});
 }
 
-function showStreetViewPanorama(position)  {
+function showStreetViewPanorama(position: google.maps.LatLng)  {
   streetview.getPanorama({
     location: position,
     sources: [google.maps.StreetViewSource.OUTDOOR]
