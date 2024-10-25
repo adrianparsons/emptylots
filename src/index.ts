@@ -12,7 +12,7 @@ async function initMap(): Promise<void> {
     mapId: "3be746a5b0357cb1"
   });
 
-  infoWindow = new InfoWindow({pixelOffset: {height: -37}});
+  infoWindow = new InfoWindow({pixelOffset: new google.maps.Size(150,-37)});
 
   panorama = new google.maps.StreetViewPanorama(
     document.getElementById("streetview") as HTMLElement);
@@ -25,7 +25,7 @@ async function initMap(): Promise<void> {
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
   map.data.addListener('click', (e: google.maps.Data.MouseEvent) => {
-    e.latLng && showInfo(e.latLng || undefined, e.feature );
+    e.latLng && showInfo(e.latLng, e.feature );
     e.latLng && showStreetViewPanorama(e.latLng);
   }
 );
