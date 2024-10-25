@@ -24,7 +24,7 @@ async function initMap(): Promise<void> {
 
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
-  map.data.addListener('click', (e: google.maps.MapMouseEvent) => {
+  map.data.addListener('click', (e: google.maps.Data.MouseEvent) => {
     e.latLng && showInfo(e.latLng || undefined, e.feature );
     e.latLng && showStreetViewPanorama(e.latLng);
   }
