@@ -24,9 +24,9 @@ async function initMap(): Promise<void> {
 
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
-  map.data.addListener('click', (e: Event) => {
-    showInfo(e.latLng, e.feature );
-    showStreetViewPanorama(e.latLng, e.feature);
+  map.data.addListener('click', (e: google.maps.MapMouseEvent) => {
+    e.latLng && showInfo(e.latLng || undefined, e.feature );
+    e.latLng && showStreetViewPanorama(e.latLng);
   }
 );
 
@@ -34,7 +34,7 @@ async function initMap(): Promise<void> {
   //globalThis.googlemap = map;
 }
 
-function showInfo(position: google.maps.LatLng, feature: google.maps.Feature {
+function showInfo(position: google.maps.LatLng | undefined, feature: google.maps.Data.Feature) {
   const lotArea = Number(feature.getProperty('lotarea')).toLocaleString();
 
   const content = `
