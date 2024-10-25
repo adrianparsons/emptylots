@@ -58,8 +58,8 @@ function showStreetViewPanorama(position: google.maps.LatLng)  {
   streetview.getPanorama({
     location: position,
     sources: [google.maps.StreetViewSource.OUTDOOR]
-  }, (panoData) => {
-    panorama.setPano(panoData.location.pano)
+  }, (panoData: google.maps.StreetViewPanoramaData | null) => {
+    panoData?.location?.pano && panorama.setPano(panoData.location.pano)
   })
 }
 
