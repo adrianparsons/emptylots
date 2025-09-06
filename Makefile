@@ -30,8 +30,8 @@ deploy:
 # cleans up raw data
 data.clean_filter:
 	 ./venv/bin/python3 scripts/basic_filter_transform.py \
-	 data/Vacant_Lots_Manhattan.original.csv \
-	 --output_file data/Vacant_Lots_Manhattan.number_address.csv
+	 data/Vacant_Lots_20250906.csv \
+	 --output_file data/vacant_lots_filtered.csv
 
 # selects fewer columns. not sure if we even need this.
 data.limit_columns:
