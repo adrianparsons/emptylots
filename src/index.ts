@@ -37,6 +37,9 @@ async function initMap(): Promise<void> {
 function showInfo(position: google.maps.LatLng | undefined, feature: google.maps.Data.Feature) {
   const lotArea = Number(feature.getProperty('lotarea')).toLocaleString();
 
+  // TODO: zola link is different for different boroughs
+  // manhattan is /lot/1
+  // bronx is 2, brooklyn 3, queens 4, SI 5
   const content = `
     <div style="">
       <h3 style="margin-top: 0">${feature.getProperty('address')}</h3>

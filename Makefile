@@ -36,8 +36,6 @@ data.clean_filter:
 # selects fewer columns. not sure if we even need this.
 data.limit_columns:
 	 ./venv/bin/python3 scripts/limit_columns.py \
-	 data/Vacant_Lots_Manhattan.number_address.csv \
-	 --output_file data/Vacant_Lots_Manhattan.number_address_limit_cols.csv
 	 data/vacant_lots_filtered.csv \
 	 --output_file data/vacant_lots_filtered_limit_cols.csv
 

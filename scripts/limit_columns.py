@@ -8,7 +8,7 @@ def clean_data(df):
     return df
 
 def main():
-    parser = argparse.ArgumentParser(description='Transform raw CSV for use in google maps')
+    parser = argparse.ArgumentParser(description='filter out all but the most relevant columns from the CSV')
     parser.add_argument('input_file', type=str, help='Path to the input CSV file')
     parser.add_argument('--output_file', type=str, help='Path to the output CSV file', default='output.csv')
     args = parser.parse_args()

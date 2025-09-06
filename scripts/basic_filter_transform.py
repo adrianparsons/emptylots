@@ -16,8 +16,13 @@ def clean_data(df):
     df.loc[df['state'] == "", 'state'] = "NY"
     # Clone column 'state' as 'city'
     df['city'] = df.loc[:, 'state']
+
+    # TODO: we may want to change the city based on borough
     # Replace all instances of "NY" with "New York" in column: 'city'
     df.loc[df['city'] == "NY", 'city'] = "New York"
+
+    # Drop empty or NA values for column: 'address'
+    df = df.dropna(subset=['address'])
 
     # Drop duplicate rows in column: 'address'
     df = df.drop_duplicates(subset=['address'])
