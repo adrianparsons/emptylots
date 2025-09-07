@@ -37,9 +37,6 @@ async function initMap(): Promise<void> {
 function showInfo(position: google.maps.LatLng | undefined, feature: google.maps.Data.Feature) {
   const lotArea = Number(feature.getProperty('lotarea')).toLocaleString();
 
-  // TODO: zola link is different for different boroughs
-  // manhattan is /lot/1
-  // bronx is 2, brooklyn 3, queens 4, SI 5
   const content = `
     <div style="">
       <h3 style="margin-top: 0">${feature.getProperty('address')}</h3>
@@ -48,9 +45,10 @@ function showInfo(position: google.maps.LatLng | undefined, feature: google.maps
       <p>community board ${feature.getProperty('community board')}</p>
       <p>precinct ${feature.getProperty('policeprct')}</p>
       <p>council district ${feature.getProperty('council district')}</p>
-      <p><a href="https://zola.planning.nyc.gov/l/lot/1/${feature.getProperty('Tax block')}/${feature.getProperty('Tax lot')}" target="_blank"}>ZoLa ⤴</a></p>
+      <p><a href="https://zola.planning.nyc.gov/l/lot/${feature.getProperty('borocode')}/${feature.getProperty('Tax block')}/${feature.getProperty('Tax lot')}" target="_blank"}>ZoLa ⤴</a></p>
     </div>
   `;
+
   // feature.forEachProperty(console.log)
 
   infoWindow.setOptions({content, position});
