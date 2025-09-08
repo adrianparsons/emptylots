@@ -10,5 +10,9 @@
   "license": "ISC",
   "devDependencies": {
     "@types/google.maps": "^3.58.1"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.13",
+    "tailwindcss": "^4.1.13"
   }
 }

@@ -1,19 +1,24 @@
 # Makefile for this project
 clean:
-	rm -rf node_modules/
 	rm -r dist/*
 
 # Symlink the folder of geojson outputs to the dist/ folder
 link_json:
 	ln -nfvs ../data/json dist/json
 
+style:
+	npx @tailwindcss/cli -i ./src/style.css -o ./dist/style.css
+
 # TODO: don't copy .ts TypeScript files into dist directory
-build: link_json
-	cp -r src/ dist/
+build: link_json style
+	cp -r src/*.html dist/
 	tsc
 
-watch:
+watch.ts:
 	tsc -watch
+
+watch.style:
+	npx @tailwindcss/cli -i ./src/style.css -o ./dist/style.css --watch
 
 # Spin up static server for local development
 serve:
