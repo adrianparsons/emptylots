@@ -32,6 +32,8 @@ deploy:
 	--verbose \
 	--copy-unsafe-links
 
+data: data.clean_filter data.limit_columns data.split_by_borough data.csv_to_geojson
+
 # cleans up raw data
 data.clean_filter:
 	 ./venv/bin/python3 scripts/basic_filter_transform.py \
