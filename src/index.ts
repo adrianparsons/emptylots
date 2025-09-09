@@ -12,7 +12,7 @@ async function initMap(): Promise<void> {
     mapId: "3be746a5b0357cb1"
   });
 
-  infoWindow = new InfoWindow({pixelOffset: new google.maps.Size(150,-37)});
+  infoWindow = new InfoWindow({pixelOffset: new google.maps.Size(0,-37)});
 
   panorama = new google.maps.StreetViewPanorama(
     document.getElementById("streetview") as HTMLElement);
