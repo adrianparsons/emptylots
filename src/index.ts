@@ -27,6 +27,14 @@ async function initMap(): Promise<void> {
   map.data.addListener('click', (e: google.maps.Data.MouseEvent) => {
     e.latLng && showInfo(e.latLng, e.feature );
     e.latLng && showStreetViewPanorama(e.latLng);
+    const aboutEl = document.getElementById("about")
+    if (aboutEl){
+      aboutEl.style.display = "none"
+    }
+    const streetviewEl = document.getElementById("streetview");
+    if (streetviewEl) {
+        streetviewEl.style.display = "block";
+    }
   }
 );
 
