@@ -2,16 +2,17 @@
   "name": "empty-lots",
   "version": "1.0.0",
   "description": "mapping the empty lots of NYC",
-  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/google.maps": "^3.58.1"
+    "@types/google.maps": "^3.58.1",
+    "parcel": "^2.15.4"
   },
   "dependencies": {
+    "@googlemaps/markerclusterer": "^2.6.2",
     "@tailwindcss/cli": "^4.1.13",
     "tailwindcss": "^4.1.13"
   }
