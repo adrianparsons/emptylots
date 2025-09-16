@@ -54,5 +54,5 @@ data.split_by_borough:
 # converts our csv to geojson. TODO: double-check the input file is what we want
 data.csv_to_geojson:
 	 ./venv/bin/python3 scripts/csv_to_geojson.py \
-	 data/vacant_borough_MN.csv \
+	 data/vacant_lots_filtered_limit_cols.csv \
 	 --output_file data/json/less_columns.json
