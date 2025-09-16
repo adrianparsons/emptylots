@@ -11,17 +11,17 @@
   <body>
     <div class="flex flex-col h-full">
       <div id="boro" class="p-4">
-        <button data-borough="MN" class="bg-gray-300 rounded-2xl py-2 px-4 font-bold">Manhattan</button>
-        <button data-borough="BX" class="bg-gray-300 rounded-2xl py-2 px-4 font-bold">Bronx</button>
-        <button data-borough="BK" class="bg-gray-300 rounded-2xl py-2 px-4 font-bold">Brooklyn</button>
-        <button data-borough="QN" class="bg-gray-300 rounded-2xl py-2 px-4 font-bold">Queens</button>
-        <button data-borough="SI" class="bg-gray-300 rounded-2xl py-2 px-4 font-bold">Staten Island</button>
+        <button data-borough="MN" class="bg-gray-300 hover:bg-gray-100 rounded-2xl py-2 px-4 font-bold">Manhattan</button>
+        <button data-borough="BX" class="bg-gray-300 hover:bg-gray-100 rounded-2xl py-2 px-4 font-bold">Bronx</button>
+        <button data-borough="BK" class="bg-gray-300 hover:bg-gray-100 rounded-2xl py-2 px-4 font-bold">Brooklyn</button>
+        <button data-borough="QN" class="bg-gray-300 hover:bg-gray-100 rounded-2xl py-2 px-4 font-bold">Queens</button>
+        <button data-borough="SI" class="bg-gray-300 hover:bg-gray-100 rounded-2xl py-2 px-4 font-bold">Staten Island</button>
       </div>
       <div class="grow flex flex-col md:flex-row">
-        <div id="map" class="w-full grow"></div>
-        <div id="streetview" class="hidden w-full grow "></div>
-        <div id="about" class="p-4 w-full grow">
-          <div class="flex flex-col h-full">
+        <div id="map" class="grow w-full"></div>
+        <div id="streetview" class="hidden grow w-full"></div>
+        <div id="about" class="grow w-full">
+          <div class="flex flex-col h-full p-4">
             <div class="grow"><h1 class="text-6xl">select a lot...</h1></div>
             <div clas="text-2xl">created by <a class="text-cyan-500 underline" href="https://adrianparsons.com">Adrian Parsons</a> with open data</div>
           </div>
