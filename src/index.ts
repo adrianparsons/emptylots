@@ -24,13 +24,22 @@ async function initMap(): Promise<void> {
 
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
-  map.data.setStyle({visible: false})
+  // default borough is Manhattan
+  map.data.setStyle((feature: google.maps.Data.Feature) => {
+      if (feature.getProperty("borough") != "MN") {
+        return {
+          visible: false
+        }
+      }
+      return {}
+  })
 
   const boroselect = document.getElementById("boro")
   boroselect && boroselect.addEventListener("click", (e) => {
     const selected = (e.target as HTMLElement)?.dataset?.borough || "MN";
 
     map.data.setStyle((feature: google.maps.Data.Feature) => {
+      // TODO: change map center after borough selection.
       if (feature.getProperty("borough") != selected) {
         return {
           visible: false
