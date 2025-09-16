@@ -9,11 +9,18 @@
     <link rel="stylesheet" type="text/css" href="./style.css" />
   </head>
   <body>
+    <div id="boro">
+      <button data-borough="MN">Manhattan</button>
+      <button data-borough="BX">Bronx</button>
+      <button data-borough="BK">Brooklyn</button>
+      <button data-borough="QN">Queens</button>
+      <button data-borough="SI">Staten Is</button>
+    </div>
     <div id="map" class="float-left h-full w-1/2"></div>
     <div id="streetview" class="hidden float-left h-full w-1/2"></div>
     <div id="about" class="float-left h-full w-1/2 p-4">
-      <div class="flex flex-col h-full">
-        <div class="grow"><h1 class="text-6xl">&larr; select a lot!</h1></div>
+      <div class="flex flex-row md:flex-col h-full">
+        <div class="grow"><h1 class="text-6xl">select a lot!</h1></div>
         <div clas="text-2xl">created by <a class="text-cyan-500 underline" href="https://adrianparsons.com">Adrian Parsons</a> with open data</div>
       </div>
     </div>

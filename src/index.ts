@@ -24,6 +24,22 @@ async function initMap(): Promise<void> {
 
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
+  map.data.setStyle({visible: false})
+
+  const boroselect = document.getElementById("boro")
+  boroselect && boroselect.addEventListener("click", (e) => {
+    const selected = (e.target as HTMLElement)?.dataset?.borough || "MN";
+
+    map.data.setStyle((feature: google.maps.Data.Feature) => {
+      if (feature.getProperty("borough") != selected) {
+        return {
+          visible: false
+        }
+      }
+      return {}
+    })
+  })
+
   map.data.addListener('click', (e: google.maps.Data.MouseEvent) => {
     e.latLng && showInfo(e.latLng, e.feature );
     e.latLng && showStreetViewPanorama(e.latLng);
