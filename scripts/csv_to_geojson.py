@@ -38,7 +38,7 @@ def main():
     dicted = dict_data(df.copy())
 
     with open(args.output_file, mode="w", encoding="utf-8") as f:
-        f.write(json.dumps(dicted, indent=4))
+        f.write(json.dumps(dicted))
 
 if __name__ == '__main__':
     main()
