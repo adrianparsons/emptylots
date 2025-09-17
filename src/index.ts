@@ -5,10 +5,21 @@ let streetview: google.maps.StreetViewService;
 
 import "./infoWindow.js"
 
+function enableBorough(borough: string) {
+  return (feature: google.maps.Data.Feature) => {
+      if (feature.getProperty("borough") != borough) {
+        return {
+          visible: false
+        }
+      }
+      return {}
+  }
+}
+
 async function initMap(): Promise<void> {
   const { Map, InfoWindow } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
 
-  map = new Map(document.getElementById("map") as HTMLElement, {
+  const map = new Map(document.getElementById("map") as HTMLElement, {
     center: { lat: 40.7565749, lng: -73.9797362 },
     zoom: 13,
     mapId: "3be746a5b0357cb1"
@@ -21,31 +32,16 @@ async function initMap(): Promise<void> {
 
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
-  // default borough is Manhattan
-  map.data.setStyle((feature: google.maps.Data.Feature) => {
-      if (feature.getProperty("borough") != "MN") {
-        return {
-          visible: false
-        }
-      }
-      return {}
-  })
+  // Default borough is Manhattan
+  map.data.setStyle(enableBorough("MN"))
 
   streetview = new google.maps.StreetViewService();
 
   const boroselect = document.getElementById("boro")
   boroselect && boroselect.addEventListener("click", (e) => {
     const selected = (e.target as HTMLElement)?.dataset?.borough || "MN";
-
-    map.data.setStyle((feature: google.maps.Data.Feature) => {
-      // TODO: change map center after borough selection.
-      if (feature.getProperty("borough") != selected) {
-        return {
-          visible: false
-        }
-      }
-      return {}
-    })
+    map.data.setStyle(enableBorough(selected))
+    // TODO: change map center after enabling a new borough.
   })
 
   map.data.addListener('click', (e: google.maps.Data.MouseEvent) => {
