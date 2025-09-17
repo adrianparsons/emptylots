@@ -19,7 +19,7 @@ function enableBorough(borough: string) {
 async function initMap(): Promise<void> {
   const { Map, InfoWindow } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
 
-  const map = new Map(document.getElementById("map") as HTMLElement, {
+  map = new Map(document.getElementById("map") as HTMLElement, {
     center: { lat: 40.7565749, lng: -73.9797362 },
     zoom: 13,
     mapId: "3be746a5b0357cb1"
