@@ -26,7 +26,7 @@ serve:
 
 # rsync the dist directory on a remote server, ignore dotfiles, include symlinked directory
 deploy:
-	rsync -e "ssh -i ~/.ssh/id_ed25519.pub" \
+	rsync -e "ssh -i ~/.ssh/id_ed25519" \
 	-av --delete dist/ \
 	amp926@adrianparsons.com:/home/amp926/emptylots.adrianparsons.com \
 	--exclude="\.*" \
