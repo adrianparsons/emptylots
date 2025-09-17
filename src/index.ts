@@ -3,6 +3,8 @@ let infoWindow: google.maps.InfoWindow;
 let panorama: google.maps.StreetViewPanorama;
 let streetview: google.maps.StreetViewService;
 
+import "./infoWindow.js"
+
 async function initMap(): Promise<void> {
   const { Map, InfoWindow } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
 
@@ -17,11 +19,6 @@ async function initMap(): Promise<void> {
   panorama = new google.maps.StreetViewPanorama(
     document.getElementById("streetview") as HTMLElement);
 
-  streetview = new google.maps.StreetViewService();
-
-  //let layer = map.getDatasetFeatureLayer("aa920d72-66af-4c1b-975a-20c1d16df3de");
-  //layer.style = { fillColor: "blue", pointRadius: 4 };
-
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
   // default borough is Manhattan
@@ -33,6 +30,8 @@ async function initMap(): Promise<void> {
       }
       return {}
   })
+
+  streetview = new google.maps.StreetViewService();
 
   const boroselect = document.getElementById("boro")
   boroselect && boroselect.addEventListener("click", (e) => {
@@ -68,23 +67,17 @@ async function initMap(): Promise<void> {
 }
 
 function showInfo(position: google.maps.LatLng | undefined, feature: google.maps.Data.Feature) {
-  const lotArea = Number(feature.getProperty('lotarea')).toLocaleString();
 
-  const content = `
-    <div style="">
-      <h3 style="margin-top: 0">${feature.getProperty('address')}</h3>
-      <p>Owner: ${feature.getProperty('ownername')}</p>
-      <p>${lotArea} square feet</p>
-      <p>community board ${feature.getProperty('community board')}</p>
-      <p>precinct ${feature.getProperty('policeprct')}</p>
-      <p>council district ${feature.getProperty('council district')}</p>
-      <p><a href="https://zola.planning.nyc.gov/l/lot/${feature.getProperty('borocode')}/${feature.getProperty('Tax block')}/${feature.getProperty('Tax lot')}" target="_blank"}>ZoLa ⤴</a></p>
-    </div>
-  `;
+  const lotinfowindow = document.createElement("info-window") as any
+  lotinfowindow.data = {
+    address: feature.getProperty("address"),
+    ownername: feature.getProperty("ownername"),
+    lotArea: Number(feature.getProperty('lotarea')).toLocaleString(),
+    zolaLink: `https://zola.planning.nyc.gov/l/lot/${feature.getProperty('borocode')}/${feature.getProperty('Tax block')
+}/${feature.getProperty('Tax lot')}`,
+  }
 
-  // feature.forEachProperty(console.log)
-
-  infoWindow.setOptions({content, position});
+  infoWindow.setOptions({content:lotinfowindow, position});
   infoWindow.open({map, shouldFocus: false});
 }
 
