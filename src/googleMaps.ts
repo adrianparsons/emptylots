@@ -3,6 +3,14 @@ let infoWindow: google.maps.InfoWindow;
 
 import "./infoWindow.js"
 
+const boroughCenter: Record<string, [number, number]> = {
+  "BK": [40.6690628,-73.9653658],
+  "MN": [40.7565749,-73.979736],
+  "SI": [40.5983874,-74.1580968],
+  "QN": [40.7329813,-73.8879294],
+  "BX": [40.8341748,-73.9018563],
+}
+
 function enableBorough(borough: string) {
   return (feature: google.maps.Data.Feature) => {
       if (feature.getProperty("borough") != borough) {
@@ -12,14 +20,6 @@ function enableBorough(borough: string) {
       }
       return {}
   }
-}
-
-const boroughCenter: Record<string, [number, number]> = {
-  "BK": [40.6690628,-73.9653658],
-  "MN": [40.7565749,-73.979736],
-  "SI": [40.5983874,-74.1580968],
-  "QN": [40.7329813,-73.8879294],
-  "BX": [40.8341748,-73.9018563],
 }
 
 export async function initGoogleMap(): Promise<google.maps.Map> {
@@ -33,7 +33,7 @@ export async function initGoogleMap(): Promise<google.maps.Map> {
 
   infoWindow = new InfoWindow({pixelOffset: new google.maps.Size(0,-37)});
 
-  await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
+  map.data.loadGeoJson("json/emptylots.json", {idPropertyName: "address"});
 
   // Default borough is Manhattan
   map.data.setStyle(enableBorough("MN"))

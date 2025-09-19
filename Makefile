@@ -56,4 +56,4 @@ data.split_by_borough:
 data.csv_to_geojson:
 	 ./venv/bin/python3 scripts/csv_to_geojson.py \
 	 data/vacant_lots_filtered_limit_cols.csv \
-	 --output_file data/json/less_columns.json
+	 --output_file data/json/emptylots.json
