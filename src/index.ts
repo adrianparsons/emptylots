@@ -1,9 +1,8 @@
 let map: google.maps.Map;
 let infoWindow: google.maps.InfoWindow;
-let panorama: google.maps.StreetViewPanorama;
-let streetview: google.maps.StreetViewService;
 
 import "./infoWindow.js"
+import { initStreetview, showStreetViewPanorama  } from "./streetview.js";
 
 function enableBorough(borough: string) {
   return (feature: google.maps.Data.Feature) => {
@@ -25,19 +24,18 @@ async function initMap(): Promise<void> {
     mapId: "3be746a5b0357cb1"
   });
 
-  infoWindow = new InfoWindow({pixelOffset: new google.maps.Size(0,-37)});
 
-  panorama = new google.maps.StreetViewPanorama(
-    document.getElementById("streetview") as HTMLElement);
+  infoWindow = new InfoWindow({pixelOffset: new google.maps.Size(0,-37)});
 
   await map.data.loadGeoJson("json/less_columns.json", {idPropertyName: "address"});
 
   // Default borough is Manhattan
   map.data.setStyle(enableBorough("MN"))
 
-  streetview = new google.maps.StreetViewService();
-
   const boroselect = document.getElementById("boro")
+
+  initStreetview()
+
   boroselect && boroselect.addEventListener("click", (e) => {
     const selected = (e.target as HTMLElement)?.dataset?.borough || "MN";
     map.data.setStyle(enableBorough(selected))
@@ -55,9 +53,7 @@ async function initMap(): Promise<void> {
     if (streetviewEl) {
         streetviewEl.style.display = "block";
     }
-  }
-);
-
+  })
   // TODO REMOVE THIS
   //globalThis.googlemap = map;
 }
@@ -69,31 +65,11 @@ function showInfo(position: google.maps.LatLng | undefined, feature: google.maps
     address: feature.getProperty("address"),
     ownername: feature.getProperty("ownername"),
     lotArea: Number(feature.getProperty('lotarea')).toLocaleString(),
-    zolaLink: `https://zola.planning.nyc.gov/l/lot/${feature.getProperty('borocode')}/${feature.getProperty('Tax block')
-}/${feature.getProperty('Tax lot')}`,
+    zolaLink: `https://zola.planning.nyc.gov/l/lot/${feature.getProperty('borocode')}/${feature.getProperty('Tax block')}/${feature.getProperty('Tax lot')}`,
   }
 
   infoWindow.setOptions({content:lotinfowindow, position});
   infoWindow.open({map, shouldFocus: false});
-}
-
-function showStreetViewPanorama(position: google.maps.LatLng)  {
-  const pos = position
-  streetview.getPanorama({
-    location: position,
-    sources: [google.maps.StreetViewSource.OUTDOOR]
-  }, (panoData: google.maps.StreetViewPanoramaData | null) => {
-
-    const lat1 = panoData?.location?.latLng?.lat()
-    const lng1 = panoData?.location?.latLng?.lng()
-    const lat2 = position.lat()
-    const lng2 = position.lng()
-
-    const heading = turf.rhumbBearing([lat1, lng1],[lat2,lng2])
-    console.log("heading: ", heading)
-
-    panoData?.location?.pano && panorama.setPano(panoData.location.pano) && panorama.setPov({heading, pitch: 33})
-  })
 }
 
 initMap();
