@@ -14,11 +14,19 @@ function enableBorough(borough: string) {
   }
 }
 
+const boroughCenter: Record<string, [number, number]> = {
+  "BK": [40.6690628,-73.9653658],
+  "MN": [40.7565749,-73.979736],
+  "SI": [40.5983874,-74.1580968],
+  "QN": [40.7329813,-73.8879294],
+  "BX": [40.8341748,-73.9018563],
+}
+
 export async function initGoogleMap(): Promise<google.maps.Map> {
   const { Map, InfoWindow } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
 
   map = new Map(document.getElementById("map") as HTMLElement, {
-    center: { lat: 40.7565749, lng: -73.9797362 },
+    center: { lat: boroughCenter["MN"][0], lng: boroughCenter["MN"][1] },
     zoom: 13,
     mapId: "3be746a5b0357cb1"
   });
@@ -35,7 +43,8 @@ export async function initGoogleMap(): Promise<google.maps.Map> {
   boroselect && boroselect.addEventListener("click", (e) => {
     const selected = (e.target as HTMLElement)?.dataset?.borough || "MN";
     map.data.setStyle(enableBorough(selected))
-    // TODO: change map center after enabling a new borough.
+    map.setCenter({lat: boroughCenter[selected][0], lng: boroughCenter[selected][1]})
+
   })
 
   return map;
