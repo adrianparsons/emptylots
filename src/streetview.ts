@@ -14,12 +14,12 @@ export function showStreetViewPanorama(position: google.maps.LatLng)  {
     sources: [google.maps.StreetViewSource.OUTDOOR]
   }, (panoData: google.maps.StreetViewPanoramaData | null) => {
 
-    const lat1 = panoData?.location?.latLng?.lat()
-    const lng1 = panoData?.location?.latLng?.lng()
+    const lat1 = panoData?.location?.latLng?.lat() || 0
+    const lng1 = panoData?.location?.latLng?.lng() || 0
     const lat2 = position.lat()
     const lng2 = position.lng()
 
-    const heading = turf.bearing([lat1, lng1],[lat2,lng2])
+    const heading = turf.bearing(turf.point([lng1, lat1]), turf.point([lng2, lat2]))
     console.log("heading: ", heading)
 
     panoData?.location?.pano && panorama.setPano(panoData.location.pano)
