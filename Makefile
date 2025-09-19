@@ -2,16 +2,12 @@
 clean:
 	rm -r dist/*
 
-# Symlink the folder of geojson outputs to the dist/ folder
-link_json:
-	ln -nfvs ../data/json dist/json
-
 style:
 	npx @tailwindcss/cli -i ./src/style.css -o ./dist/style.css
 
-# TODO: don't copy .ts TypeScript files into dist directory
-build: link_json style
+build: style
 	cp -r src/*.html dist/
+	cp -r data/json dist/
 	tsc
 
 watch.ts:
