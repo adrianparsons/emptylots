@@ -20,14 +20,13 @@ watch.style:
 serve:
 	python3 -m http.server -d dist/
 
-# rsync the dist directory on a remote server, ignore dotfiles, include symlinked directory
+# rsync the dist directory on a remote server, ignore dotfiles
 deploy:
 	rsync -e "ssh -i ~/.ssh/id_ed25519" \
 	-av --delete dist/ \
 	amp926@adrianparsons.com:/home/amp926/emptylots.adrianparsons.com \
 	--exclude="\.*" \
-	--verbose \
-	--copy-unsafe-links
+	--verbose
 
 data: data.clean_filter data.limit_columns data.split_by_borough data.csv_to_geojson
 
