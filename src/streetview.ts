@@ -1,8 +1,6 @@
 let streetview: google.maps.StreetViewService;
 let panorama: google.maps.StreetViewPanorama;
 
-import "./infoWindow.js"
-
 export async function initStreetview(): Promise<void> {
   panorama = new google.maps.StreetViewPanorama(
     document.getElementById("streetview") as HTMLElement);
