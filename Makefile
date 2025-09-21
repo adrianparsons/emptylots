@@ -1,20 +1,20 @@
 # Makefile for this project
 clean:
 	rm -r dist/*
+	rm -r .parcel-cache
 
 style:
 	npx @tailwindcss/cli -i ./src/style.css -o ./dist/style.css
 
-build: style
-	cp -r src/*.html dist/
-	cp -r data/json dist/
-	tsc
+build:
+	NODE_ENV=development npx parcel build src/index.html --log-level verbose && cp -r static dist/
 
-watch.ts:
-	tsc -watch
+build.prod:
+	NODE_ENV=production npx parcel build src/index.html --log-level verbose && cp -r static dist/
 
-watch.style:
-	npx @tailwindcss/cli -i ./src/style.css -o ./dist/style.css --watch
+watch:
+	cp -r static dist/
+	npx parcel
 
 # Spin up static server for local development
 serve:
@@ -51,4 +51,4 @@ data.split_by_borough:
 data.csv_to_geojson:
 	 ./venv/bin/python3 scripts/csv_to_geojson.py \
 	 data/vacant_lots_filtered_limit_cols.csv \
-	 --output_file data/json/emptylots.json
+	 --output_file static/emptylots.json

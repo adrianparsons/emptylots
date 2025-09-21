@@ -1,8 +1,12 @@
 # Project-specific
 
+.env
+.env.development
+
 dist/*
 node_modules/
 venv/
+.parcel-cache/
 
 # General
 .DS_Store

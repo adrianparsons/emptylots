@@ -1,6 +1,8 @@
 let streetview: google.maps.StreetViewService;
 let panorama: google.maps.StreetViewPanorama;
 
+import * as turf from "@turf/turf";
+
 export async function initStreetview(): Promise<void> {
   panorama = new google.maps.StreetViewPanorama(
     document.getElementById("streetview") as HTMLElement);

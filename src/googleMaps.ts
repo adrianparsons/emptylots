@@ -33,7 +33,9 @@ export async function initGoogleMap(): Promise<google.maps.Map> {
 
   infoWindow = new InfoWindow({pixelOffset: new google.maps.Size(0,-37)});
 
-  map.data.loadGeoJson("json/emptylots.json", {idPropertyName: "address"});
+  map.data.loadGeoJson("./static/emptylots.json", {idPropertyName: "address"});
+
+
 
   // Default borough is Manhattan
   map.data.setStyle(enableBorough("MN"))

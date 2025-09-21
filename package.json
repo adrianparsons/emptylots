@@ -3,17 +3,30 @@
   "version": "1.0.0",
   "description": "mapping the empty lots of NYC",
   "scripts": {
+    "build": "NODE_ENV=production parcel build src/index.html --no-optimize && cp -r static dist/",
+    "build:dev": "NODE_ENV=development parcel build src/index.html --no-optimize && cp -r static dist/",
+    "dev": "NODE_ENV=development parcel src/index.html && cp -r static dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "source": [
+    "./src/index.html"
+  ],
+  "targets": {
+    "default": {
+      "distDir": "./dist"
+    }
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/google.maps": "^3.58.1",
-    "parcel": "^2.15.4"
+    "parcel": "^2.16.0"
   },
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.6.2",
     "@tailwindcss/cli": "^4.1.13",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@turf/turf": "^7.2.0",
     "tailwindcss": "^4.1.13"
   }
 }
