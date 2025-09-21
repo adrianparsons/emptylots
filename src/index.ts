@@ -1,9 +1,9 @@
 import { initStreetview, showStreetViewPanorama  } from "./streetview.js";
-import { initGoogleMap, showInfo } from "./googleMaps.js";
+import { initMap } from "./map.js";
 
-function markerClickHandler(e: google.maps.Data.MouseEvent) {
-  e.latLng && showInfo(e.latLng, e.feature );
-  e.latLng && showStreetViewPanorama(e.latLng);
+function markerClickHandler(e) {
+  //debugger;
+  e.lngLat && showStreetViewPanorama(e.lngLat);
   const aboutEl = document.getElementById("about")
   if (aboutEl){
     aboutEl.style.display = "none"
@@ -15,11 +15,14 @@ function markerClickHandler(e: google.maps.Data.MouseEvent) {
 }
 
 async function init(): Promise<void> {
-  const gmap = await initGoogleMap()
-
+  const pmap = initMap()
+  pmap.then((m)=>{
+    m.on('load', () => {
+        m.on('click', 'lots', markerClickHandler);
+    })
+  })
+  const { Map, InfoWindow } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
   initStreetview()
-
-  gmap.data.addListener('click', markerClickHandler)
 }
 
 init();

@@ -19,8 +19,8 @@ export function showStreetViewPanorama(position: google.maps.LatLng)  {
 
     const lat1 = panoData?.location?.latLng?.lat() || 0
     const lng1 = panoData?.location?.latLng?.lng() || 0
-    const lat2 = position.lat()
-    const lng2 = position.lng()
+    const lat2 = position.lat
+    const lng2 = position.lng
 
     const heading = turf.bearing(turf.point([lng1, lat1]), turf.point([lng2, lat2]))
     console.log("heading: ", heading)
