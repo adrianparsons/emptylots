@@ -4,7 +4,6 @@ let panorama: google.maps.StreetViewPanorama;
 
 import { bearing } from "@turf/bearing";
 import { point } from "@turf/helpers";
-import { Coordinates } from "maplibre-gl";
 
 export async function initStreetview(): Promise<void> {
   panorama = new google.maps.StreetViewPanorama(
