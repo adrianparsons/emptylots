@@ -3,7 +3,8 @@ import { initMap } from "./map";
 import { MapLayerMouseEvent} from "maplibre-gl";
 
 function markerClickHandler(e: MapLayerMouseEvent) {
-  e.lngLat && showStreetViewPanorama(e.lngLat);
+  if (!e.features || e.features.length == 0) return;
+  e.features[0] && showStreetViewPanorama(e.features[0].geometry.coordinates);
   const aboutEl = document.getElementById("about")
   if (aboutEl){
     aboutEl.style.display = "none"
