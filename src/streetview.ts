@@ -2,8 +2,9 @@
 let streetview: google.maps.StreetViewService;
 let panorama: google.maps.StreetViewPanorama;
 
-import * as turf from "@turf/turf";
-import { LngLat} from "maplibre-gl";
+import { bearing } from "@turf/bearing";
+import { point } from "@turf/helpers";
+import { LngLat } from "maplibre-gl";
 
 export async function initStreetview(): Promise<void> {
   panorama = new google.maps.StreetViewPanorama(
@@ -24,7 +25,7 @@ export function showStreetViewPanorama(position: LngLat)  {
     const lat2 = position.lat
     const lng2 = position.lng
 
-    const heading = turf.bearing(turf.point([lng1, lat1]), turf.point([lng2, lat2]))
+    const heading = bearing(point([lng1, lat1]), point([lng2, lat2]))
     console.log("heading: ", heading)
 
     panoData?.location?.pano && panorama.setPano(panoData.location.pano)
