@@ -1,4 +1,4 @@
-import maplibregl from 'maplibre-gl';
+import maplibregl, { MapLayerMouseEvent } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import "./infoWindow"
@@ -32,22 +32,22 @@ export async function initMap(){
       }
     });
 
-    var hovered: string[] = []
+    var hovered: [] = []
 
-    map.on('mousemove', 'lots', (e) => {
+    map.on('mousemove', 'lots', (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "pointer";
-      if (e.features.length > 0) {
+      if (e.features && e.features.length > 0) {
         map.setFeatureState({
           source: 'emptylots',
           id: e.features[0].id,
         }, {
           hover: true
         });
+        e.features[0].id && hovered.push(e.features[0].id)
       }
-      hovered.push(e.features[0].id)
     });
 
-    map.on('mouseleave', 'lots', (e) => {
+    map.on('mouseleave', 'lots', (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "default";
       while (hovered.length > 0) {
           map.setFeatureState({
@@ -59,8 +59,9 @@ export async function initMap(){
       }
     });
 
-    map.on('click', 'lots', (e) => {
+    map.on('click', 'lots', (e: MapLayerMouseEvent) => {
       const {lng, lat} = e.lngLat
+      if (!e.features || e.features.length === 0) return;
       const props = e.features[0].properties
 
       const lotinfowindow = document.createElement("info-window") as any

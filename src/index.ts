@@ -1,8 +1,8 @@
-import { initStreetview, showStreetViewPanorama  } from "./streetview.js";
-import { initMap } from "./map.js";
+import { initStreetview, showStreetViewPanorama  } from "./streetview";
+import { initMap } from "./map";
+import { MapLayerMouseEvent} from "maplibre-gl";
 
-function markerClickHandler(e) {
-  //debugger;
+function markerClickHandler(e: MapLayerMouseEvent) {
   e.lngLat && showStreetViewPanorama(e.lngLat);
   const aboutEl = document.getElementById("about")
   if (aboutEl){
@@ -15,13 +15,14 @@ function markerClickHandler(e) {
 }
 
 async function init(): Promise<void> {
-  const pmap = initMap()
-  pmap.then((m)=>{
+  const libremap = initMap()
+  libremap.then((m)=>{
     m.on('load', () => {
         m.on('click', 'lots', markerClickHandler);
     })
   })
-  const { Map, InfoWindow } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+  // TODO: what exactly do we need to import from google's library to get streetview?
+  await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
   initStreetview()
 }
 

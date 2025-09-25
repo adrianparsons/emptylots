@@ -1,7 +1,9 @@
+// TODO: remove these vars from top-level scope.
 let streetview: google.maps.StreetViewService;
 let panorama: google.maps.StreetViewPanorama;
 
 import * as turf from "@turf/turf";
+import { LngLat} from "maplibre-gl";
 
 export async function initStreetview(): Promise<void> {
   panorama = new google.maps.StreetViewPanorama(
@@ -10,7 +12,7 @@ export async function initStreetview(): Promise<void> {
   streetview = new google.maps.StreetViewService();
 }
 
-export function showStreetViewPanorama(position: google.maps.LatLng)  {
+export function showStreetViewPanorama(position: LngLat)  {
   streetview.getPanorama({
     location: position,
     sources: [google.maps.StreetViewSource.OUTDOOR],
