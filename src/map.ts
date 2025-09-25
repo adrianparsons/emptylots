@@ -72,7 +72,7 @@ export async function initMap(){
           zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.borocode}/${props['Tax block']}/${props['Tax lot']}`,
         }
 
-      new maplibregl.Popup()
+      new maplibregl.Popup({offset: { 'bottom': [0, -5]}})
           .setLngLat([lng, lat])
           .setDOMContent(lotinfowindow)
           .addTo(map);
