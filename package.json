@@ -23,7 +23,6 @@
     "parcel": "^2.16.0"
   },
   "dependencies": {
-    "@googlemaps/markerclusterer": "^2.6.2",
     "@tailwindcss/cli": "^4.1.13",
     "@tailwindcss/postcss": "^4.1.13",
     "@turf/turf": "^7.2.0",
