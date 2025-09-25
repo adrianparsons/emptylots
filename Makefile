@@ -21,7 +21,7 @@ serve:
 	python3 -m http.server -d dist/
 
 # rsync the dist directory on a remote server, ignore dotfiles
-deploy:
+deploy clean build.prod:
 	rsync -e "ssh -i ~/.ssh/id_ed25519" \
 	-av --delete dist/ \
 	amp926@adrianparsons.com:/home/amp926/emptylots.adrianparsons.com \
