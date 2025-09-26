@@ -1,9 +1,9 @@
-import maplibregl, { MapLayerMouseEvent } from 'maplibre-gl';
+import maplibregl, { Map, MapLayerMouseEvent } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import "./infoWindow"
 
-export async function initMap() {
+export async function initMap(): Promise<Map>{
   const map = new maplibregl.Map({
     container: 'map', // container id
     style: 'https://tiles.openfreemap.org/styles/liberty',

@@ -1,7 +1,7 @@
 # Makefile for this project
 clean:
-	rm -r dist/*
-	rm -r .parcel-cache
+	rm -rf dist/*
+	rm -rf .parcel-cache
 
 style:
 	npx @tailwindcss/cli -i ./src/style.css -o ./dist/style.css
@@ -21,7 +21,7 @@ serve:
 	python3 -m http.server -d dist/
 
 # rsync the dist directory on a remote server, ignore dotfiles
-deploy clean build.prod:
+deploy: clean build.prod
 	rsync -e "ssh -i ~/.ssh/id_ed25519" \
 	-av --delete dist/ \
 	amp926@adrianparsons.com:/home/amp926/emptylots.adrianparsons.com \

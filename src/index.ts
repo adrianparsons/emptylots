@@ -1,10 +1,12 @@
 import { initStreetview, showStreetViewPanorama  } from "./streetview";
 import { initMap } from "./map";
-import { MapLayerMouseEvent} from "maplibre-gl";
+import type { Map, MapLayerMouseEvent} from "maplibre-gl";
 
 function markerClickHandler(e: MapLayerMouseEvent) {
   if (!e.features || e.features.length == 0) return;
   e.features[0] && showStreetViewPanorama(e.features[0].geometry.coordinates);
+
+  // Hide the "about" panel after user clicks on the map.
   const aboutEl = document.getElementById("about")
   if (aboutEl){
     aboutEl.style.display = "none"
@@ -17,7 +19,7 @@ function markerClickHandler(e: MapLayerMouseEvent) {
 
 async function init(): Promise<void> {
   const libremap = initMap()
-  libremap.then((m)=>{
+  libremap.then((m: Map)=>{
     m.on('load', () => {
         m.on('click', 'lots', markerClickHandler);
     })
