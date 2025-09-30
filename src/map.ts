@@ -44,7 +44,10 @@ export async function initMap() {
       'source': 'nobuildings',
       'layout': {},
       'paint': {
-        'fill-color': '#00ff00'
+        'fill-color': ['case', ['boolean', ['feature-state', 'selected'], false],
+          '#ffff00',
+          '#00ff00'
+        ]
       }
     });
 
@@ -91,11 +94,23 @@ export async function initMap() {
     map.on('click', 'lots', (e: MapLayerMouseEvent) => {
       const { lng, lat } = e.lngLat
       if (!e.features || e.features.length === 0) return;
-      const props = e.features[0].properties
+      const props = e.features[0].properties;
+
+      map.removeFeatureState({ source: 'nobuildings' });
+      map.setFeatureState(
+        {
+          source: 'nobuildings',
+          id: props.BBL,
+        },
+        {
+          selected: true,
+        }
+
+      );
 
       const lotinfowindow = document.createElement("info-window") as any
       lotinfowindow.data = {
-        bbl: [props.borocode, props['Tax block'], props['Tax lot']].join(''),
+        bbl: props.BBL,
         address: props.address,
         ownername: props.ownername,
         lotArea: Number(props.lotarea).toLocaleString(),
