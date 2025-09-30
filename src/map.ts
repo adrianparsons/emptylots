@@ -21,9 +21,9 @@ export async function initMap() {
     });
 
 
-    map.addSource('nobuildings', {
+    map.addSource('vacant', {
       type: 'geojson',
-      data: './static/nobuildings.geojson',
+      data: './static/vacant.geojson',
       promoteId: 'BBL'
     });
 
@@ -41,7 +41,7 @@ export async function initMap() {
     map.addLayer({
       'id': 'lotpolygons',
       'type': 'fill',
-      'source': 'nobuildings',
+      'source': 'vacant',
       'layout': {},
       'paint': {
         'fill-color': ['case', ['boolean', ['feature-state', 'selected'], false],
@@ -96,10 +96,10 @@ export async function initMap() {
       if (!e.features || e.features.length === 0) return;
       const props = e.features[0].properties;
 
-      map.removeFeatureState({ source: 'nobuildings' });
+      map.removeFeatureState({ source: 'vacant' });
       map.setFeatureState(
         {
-          source: 'nobuildings',
+          source: 'vacant',
           id: props.BBL,
         },
         {
