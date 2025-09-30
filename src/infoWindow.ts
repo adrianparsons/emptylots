@@ -16,13 +16,14 @@ class InfoWindow extends HTMLElement {
   }
 
   private render() {
-    const { address, ownername, lotArea, zolaLink } = this._data;
+    const { address, ownername, lotArea, zolaLink, bbl } = this._data;
     this.innerHTML = `
       <div>
         <h3 style="margin-top: 0">${address || ''}</h3>
         <p>Owner: ${ownername || ''}</p>
         <p>${lotArea || ''} square feet</p>
         ${zolaLink ? `<p><a href="${zolaLink}" target="_blank">ZoLa ⤴</a></p>` : ''}
+        <p>${bbl}</p>
       </div>
     `;
   }

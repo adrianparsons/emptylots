@@ -95,6 +95,7 @@ export async function initMap() {
 
       const lotinfowindow = document.createElement("info-window") as any
       lotinfowindow.data = {
+        bbl: [props.borocode, props['Tax block'], props['Tax lot']].join(''),
         address: props.address,
         ownername: props.ownername,
         lotArea: Number(props.lotarea).toLocaleString(),
