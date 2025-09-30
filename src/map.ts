@@ -19,6 +19,16 @@ export async function initMap(){
       promoteId: 'address'
     });
 
+    // Add geolocate control to the map.
+    map.addControl(
+      new maplibregl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        trackUserLocation: true
+      })
+    );
+
     map.addLayer({
       'id': 'lots',
       'type': 'circle',
