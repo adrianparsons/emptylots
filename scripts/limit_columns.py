@@ -4,7 +4,7 @@ import argparse
 
 def clean_data(df):
     # Select columns: 'borough', 'Tax block' and 27 other columns
-    df = df.loc[:, ['borough', 'Tax block', 'Tax lot', 'community board', 'council district', 'postcode', 'policeprct', 'address', 'state', 'bldgclass', 'landuse', 'ownertype', 'ownername', 'lotarea', 'unitstotal', 'lotfront', 'lotdepth', 'lottype', 'assessland', 'yearbuilt', 'histdist', 'landmark', 'borocode', 'x', 'y', 'latitude', 'longitude', 'zonemap', 'notes', 'city']]
+    df = df.loc[:, ['borough', 'Tax block', 'Tax lot', 'community board', 'council district', 'postcode', 'policeprct', 'address', 'state', 'bldgclass', 'landuse', 'ownertype', 'ownername', 'lotarea', 'unitstotal', 'lotfront', 'lotdepth', 'lottype', 'assessland', 'yearbuilt', 'histdist', 'landmark', 'borocode', 'x', 'y', 'latitude', 'longitude', 'zonemap', 'notes', 'city', 'BBL']]
     return df
 
 def main():

@@ -3,21 +3,30 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import "./infoWindow"
 
-export async function initMap(){
+export async function initMap() {
   const map = new maplibregl.Map({
-      container: 'map', // container id
-      style: 'https://tiles.openfreemap.org/styles/liberty',
-      center: [-73.979736, 40.7565749], // starting position [lng, lat]
-      zoom: 13 // starting zoom
+    container: 'map', // container id
+    style: 'https://tiles.openfreemap.org/styles/liberty',
+    center: [-73.979736, 40.7565749], // starting position [lng, lat]
+    zoom: 13 // starting zoom
   })
 
-  map.on('load',async () => {
+  map.on('load', async () => {
 
-    map.addSource('emptylots', {
+
+    map.addSource('lotpoints', {
       type: 'geojson',
       data: './static/emptylots.json',
       promoteId: 'address'
     });
+
+
+    map.addSource('vacant', {
+      type: 'geojson',
+      data: './static/vacant.geojson',
+      promoteId: 'BBL'
+    });
+
 
     // Add geolocate control to the map.
     map.addControl(
@@ -30,9 +39,22 @@ export async function initMap(){
     );
 
     map.addLayer({
+      'id': 'lotpolygons',
+      'type': 'fill',
+      'source': 'vacant',
+      'layout': {},
+      'paint': {
+        'fill-color': ['case', ['boolean', ['feature-state', 'selected'], false],
+          '#ffff00',
+          '#00ff00'
+        ]
+      }
+    });
+
+    map.addLayer({
       'id': 'lots',
       'type': 'circle',
-      'source': 'emptylots',
+      'source': 'lotpoints',
       'layout': {},
       'paint': {
         'circle-color': ['case', ['boolean', ['feature-state', 'hover'], false],
@@ -48,7 +70,7 @@ export async function initMap(){
       map.getCanvas().style.cursor = "pointer";
       if (e.features && e.features.length > 0) {
         map.setFeatureState({
-          source: 'emptylots',
+          source: 'lotpoints',
           id: e.features[0].id,
         }, {
           hover: true
@@ -60,8 +82,8 @@ export async function initMap(){
     map.on('mouseleave', 'lots', (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "default";
       while (hovered.length > 0) {
-          map.setFeatureState({
-          source: 'emptylots',
+        map.setFeatureState({
+          source: 'lotpoints',
           id: hovered.pop(),
         }, {
           hover: false
@@ -70,22 +92,35 @@ export async function initMap(){
     });
 
     map.on('click', 'lots', (e: MapLayerMouseEvent) => {
-      const {lng, lat} = e.lngLat
+      const { lng, lat } = e.lngLat
       if (!e.features || e.features.length === 0) return;
-      const props = e.features[0].properties
+      const props = e.features[0].properties;
 
-      const lotinfowindow = document.createElement("info-window") as any
-        lotinfowindow.data = {
-          address: props.address,
-          ownername: props.ownername,
-          lotArea: Number(props.lotarea).toLocaleString(),
-          zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.borocode}/${props['Tax block']}/${props['Tax lot']}`,
+      map.removeFeatureState({ source: 'vacant' });
+      map.setFeatureState(
+        {
+          source: 'vacant',
+          id: props.BBL,
+        },
+        {
+          selected: true,
         }
 
-      new maplibregl.Popup({offset: { 'bottom': [0, -5]}})
-          .setLngLat([lng, lat])
-          .setDOMContent(lotinfowindow)
-          .addTo(map);
+      );
+
+      const lotinfowindow = document.createElement("info-window") as any
+      lotinfowindow.data = {
+        bbl: props.BBL,
+        address: props.address,
+        ownername: props.ownername,
+        lotArea: Number(props.lotarea).toLocaleString(),
+        zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.borocode}/${props['Tax block']}/${props['Tax lot']}`,
+      }
+
+      new maplibregl.Popup({ offset: { 'bottom': [0, -5] } })
+        .setLngLat([lng, lat])
+        .setDOMContent(lotinfowindow)
+        .addTo(map);
     })
 
     /*
