@@ -1,0 +1,14 @@
+[
+    {
+      "origin": ["http://localhost:1234"],
+      "method": ["GET"],
+      "responseHeader": ["Content-Type"],
+      "maxAgeSeconds": 0
+    },
+    {
+      "origin": ["https://empty.nyc"],
+      "method": ["GET"],
+      "responseHeader": ["Content-Type"],
+      "maxAgeSeconds": 3600
+    }
+]

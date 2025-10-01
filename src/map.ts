@@ -1,18 +1,21 @@
 import maplibregl, { Map, MapLayerMouseEvent } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { Protocol } from "pmtiles";
 
 import "./infoWindow"
 
 export async function initMap(): Promise<Map>{
+  let protocol = new Protocol();
+  maplibregl.addProtocol("pmtiles",protocol.tile);
+
   const map = new maplibregl.Map({
     container: 'map', // container id
-    style: 'https://tiles.openfreemap.org/styles/liberty',
+    style: 'https://tiles.openfreemap.org/styles/positron',
     center: [-73.979736, 40.7565749], // starting position [lng, lat]
     zoom: 13 // starting zoom
   })
 
   map.on('load', async () => {
-
 
     map.addSource('lotpoints', {
       type: 'geojson',
@@ -20,13 +23,11 @@ export async function initMap(): Promise<Map>{
       promoteId: 'address'
     });
 
-
     map.addSource('vacant', {
       type: 'geojson',
       data: './static/vacant.geojson',
       promoteId: 'BBL'
     });
-
 
     // Add geolocate control to the map.
     map.addControl(
@@ -56,11 +57,20 @@ export async function initMap(): Promise<Map>{
       'type': 'circle',
       'source': 'lotpoints',
       'layout': {},
+    })
+
+    map.addSource('alllots', {
+      type: 'vector',
+      url: 'pmtiles://https://cdn.empty.nyc/alllotsnyc.pmtiles'
+    });
+
+    map.addLayer({
+      'id': 'alllots',
+      'source-layer': 'MapPLUTO',
+      'type': 'line',
+      'source': 'alllots',
       'paint': {
-        'circle-color': ['case', ['boolean', ['feature-state', 'hover'], false],
-          '#2727F5',
-          '#F52795'
-        ]
+        'line-color': '#F52795'
       }
     });
 
@@ -122,20 +132,6 @@ export async function initMap(): Promise<Map>{
         .setDOMContent(lotinfowindow)
         .addTo(map);
     })
-
-    /*
-    const lots = await map.getSource('emptylots').getData()
-
-    lots.features.forEach((f)=> {
-      const [lng, lat]  = f.geometry.coordinates
-
-      new maplibregl.Marker()
-        .setLngLat([lng, lat])
-        .addTo(map);
-
-    })
-    */
-
   })
   return map
 }
