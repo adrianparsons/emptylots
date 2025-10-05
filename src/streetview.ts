@@ -13,8 +13,9 @@ export async function initStreetview(): Promise<void> {
 }
 
 export function showStreetViewPanorama([lng, lat]: [number, number])  {
+
   streetview.getPanorama({
-    location: {lng, lat},
+    location: {lng: parseFloat(lng), lat: parseFloat(lat)},
     sources: [google.maps.StreetViewSource.OUTDOOR],
     radius: 50,
   }, (panoData: google.maps.StreetViewPanoramaData | null) => {

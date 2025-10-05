@@ -4,7 +4,7 @@ import type { Map, MapLayerMouseEvent} from "maplibre-gl";
 
 function markerClickHandler(e: MapLayerMouseEvent) {
   if (!e.features || e.features.length == 0) return;
-  e.features[0] && showStreetViewPanorama(e.features[0].geometry.coordinates);
+  e.features[0] && showStreetViewPanorama([e.features[0].properties.Longitude, e.features[0].properties.Latitude]);
 
   // Hide the "about" panel after user clicks on the map.
   const aboutEl = document.getElementById("about")
@@ -21,7 +21,7 @@ async function init(): Promise<void> {
   const libremap = initMap()
   libremap.then((m: Map)=>{
     m.on('load', () => {
-        m.on('click', 'lots', markerClickHandler);
+        m.on('click', 'lotpolygons', markerClickHandler);
     })
   })
   // TODO: what exactly do we need to import from google's library to get streetview?
