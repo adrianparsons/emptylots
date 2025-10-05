@@ -56,6 +56,7 @@ export async function initMap(): Promise<Map>{
       'id': 'alllots',
       'source-layer': 'MapPLUTO',
       'type': 'line',
+      'minzoom': 15,
       'source': 'alllots',
       'paint': {
         'line-color': '#F52795'
