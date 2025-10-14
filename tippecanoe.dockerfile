@@ -1,6 +1,6 @@
-LABEL org.opencontainers.image.source https://github.com/adrianparsons/empty-lots
-
 FROM ubuntu:22.04
+
+LABEL org.opencontainers.image.source="https://github.com/adrianparsons/empty-lots"
 
 ARG TIPPECANOE_REPO=https://github.com/felt/tippecanoe.git
 
