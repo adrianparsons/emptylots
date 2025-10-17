@@ -17,12 +17,13 @@ export async function initMap(): Promise<Map>{
 
   map.on('load', async () => {
 
+    /*
     map.addSource('lotpoints', {
       type: 'geojson',
       data: './static/emptylots.json',
       promoteId: 'address'
     });
-
+    */
 
     // Add geolocate control to the map.
     map.addControl(
@@ -36,7 +37,8 @@ export async function initMap(): Promise<Map>{
 
     map.addSource('vacant', {
       type: 'vector',
-      url: 'pmtiles://https://cdn.empty.nyc/vacant.pmtiles'
+      url: 'pmtiles://https://cdn.empty.nyc/vacant.pmtiles',
+      promoteId: 'BBL'
     });
 
 /*
@@ -79,24 +81,26 @@ export async function initMap(): Promise<Map>{
 
     var hovered: [] = []
 
-    map.on('mousemove', 'lots', (e: MapLayerMouseEvent) => {
+    map.on('mousemove', 'lotpolygons', (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "pointer";
       if (e.features && e.features.length > 0) {
         map.setFeatureState({
-          source: 'lotpoints',
-          id: e.features[0].id,
+          source: 'vacant',
+          sourceLayer: 'vacant',
+          id: e.features[0].properties.BBL,
         }, {
           hover: true
         });
-        e.features[0].id && hovered.push(e.features[0].id)
+        e.features[0].id && hovered.push(e.features[0].properties.BBL)
       }
     });
 
-    map.on('mouseleave', 'lots', (e: MapLayerMouseEvent) => {
+    map.on('mouseleave', 'lotpolygons', (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "default";
       while (hovered.length > 0) {
         map.setFeatureState({
-          source: 'lotpoints',
+          source: 'vacant',
+          sourceLayer: 'vacant',
           id: hovered.pop(),
         }, {
           hover: false
