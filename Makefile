@@ -1,7 +1,11 @@
 # Makefile for this project
+
+bucket = gs://nyc-lots-tiles
+
 clean:
 	rm -rf dist/*
 	rm -rf .parcel-cache
+	rm -rf tiles/*
 
 style:
 	npx @tailwindcss/cli -i ./src/style.css -o ./dist/style.css
@@ -27,14 +31,15 @@ deploy: clean build.prod
 tiles.all_lots_geojson:
 	./build/shp_to_geojson.sh
 
-tiles.vacant_geojson:
+tiles.vacant:
 	./build/query_to_geojson.sh
-
-tiles.geojson_to_pmtile:
 	./build/geojson_to_pmtile.sh
 
 tiles.deploy:
-	./build/deploy_tiles.sh
+	gcloud storage cp tiles/*.pmtiles $(bucket)
+
+tiles.cors:
+	gcloud storage buckets update $(bucket) --cors-file=config/gcloud-bucket-cors-config.json
 
 data: data.clean_filter data.limit_columns data.split_by_borough data.csv_to_geojson
 

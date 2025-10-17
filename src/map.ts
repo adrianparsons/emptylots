@@ -36,7 +36,7 @@ export async function initMap(): Promise<Map>{
 
     map.addSource('vacant', {
       type: 'vector',
-      url: 'pmtiles://static/vacant.pmtiles'
+      url: 'pmtiles://https://cdn.empty.nyc/vacant.pmtiles'
     });
 
 /*
