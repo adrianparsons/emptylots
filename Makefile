@@ -16,10 +16,6 @@ watch:
 	cp -r static dist/
 	npx parcel
 
-# Spin up static server for local development
-serve:
-	python3 -m http.server -d dist/
-
 # rsync the dist directory on a remote server, ignore dotfiles
 deploy: clean build.prod
 	rsync -e "ssh -i ~/.ssh/id_ed25519" \
@@ -27,6 +23,18 @@ deploy: clean build.prod
 	amp926@adrianparsons.com:/home/amp926/emptylots.adrianparsons.com \
 	--exclude="\.*" \
 	--verbose
+
+tiles.all_lots_geojson:
+	./build/shp_to_geojson.sh
+
+tiles.vacant_geojson:
+	./build/query_to_geojson.sh
+
+tiles.geojson_to_pmtile:
+	./build/geojson_to_pmtile.sh
+
+tiles.deploy:
+	./build/deploy_tiles.sh
 
 data: data.clean_filter data.limit_columns data.split_by_borough data.csv_to_geojson
 
