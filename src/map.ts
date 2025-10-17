@@ -17,14 +17,6 @@ export async function initMap(): Promise<Map>{
 
   map.on('load', async () => {
 
-    /*
-    map.addSource('lotpoints', {
-      type: 'geojson',
-      data: './static/emptylots.json',
-      promoteId: 'address'
-    });
-    */
-
     // Add geolocate control to the map.
     map.addControl(
       new maplibregl.GeolocateControl({
@@ -41,27 +33,19 @@ export async function initMap(): Promise<Map>{
       promoteId: 'BBL'
     });
 
-/*
-    map.addLayer({
-      'id': 'lots',
-      'type': 'circle',
-      'source': 'lotpoints',
-      'layout': {},
-    })
-*/
     map.addSource('alllots', {
       type: 'vector',
-      url: 'pmtiles://https://cdn.empty.nyc/alllotsnyc.pmtiles'
+      url: 'pmtiles://https://cdn.empty.nyc/alllotsnyc.pmtiles',
     });
 
     map.addLayer({
       'id': 'alllots',
       'source-layer': 'MapPLUTO',
       'type': 'line',
-      'minzoom': 15,
+      'minzoom': 16,
       'source': 'alllots',
       'paint': {
-        'line-color': '#F52795'
+        'line-color': '#111111'
       }
     });
 
