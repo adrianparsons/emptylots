@@ -1,7 +1,11 @@
 # Makefile for this project
+
+bucket = gs://nyc-lots-tiles
+
 clean:
 	rm -rf dist/*
 	rm -rf .parcel-cache
+	rm -rf tiles/*
 
 style:
 	npx @tailwindcss/cli -i ./src/style.css -o ./dist/style.css
@@ -16,10 +20,6 @@ watch:
 	cp -r static dist/
 	npx parcel
 
-# Spin up static server for local development
-serve:
-	python3 -m http.server -d dist/
-
 # rsync the dist directory on a remote server, ignore dotfiles
 deploy: clean build.prod
 	rsync -e "ssh -i ~/.ssh/id_ed25519" \
@@ -27,6 +27,19 @@ deploy: clean build.prod
 	amp926@adrianparsons.com:/home/amp926/emptylots.adrianparsons.com \
 	--exclude="\.*" \
 	--verbose
+
+tiles.all_lots_geojson:
+	./build/shp_to_geojson.sh
+
+tiles.vacant:
+	./build/query_to_geojson.sh
+	./build/geojson_to_pmtile.sh
+
+tiles.deploy:
+	gcloud storage cp tiles/*.pmtiles $(bucket)
+
+tiles.cors:
+	gcloud storage buckets update $(bucket) --cors-file=config/gcloud-bucket-cors-config.json
 
 data: data.clean_filter data.limit_columns data.split_by_borough data.csv_to_geojson
 

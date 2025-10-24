@@ -17,18 +17,6 @@ export async function initMap(): Promise<Map>{
 
   map.on('load', async () => {
 
-    map.addSource('lotpoints', {
-      type: 'geojson',
-      data: './static/emptylots.json',
-      promoteId: 'address'
-    });
-
-    map.addSource('vacant', {
-      type: 'geojson',
-      data: './static/vacant.geojson',
-      promoteId: 'BBL'
-    });
-
     // Add geolocate control to the map.
     map.addControl(
       new maplibregl.GeolocateControl({
@@ -39,10 +27,33 @@ export async function initMap(): Promise<Map>{
       })
     );
 
+    map.addSource('vacant', {
+      type: 'vector',
+      url: 'pmtiles://https://cdn.empty.nyc/vacant.pmtiles',
+      promoteId: 'BBL'
+    });
+
+    map.addSource('alllots', {
+      type: 'vector',
+      url: 'pmtiles://https://cdn.empty.nyc/alllotsnyc.pmtiles',
+    });
+
+    map.addLayer({
+      'id': 'alllots',
+      'source-layer': 'MapPLUTO',
+      'type': 'line',
+      'minzoom': 16,
+      'source': 'alllots',
+      'paint': {
+        'line-color': '#111111'
+      }
+    });
+
     map.addLayer({
       'id': 'lotpolygons',
       'type': 'fill',
       'source': 'vacant',
+      'source-layer': 'vacant',
       'layout': {},
       'paint': {
         'fill-color': ['case', ['boolean', ['feature-state', 'selected'], false],
@@ -52,48 +63,28 @@ export async function initMap(): Promise<Map>{
       }
     });
 
-    map.addLayer({
-      'id': 'lots',
-      'type': 'circle',
-      'source': 'lotpoints',
-      'layout': {},
-    })
-
-    map.addSource('alllots', {
-      type: 'vector',
-      url: 'pmtiles://https://cdn.empty.nyc/alllotsnyc.pmtiles'
-    });
-
-    map.addLayer({
-      'id': 'alllots',
-      'source-layer': 'MapPLUTO',
-      'type': 'line',
-      'source': 'alllots',
-      'paint': {
-        'line-color': '#F52795'
-      }
-    });
-
     var hovered: [] = []
 
-    map.on('mousemove', 'lots', (e: MapLayerMouseEvent) => {
+    map.on('mousemove', 'lotpolygons', (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "pointer";
       if (e.features && e.features.length > 0) {
         map.setFeatureState({
-          source: 'lotpoints',
-          id: e.features[0].id,
+          source: 'vacant',
+          sourceLayer: 'vacant',
+          id: e.features[0].properties.BBL,
         }, {
           hover: true
         });
-        e.features[0].id && hovered.push(e.features[0].id)
+        e.features[0].id && hovered.push(e.features[0].properties.BBL)
       }
     });
 
-    map.on('mouseleave', 'lots', (e: MapLayerMouseEvent) => {
+    map.on('mouseleave', 'lotpolygons', (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "default";
       while (hovered.length > 0) {
         map.setFeatureState({
-          source: 'lotpoints',
+          source: 'vacant',
+          sourceLayer: 'vacant',
           id: hovered.pop(),
         }, {
           hover: false
@@ -101,30 +92,30 @@ export async function initMap(): Promise<Map>{
       }
     });
 
-    map.on('click', 'lots', (e: MapLayerMouseEvent) => {
+    map.on('click', 'lotpolygons', (e: MapSourceMapEvent) => {
       const { lng, lat } = e.lngLat
       if (!e.features || e.features.length === 0) return;
       const props = e.features[0].properties;
 
-      map.removeFeatureState({ source: 'vacant' });
+      map.removeFeatureState({ source: 'vacant', sourceLayer:'vacant' });
       map.setFeatureState(
         {
           source: 'vacant',
+          sourceLayer: 'vacant',
           id: props.BBL,
         },
         {
           selected: true,
         }
-
       );
 
       const lotinfowindow = document.createElement("info-window") as any
       lotinfowindow.data = {
         bbl: props.BBL,
-        address: props.address,
-        ownername: props.ownername,
-        lotArea: Number(props.lotarea).toLocaleString(),
-        zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.borocode}/${props['Tax block']}/${props['Tax lot']}`,
+        address: props.Address,
+        ownername: props.OwnerName,
+        lotArea: Number(props.LotArea).toLocaleString(),
+        zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.BoroCode}/${props.Block}/${props.Lot}`,
       }
 
       new maplibregl.Popup({ offset: { 'bottom': [0, -5] } })
