@@ -21,7 +21,7 @@ async function init(): Promise<void> {
   const libremap = initMap()
   libremap.then((m: Map)=>{
     m.on('load', () => {
-        m.on('click', 'lotpolygons', markerClickHandler);
+        m.on('click', ['parkinglots', 'lotpolygons'], markerClickHandler);
     })
   })
   // TODO: what exactly do we need to import from google's library to get streetview?
