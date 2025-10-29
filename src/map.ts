@@ -33,9 +33,25 @@ export async function initMap(): Promise<Map>{
       promoteId: 'BBL'
     });
 
+    map.addSource('parking', {
+      type: 'vector',
+      url: 'pmtiles://https://cdn.empty.nyc/parking.pmtiles',
+      promoteId: 'BBL'
+    });
+
     map.addSource('alllots', {
       type: 'vector',
       url: 'pmtiles://https://cdn.empty.nyc/alllotsnyc.pmtiles',
+    });
+
+    map.addLayer({
+      'id': 'parkinglots',
+      'source-layer': 'parking',
+      'type': 'fill',
+      'source': 'parking',
+      'paint': {
+        'fill-color': '#777777'
+      }
     });
 
     map.addLayer({
@@ -48,6 +64,7 @@ export async function initMap(): Promise<Map>{
         'line-color': '#111111'
       }
     });
+
 
     map.addLayer({
       'id': 'lotpolygons',
@@ -63,9 +80,10 @@ export async function initMap(): Promise<Map>{
       }
     });
 
+
     var hovered: [] = []
 
-    map.on('mousemove', 'lotpolygons', (e: MapLayerMouseEvent) => {
+    map.on('mousemove', ['parkinglots', 'lotpolygons'], (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "pointer";
       if (e.features && e.features.length > 0) {
         map.setFeatureState({
@@ -79,7 +97,7 @@ export async function initMap(): Promise<Map>{
       }
     });
 
-    map.on('mouseleave', 'lotpolygons', (e: MapLayerMouseEvent) => {
+    map.on('mouseleave',['parkinglots', 'lotpolygons'], (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "default";
       while (hovered.length > 0) {
         map.setFeatureState({
@@ -92,7 +110,7 @@ export async function initMap(): Promise<Map>{
       }
     });
 
-    map.on('click', 'lotpolygons', (e: MapSourceMapEvent) => {
+    map.on('click', ['parkinglots', 'lotpolygons'], (e: MapSourceMapEvent) => {
       const { lng, lat } = e.lngLat
       if (!e.features || e.features.length === 0) return;
       const props = e.features[0].properties;
