@@ -32,8 +32,8 @@ tiles.all_lots_geojson:
 	./build/shp_to_geojson.sh
 
 tiles.vacant:
-	./build/query_to_geojson.sh
-	./build/geojson_to_pmtile.sh
+	./build/query_to_geojson.sh vacant build/filter_vacant_lots.sql
+	./build/geojson_to_pmtile.sh vacant
 
 tiles.deploy:
 	gcloud storage cp tiles/*.pmtiles $(bucket)
