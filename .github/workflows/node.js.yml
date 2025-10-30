@@ -28,3 +28,10 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: make build.prod
+    - name: Create zip file of static production site
+      uses: actions/upload-artifact@v4
+      with:
+        name: emptynyc-prod
+        path: dist/**
+        if-no-files-found: error
+         
