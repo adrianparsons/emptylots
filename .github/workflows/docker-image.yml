@@ -1,0 +1,22 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "**" ]
+    paths: [ "*.dockerfile", "build/*" ]
+  pull_request:
+    branches: [ "**" ]
+    paths: [ "*.dockerfile", "build/*" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the tippecanoe image
+      run: ./build/create_tippecanoe_image.sh
+    - name: Build the GDAL image with MapPLUTO dataset
+      run: ./build/create_gdal_image.sh
