@@ -9,6 +9,12 @@ on:
     paths: [ "*.dockerfile", "build/*" ]
   workflow_dispatch:
 
+env:
+  REGISTRY: ghcr.io
+
+permissions:
+  packages: write
+
 jobs:
 
   build:
@@ -18,6 +24,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the tippecanoe image
-      run: ./build/create_tippecanoe_image.sh
-    - name: Build the GDAL image with MapPLUTO dataset
-      run: ./build/create_gdal_image.sh
+      run:  make create_image.tippecanoe
+    - name: Build the gdal image with MapPLUTO dataset
+      run:  make create_image.gdal
+
+    - name: Log into registry ${{ env.REGISTRY }}
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push tippecanoe image
+      run: make push_image.tippecanoe
+    - name: Push gdal image
+      run: make push_image.gdal
