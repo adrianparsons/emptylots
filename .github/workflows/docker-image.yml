@@ -9,6 +9,16 @@ on:
     paths: [ "*.dockerfile", "build/*" ]
   workflow_dispatch:
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
 jobs:
 
   build:
@@ -21,6 +31,14 @@ jobs:
       run:  make create_image.tippecanoe
     - name: Build the gdal image with MapPLUTO dataset
       run:  make create_image.gdal
+
+    - name: Log into registry ${{ env.REGISTRY }}
+      uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Push tippecanoe image
       run: make push_image.tippecanoe
     - name: Push gdal image
