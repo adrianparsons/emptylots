@@ -22,6 +22,6 @@ jobs:
     - name: Build the gdal image with MapPLUTO dataset
       run:  make create_image.gdal
     - name: Push tippecanoe image
-      run: push_image.tippecanoe
+      run: make push_image.tippecanoe
     - name: Push gdal image
-      run: push_image.gdal
+      run: make push_image.gdal
