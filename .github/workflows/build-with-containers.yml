@@ -1,0 +1,19 @@
+name: Generate map tiles
+
+on:
+  push:
+    branches: [ "**" ]
+    paths: [ "*.dockerfile", "build/*" ]
+  pull_request:
+    branches: [ "**" ]
+    paths: [ "*.dockerfile", "build/*" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - run: make tiles.vacant
