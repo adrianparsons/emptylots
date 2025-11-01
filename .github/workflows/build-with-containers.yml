@@ -17,3 +17,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: make tiles.vacant
+    - run: make tiles.parking
+
+    - name: Create zip of pmtiles (parking and vacant)
+      uses: actions/upload-artifact@v4
+      with:
+        name: emptynyc-tiles
+        path: tiles/*.pmtiles
+        if-no-files-found: error
