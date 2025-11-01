@@ -28,8 +28,9 @@ deploy: clean build.prod
 	--exclude="\.*" \
 	--verbose
 
-tiles.all_lots_geojson:
-	./build/shp_to_geojson.sh
+tiles.all_lots:
+	./build/query_to_geojson.sh MapPLUTO build/all_lots.sql
+	./build/geojson_to_pmtile.sh MapPLUTO MapPLUTO
 
 tiles.vacant:
 	./build/query_to_geojson.sh vacant build/filter_vacant_lots.sql
