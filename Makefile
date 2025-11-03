@@ -2,6 +2,8 @@
 
 bucket = gs://nyc-lots-tiles
 
+.PHONY: clean watch tiles.cors deploy
+
 clean:
 	rm -rf dist/*
 	rm -rf .parcel-cache
