@@ -2,7 +2,7 @@
 
 bucket = gs://nyc-lots-tiles
 
-.PHONY: clean watch tiles.cors deploy
+.PHONY: clean watch tiles.cors deploy build
 
 clean:
 	rm -rf dist/*
