@@ -115,6 +115,7 @@ export async function initMap(): Promise<Map>{
       if (!e.features || e.features.length === 0) return;
       const props = e.features[0].properties;
 
+
       map.removeFeatureState({ source: 'vacant', sourceLayer:'vacant' });
       map.setFeatureState(
         {
@@ -135,6 +136,9 @@ export async function initMap(): Promise<Map>{
         lotArea: Number(props.LotArea).toLocaleString(),
         zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.BoroCode}/${props.Block}/${props.Lot}`,
       }
+
+      map.easeTo({center: [lng, lat]})
+
 
       new maplibregl.Popup({ offset: { 'bottom': [0, -5] } })
         .setLngLat([lng, lat])
