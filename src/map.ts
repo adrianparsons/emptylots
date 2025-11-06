@@ -8,11 +8,22 @@ export async function initMap(): Promise<Map>{
   let protocol = new Protocol();
   maplibregl.addProtocol("pmtiles",protocol.tile);
 
+  var center = [-73.979736, 40.7565749]
+  var zoom = 13
+
+  const params = new URLSearchParams(window.location.search)
+  if ( params.size >= 2) {
+    //const param = new URLSearchParams(window.location.hash)
+    center = [params.get("lng"), params.get("lat")]
+    console.log(`setting center to ${center}`)
+    zoom = 16
+  }
+
   const map = new maplibregl.Map({
     container: 'map', // container id
     style: 'https://tiles.openfreemap.org/styles/positron',
-    center: [-73.979736, 40.7565749], // starting position [lng, lat]
-    zoom: 13 // starting zoom
+    center,
+    zoom
   })
 
   map.on('load', async () => {
@@ -138,7 +149,12 @@ export async function initMap(): Promise<Map>{
       }
 
       map.easeTo({center: [lng, lat]})
+      //window.location.hash = `?lng=${lng}&lat=${lat}`
 
+      const url = new URL(window.location);
+      url.searchParams.set("lat", lat);
+      url.searchParams.set("lng", lng);
+      history.pushState({}, "", url)
 
       new maplibregl.Popup({ offset: { 'bottom': [0, -5] } })
         .setLngLat([lng, lat])

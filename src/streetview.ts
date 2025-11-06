@@ -14,6 +14,16 @@ export async function initStreetview(): Promise<void> {
 
 export function showStreetViewPanorama([lng, lat]: [number, number])  {
 
+  // Hide the "about" panel after user clicks on the map.
+  const aboutEl = document.getElementById("about")
+  if (aboutEl){
+    aboutEl.style.display = "none"
+  }
+  const streetviewEl = document.getElementById("streetview");
+  if (streetviewEl) {
+      streetviewEl.style.display = "block";
+  }
+
   streetview.getPanorama({
     location: {lng: parseFloat(lng), lat: parseFloat(lat)},
     sources: [google.maps.StreetViewSource.OUTDOOR],
