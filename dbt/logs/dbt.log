@@ -1,0 +1,47 @@
+[0m16:07:44.444828 [debug] [MainThread]: Got an exception trying to initialize tracking
+
+
+============================== 16:07:44.468309 | d4ddebc5-b6af-4a68-80f0-cc3951312eeb ==============================
+[0m16:07:44.468309 [info ] [MainThread]: Running with dbt=1.10.13
+[0m16:07:44.468956 [debug] [MainThread]: running dbt with arguments {'debug': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'no_print': 'None', 'target_path': 'None', 'empty': 'None', 'cache_selected_only': 'False', 'use_experimental_parser': 'False', 'static_parser': 'True', 'invocation_command': 'dbt init', 'warn_error': 'None', 'partial_parse': 'True', 'quiet': 'False', 'log_path': 'logs', 'fail_fast': 'False', 'profiles_dir': '/Users/adrianparsons/.dbt', 'write_json': 'True', 'send_anonymous_usage_stats': 'True', 'log_format': 'default', 'use_colors': 'True', 'introspect': 'True', 'printer_width': '80', 'log_cache_events': 'False', 'version_check': 'True', 'indirect_selection': 'eager'}
+[0m16:07:53.401118 [debug] [MainThread]: Starter project path: /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/dbt/include/starter_project
+[0m16:07:53.415742 [info ] [MainThread]: 
+Your new dbt project "empty_lots" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m16:07:53.416547 [info ] [MainThread]: Setting up your profile.
+[0m16:10:22.971324 [info ] [MainThread]: Profile empty_lots written to /Users/adrianparsons/.dbt/profiles.yml using target's profile_template.yml and your supplied values. Run 'dbt debug' to validate the connection.
+[0m16:10:23.013537 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": true, "command_wall_clock_time": 158.58798, "process_in_blocks": "0", "process_kernel_time": 0.529915, "process_mem_max_rss": "345849856", "process_out_blocks": "0", "process_user_time": 1.868308}
+[0m16:10:23.018129 [debug] [MainThread]: Command `dbt init` succeeded at 16:10:23.017900 after 158.60 seconds
+[0m16:10:23.019045 [debug] [MainThread]: Flushing usage events
+[0m16:10:48.869069 [debug] [MainThread]: Got an exception trying to initialize tracking
+
+
+============================== 16:10:48.893560 | b5402a6a-1337-4023-9d12-9b6bb876bc42 ==============================
+[0m16:10:48.893560 [info ] [MainThread]: Running with dbt=1.10.13
+[0m16:10:48.894332 [debug] [MainThread]: running dbt with arguments {'debug': 'False', 'log_path': 'logs', 'quiet': 'False', 'log_format': 'default', 'partial_parse': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'fail_fast': 'False', 'static_parser': 'True', 'profiles_dir': '/Users/adrianparsons/.dbt', 'no_print': 'None', 'empty': 'None', 'cache_selected_only': 'False', 'printer_width': '80', 'warn_error': 'None', 'send_anonymous_usage_stats': 'True', 'indirect_selection': 'eager', 'version_check': 'True', 'target_path': 'None', 'use_experimental_parser': 'False', 'use_colors': 'True', 'introspect': 'True', 'write_json': 'True', 'invocation_command': 'dbt debug', 'log_cache_events': 'False'}
+[0m16:10:48.904132 [info ] [MainThread]: dbt version: 1.10.13
+[0m16:10:48.904404 [info ] [MainThread]: python version: 3.12.2
+[0m16:10:48.904594 [info ] [MainThread]: python path: /Library/Frameworks/Python.framework/Versions/3.12/bin/python3.12
+[0m16:10:48.904755 [info ] [MainThread]: os info: macOS-15.7.2-arm64-arm-64bit
+[0m16:10:50.626372 [info ] [MainThread]: Using profiles dir at /Users/adrianparsons/.dbt
+[0m16:10:50.626709 [info ] [MainThread]: Using profiles.yml file at /Users/adrianparsons/.dbt/profiles.yml
+[0m16:10:50.626956 [info ] [MainThread]: Using dbt_project.yml file at /Users/adrianparsons/Documents/programming/empty-lots/empty.nyc/dbt/dbt_project.yml
+[0m16:10:50.627188 [error] [MainThread]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m16:10:50.630171 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 1.7867148, "process_in_blocks": "0", "process_kernel_time": 0.355959, "process_mem_max_rss": "355090432", "process_out_blocks": "0", "process_user_time": 1.718824}
+[0m16:10:50.630586 [debug] [MainThread]: Command `dbt debug` failed at 16:10:50.630535 after 1.79 seconds
+[0m16:10:50.630778 [debug] [MainThread]: Flushing usage events
