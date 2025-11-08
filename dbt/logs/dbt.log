@@ -45,3 +45,17 @@ Internal Error
 [0m16:10:50.630171 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 1.7867148, "process_in_blocks": "0", "process_kernel_time": 0.355959, "process_mem_max_rss": "355090432", "process_out_blocks": "0", "process_user_time": 1.718824}
 [0m16:10:50.630586 [debug] [MainThread]: Command `dbt debug` failed at 16:10:50.630535 after 1.79 seconds
 [0m16:10:50.630778 [debug] [MainThread]: Flushing usage events
+[0m17:14:28.158474 [debug] [MainThread]: Got an exception trying to initialize tracking
+
+
+============================== 17:14:29.159436 | af421da0-f71a-4f34-be3a-09df7db0fd4b ==============================
+[0m17:14:29.159436 [info ] [MainThread]: Running with dbt=1.10.13
+[0m17:14:29.160819 [debug] [MainThread]: running dbt with arguments {'target_path': 'None', 'introspect': 'True', 'warn_error': 'None', 'quiet': 'False', 'log_format': 'default', 'cache_selected_only': 'False', 'empty': 'False', 'no_print': 'None', 'version_check': 'True', 'use_experimental_parser': 'False', 'send_anonymous_usage_stats': 'True', 'log_cache_events': 'False', 'profiles_dir': '/Users/adrianparsons/.dbt', 'write_json': 'True', 'indirect_selection': 'eager', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'partial_parse': 'True', 'static_parser': 'True', 'printer_width': '80', 'debug': 'False', 'invocation_command': 'dbt compile', 'use_colors': 'True', 'fail_fast': 'False', 'log_path': 'logs'}
+[0m17:14:29.161690 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path /Users/adrianparsons/Documents/programming/empty-lots/empty.nyc/dbt/dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m17:14:29.165644 [debug] [MainThread]: Resource report: {"command_name": "compile", "command_success": false, "command_wall_clock_time": 1.0330615, "process_in_blocks": "0", "process_kernel_time": 0.124329, "process_mem_max_rss": "104087552", "process_out_blocks": "0", "process_user_time": 0.703954}
+[0m17:14:29.166461 [debug] [MainThread]: Command `dbt compile` failed at 17:14:29.166340 after 1.03 seconds
+[0m17:14:29.166967 [debug] [MainThread]: Flushing usage events

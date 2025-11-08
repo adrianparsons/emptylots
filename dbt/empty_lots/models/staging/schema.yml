@@ -1,0 +1,36 @@
+
+version: 2
+
+models:
+  - name: staging_lots
+    description: "Staging model for raw vacant lots data. Normalizes column names and provides basic quality checks."
+    columns:
+      - name: address
+        description: "Property address as provided in the source."
+        data_type: string
+      - name: borough
+        description: "NYC borough code (BK, BX, MN, QN, SI)."
+        data_type: string
+      - name: "Tax block"
+        description: "Tax block number."
+        data_type: integer
+      - name: "Tax lot"
+        description: "Tax lot number."
+        data_type: integer
+      - name: lotarea
+        description: "Lot area in square feet."
+        data_type: integer
+      - name: ownername
+        description: "Property owner name."
+        data_type: string
+      - name: latitude
+        description: "Latitude coordinate in decimal degrees."
+        data_type: decimal
+      - name: longitude
+        description: "Longitude coordinate in decimal degrees."
+        data_type: decimal
+
+# Notes:
+# - Keep this file in sync with the dbt models in `models/staging/`.
+# - Add additional `tests:` entries under a column when you want dbt to validate data quality
+#   (for example `unique`, `not_null`, or custom data tests).
