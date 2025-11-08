@@ -1,5 +1,5 @@
 
 select count(bldgclass)
-from {{ source('nyc-lots', 'pluto') }}
+from {{ ref('stg_lots') }}
 where landuse = '10'
 group by bldgclass
