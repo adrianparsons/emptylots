@@ -12,9 +12,5 @@
 
 select *
 from {{ source('nyc-lots', 'pluto') }}
-
-/*
-    Uncomment the line below to remove records with null `id` values
-*/
-
--- where id is not null
+where address is not null
+and regexp_contains(address, r'[0-9].*')
