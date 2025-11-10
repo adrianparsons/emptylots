@@ -13,4 +13,5 @@
 select *
 from {{ source('nyc-lots', 'pluto') }}
 where address is not null
-and regexp_contains(address, r'[0-9].*')
+-- maybe this next line isn't that important, as long as bbl isn't replicated.
+-- and regexp_contains(address, r'[0-9].*')

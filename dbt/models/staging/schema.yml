@@ -2,7 +2,7 @@
 version: 2
 
 models:
-  - name: staging_lots
+  - name: stg_lots
     description: "Staging model for raw vacant lots data. Normalizes column names and provides basic quality checks."
     columns:
       - name: address
