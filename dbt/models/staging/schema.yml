@@ -1,338 +1,344 @@
 
 version: 2
 
+# Base column definitions for PLUTO data - can be reused across multiple models
+base_columns: &pluto_base_columns
+  # Identifiers
+  - name: borough
+    description: "Borough name (Manhattan, Brooklyn, Queens, Bronx, Staten Island)"
+    data_type: string
+  - name: block
+    description: "Tax block number"
+    data_type: int64
+  - name: lot
+    description: "Tax lot number"
+    data_type: int64
+  - name: bbl
+    description: "Borough-Block-Lot identifier (concatenated)"
+    data_type: float64
+  - name: borocode
+    description: "Borough code (1=Manhattan, 2=Bronx, 3=Brooklyn, 4=Queens, 5=Staten Island)"
+    data_type: int64
+
+  # Administrative districts
+  - name: cd
+    description: "Community district number"
+    data_type: int64
+  - name: ct2010
+    description: "2010 Census tract"
+    data_type: string
+  - name: cb2010
+    description: "2010 Census block"
+    data_type: string
+  - name: schooldist
+    description: "School district"
+    data_type: string
+  - name: council
+    description: "City council district"
+    data_type: int64
+  - name: zipcode
+    description: "ZIP code"
+    data_type: string
+  - name: firecomp
+    description: "Fire company that services the lot"
+    data_type: string
+  - name: policeprct
+    description: "Police precinct that services the lot"
+    data_type: int64
+  - name: healtharea
+    description: "Health area"
+    data_type: int64
+  - name: sanitboro
+    description: "Sanitation borough"
+    data_type: int64
+  - name: sanitsub
+    description: "Sanitation subsection"
+    data_type: string
+  - name: sanitdistrict
+    description: "Sanitation district"
+    data_type: int64
+  - name: healthcenterdistrict
+    description: "Health center district"
+    data_type: int64
+
+  # Address and location
+  - name: address
+    description: "Property address"
+    data_type: string
+  - name: latitude
+    description: "Latitude coordinate in decimal degrees"
+    data_type: float64
+  - name: longitude
+    description: "Longitude coordinate in decimal degrees"
+    data_type: float64
+  - name: xcoord
+    description: "X coordinate in State Plane coordinate system"
+    data_type: int64
+  - name: ycoord
+    description: "Y coordinate in State Plane coordinate system"
+    data_type: int64
+
+  # Zoning
+  - name: zonedist1
+    description: "Primary zoning district"
+    data_type: string
+  - name: zonedist2
+    description: "Secondary zoning district"
+    data_type: string
+  - name: zonedist3
+    description: "Tertiary zoning district"
+    data_type: string
+  - name: zonedist4
+    description: "Quaternary zoning district"
+    data_type: string
+  - name: overlay1
+    description: "Primary overlay district"
+    data_type: string
+  - name: overlay2
+    description: "Secondary overlay district"
+    data_type: string
+  - name: spdist1
+    description: "Primary special purpose district"
+    data_type: string
+  - name: spdist2
+    description: "Secondary special purpose district"
+    data_type: string
+  - name: spdist3
+    description: "Tertiary special purpose district"
+    data_type: string
+  - name: ltdheight
+    description: "Limited height district"
+    data_type: string
+  - name: splitzone
+    description: "Split zoning flag (Y/N)"
+    data_type: string
+  - name: zonemap
+    description: "Zoning map number"
+    data_type: string
+  - name: zmcode
+    description: "Zoning map code"
+    data_type: string
+
+  # Building and land use
+  - name: bldgclass
+    description: "Building class as per Department of Finance classification"
+    data_type: string
+  - name: landuse
+    description: "General land use category"
+    data_type: string
+  - name: ownertype
+    description: "Type of ownership (C=City, M=Mixed, O=Other, P=Private, X=Mixed City and Other)"
+    data_type: string
+  - name: ownername
+    description: "Name of property owner"
+    data_type: string
+
+  # Areas and measurements
+  - name: lotarea
+    description: "Lot area in square feet"
+    data_type: float64
+  - name: bldgarea
+    description: "Total building area in square feet"
+    data_type: float64
+  - name: comarea
+    description: "Commercial area in square feet"
+    data_type: int64
+  - name: resarea
+    description: "Residential area in square feet"
+    data_type: int64
+  - name: officearea
+    description: "Office area in square feet"
+    data_type: int64
+  - name: retailarea
+    description: "Retail area in square feet"
+    data_type: int64
+  - name: garagearea
+    description: "Garage area in square feet"
+    data_type: int64
+  - name: strgearea
+    description: "Storage area in square feet"
+    data_type: int64
+  - name: factryarea
+    description: "Factory area in square feet"
+    data_type: int64
+  - name: otherarea
+    description: "Other area in square feet"
+    data_type: int64
+  - name: areasource
+    description: "Source of area measurements"
+    data_type: string
+
+  # Building details
+  - name: numbldgs
+    description: "Number of buildings on lot"
+    data_type: int64
+  - name: numfloors
+    description: "Number of floors in primary building"
+    data_type: float64
+  - name: unitsres
+    description: "Number of residential units"
+    data_type: int64
+  - name: unitstotal
+    description: "Total number of units"
+    data_type: int64
+  - name: lotfront
+    description: "Lot frontage in feet"
+    data_type: float64
+  - name: lotdepth
+    description: "Lot depth in feet"
+    data_type: float64
+  - name: bldgfront
+    description: "Building frontage in feet"
+    data_type: float64
+  - name: bldgdepth
+    description: "Building depth in feet"
+    data_type: float64
+
+  # Building characteristics
+  - name: ext
+    description: "Exterior wall type"
+    data_type: string
+  - name: proxcode
+    description: "Proximity code"
+    data_type: string
+  - name: irrlotcode
+    description: "Irregular lot code"
+    data_type: string
+  - name: lottype
+    description: "Type of lot"
+    data_type: string
+  - name: bsmtcode
+    description: "Basement code"
+    data_type: string
+
+  # Assessment and valuation
+  - name: assessland
+    description: "Assessed value of land"
+    data_type: float64
+  - name: assesstot
+    description: "Total assessed value"
+    data_type: float64
+  - name: exemptland
+    description: "Exempt land value"
+    data_type: int64
+  - name: exempttot
+    description: "Total exempt value"
+    data_type: float64
+
+  # Dates and history
+  - name: yearbuilt
+    description: "Year building was built"
+    data_type: int64
+  - name: yearalter1
+    description: "Year of first alteration"
+    data_type: int64
+  - name: yearalter2
+    description: "Year of second alteration"
+    data_type: int64
+  - name: appdate
+    description: "Application date"
+    data_type: string
+  - name: rpaddate
+    description: "Real Property Assessment Database date"
+    data_type: string
+  - name: dcasdate
+    description: "Department of Citywide Administrative Services date"
+    data_type: string
+  - name: zoningdate
+    description: "Zoning date"
+    data_type: string
+  - name: landmkdate
+    description: "Landmark date"
+    data_type: string
+  - name: basempdate
+    description: "Base map date"
+    data_type: string
+  - name: masdate
+    description: "Mass Appraisal System date"
+    data_type: string
+  - name: polidate
+    description: "Police precinct date"
+    data_type: string
+  - name: edesigdate
+    description: "E-designation date"
+    data_type: string
+
+  # Historic and landmark
+  - name: histdist
+    description: "Historic district"
+    data_type: string
+  - name: landmark
+    description: "Landmark status"
+    data_type: string
+
+  # FAR (Floor Area Ratio)
+  - name: builtfar
+    description: "Built floor area ratio"
+    data_type: float64
+  - name: residfar
+    description: "Maximum allowable residential floor area ratio"
+    data_type: float64
+  - name: commfar
+    description: "Maximum allowable commercial floor area ratio"
+    data_type: float64
+  - name: facilfar
+    description: "Maximum allowable facility floor area ratio"
+    data_type: float64
+
+  # Additional identifiers
+  - name: condono
+    description: "Condominium number"
+    data_type: int64
+  - name: tract2010
+    description: "2010 Census tract (full)"
+    data_type: string
+  - name: easements
+    description: "Number of easements on the lot"
+    data_type: int64
+
+  # Maps and references
+  - name: sanborn
+    description: "Sanborn map reference"
+    data_type: string
+  - name: taxmap
+    description: "Tax map reference"
+    data_type: string
+  - name: edesignum
+    description: "E-designation number"
+    data_type: string
+  - name: appbbl
+    description: "Application BBL"
+    data_type: float64
+  - name: mappluto_f
+    description: "MapPLUTO flag"
+    data_type: string
+  - name: plutomapid
+    description: "PLUTO map ID"
+    data_type: int64
+
+  # Flags and indicators
+  - name: firm07_flag
+    description: "2007 FIRM flood zone flag"
+    data_type: string
+  - name: pfirm15_flag
+    description: "2015 Preliminary FIRM flood zone flag"
+    data_type: string
+  - name: dcpedited
+    description: "DCP edited flag"
+    data_type: string
+
+  # Metadata
+  - name: version
+    description: "PLUTO version"
+    data_type: string
+  - name: geom
+    description: "Geometry column (spatial data)"
+    data_type: string
+
 models:
   - name: stg_lots
     description: "Staging model for NYC PLUTO lots data with all columns and proper data types"
-    columns:
-      # Identifiers
-      - name: borough
-        description: "Borough name (Manhattan, Brooklyn, Queens, Bronx, Staten Island)"
-        data_type: string
-      - name: block
-        description: "Tax block number"
-        data_type: int64
-      - name: lot
-        description: "Tax lot number"
-        data_type: int64
-      - name: bbl
-        description: "Borough-Block-Lot identifier (concatenated)"
-        data_type: float64
-      - name: borocode
-        description: "Borough code (1=Manhattan, 2=Bronx, 3=Brooklyn, 4=Queens, 5=Staten Island)"
-        data_type: int64
-
-      # Administrative districts
-      - name: cd
-        description: "Community district number"
-        data_type: int64
-      - name: ct2010
-        description: "2010 Census tract"
-        data_type: string
-      - name: cb2010
-        description: "2010 Census block"
-        data_type: string
-      - name: schooldist
-        description: "School district"
-        data_type: string
-      - name: council
-        description: "City council district"
-        data_type: int64
-      - name: zipcode
-        description: "ZIP code"
-        data_type: string
-      - name: firecomp
-        description: "Fire company that services the lot"
-        data_type: string
-      - name: policeprct
-        description: "Police precinct that services the lot"
-        data_type: int64
-      - name: healtharea
-        description: "Health area"
-        data_type: int64
-      - name: sanitboro
-        description: "Sanitation borough"
-        data_type: int64
-      - name: sanitsub
-        description: "Sanitation subsection"
-        data_type: string
-      - name: sanitdistrict
-        description: "Sanitation district"
-        data_type: int64
-      - name: healthcenterdistrict
-        description: "Health center district"
-        data_type: int64
-
-      # Address and location
-      - name: address
-        description: "Property address"
-        data_type: string
-      - name: latitude
-        description: "Latitude coordinate in decimal degrees"
-        data_type: float64
-      - name: longitude
-        description: "Longitude coordinate in decimal degrees"
-        data_type: float64
-      - name: xcoord
-        description: "X coordinate in State Plane coordinate system"
-        data_type: int64
-      - name: ycoord
-        description: "Y coordinate in State Plane coordinate system"
-        data_type: int64
-
-      # Zoning
-      - name: zonedist1
-        description: "Primary zoning district"
-        data_type: string
-      - name: zonedist2
-        description: "Secondary zoning district"
-        data_type: string
-      - name: zonedist3
-        description: "Tertiary zoning district"
-        data_type: string
-      - name: zonedist4
-        description: "Quaternary zoning district"
-        data_type: string
-      - name: overlay1
-        description: "Primary overlay district"
-        data_type: string
-      - name: overlay2
-        description: "Secondary overlay district"
-        data_type: string
-      - name: spdist1
-        description: "Primary special purpose district"
-        data_type: string
-      - name: spdist2
-        description: "Secondary special purpose district"
-        data_type: string
-      - name: spdist3
-        description: "Tertiary special purpose district"
-        data_type: string
-      - name: ltdheight
-        description: "Limited height district"
-        data_type: string
-      - name: splitzone
-        description: "Split zoning flag (Y/N)"
-        data_type: string
-      - name: zonemap
-        description: "Zoning map number"
-        data_type: string
-      - name: zmcode
-        description: "Zoning map code"
-        data_type: string
-
-      # Building and land use
-      - name: bldgclass
-        description: "Building class as per Department of Finance classification"
-        data_type: string
-      - name: landuse
-        description: "General land use category"
-        data_type: string
-      - name: ownertype
-        description: "Type of ownership (C=City, M=Mixed, O=Other, P=Private, X=Mixed City and Other)"
-        data_type: string
-      - name: ownername
-        description: "Name of property owner"
-        data_type: string
-
-      # Areas and measurements
-      - name: lotarea
-        description: "Lot area in square feet"
-        data_type: float64
-      - name: bldgarea
-        description: "Total building area in square feet"
-        data_type: float64
-      - name: comarea
-        description: "Commercial area in square feet"
-        data_type: int64
-      - name: resarea
-        description: "Residential area in square feet"
-        data_type: int64
-      - name: officearea
-        description: "Office area in square feet"
-        data_type: int64
-      - name: retailarea
-        description: "Retail area in square feet"
-        data_type: int64
-      - name: garagearea
-        description: "Garage area in square feet"
-        data_type: int64
-      - name: strgearea
-        description: "Storage area in square feet"
-        data_type: int64
-      - name: factryarea
-        description: "Factory area in square feet"
-        data_type: int64
-      - name: otherarea
-        description: "Other area in square feet"
-        data_type: int64
-      - name: areasource
-        description: "Source of area measurements"
-        data_type: string
-
-      # Building details
-      - name: numbldgs
-        description: "Number of buildings on lot"
-        data_type: int64
-      - name: numfloors
-        description: "Number of floors in primary building"
-        data_type: float64
-      - name: unitsres
-        description: "Number of residential units"
-        data_type: int64
-      - name: unitstotal
-        description: "Total number of units"
-        data_type: int64
-      - name: lotfront
-        description: "Lot frontage in feet"
-        data_type: float64
-      - name: lotdepth
-        description: "Lot depth in feet"
-        data_type: float64
-      - name: bldgfront
-        description: "Building frontage in feet"
-        data_type: float64
-      - name: bldgdepth
-        description: "Building depth in feet"
-        data_type: float64
-
-      # Building characteristics
-      - name: ext
-        description: "Exterior wall type"
-        data_type: string
-      - name: proxcode
-        description: "Proximity code"
-        data_type: string
-      - name: irrlotcode
-        description: "Irregular lot code"
-        data_type: string
-      - name: lottype
-        description: "Type of lot"
-        data_type: string
-      - name: bsmtcode
-        description: "Basement code"
-        data_type: string
-
-      # Assessment and valuation
-      - name: assessland
-        description: "Assessed value of land"
-        data_type: float64
-      - name: assesstot
-        description: "Total assessed value"
-        data_type: float64
-      - name: exemptland
-        description: "Exempt land value"
-        data_type: int64
-      - name: exempttot
-        description: "Total exempt value"
-        data_type: float64
-
-      # Dates and history
-      - name: yearbuilt
-        description: "Year building was built"
-        data_type: int64
-      - name: yearalter1
-        description: "Year of first alteration"
-        data_type: int64
-      - name: yearalter2
-        description: "Year of second alteration"
-        data_type: int64
-      - name: appdate
-        description: "Application date"
-        data_type: string
-      - name: rpaddate
-        description: "Real Property Assessment Database date"
-        data_type: string
-      - name: dcasdate
-        description: "Department of Citywide Administrative Services date"
-        data_type: string
-      - name: zoningdate
-        description: "Zoning date"
-        data_type: string
-      - name: landmkdate
-        description: "Landmark date"
-        data_type: string
-      - name: basempdate
-        description: "Base map date"
-        data_type: string
-      - name: masdate
-        description: "Mass Appraisal System date"
-        data_type: string
-      - name: polidate
-        description: "Police precinct date"
-        data_type: string
-      - name: edesigdate
-        description: "E-designation date"
-        data_type: string
-
-      # Historic and landmark
-      - name: histdist
-        description: "Historic district"
-        data_type: string
-      - name: landmark
-        description: "Landmark status"
-        data_type: string
-
-      # FAR (Floor Area Ratio)
-      - name: builtfar
-        description: "Built floor area ratio"
-        data_type: float64
-      - name: residfar
-        description: "Maximum allowable residential floor area ratio"
-        data_type: float64
-      - name: commfar
-        description: "Maximum allowable commercial floor area ratio"
-        data_type: float64
-      - name: facilfar
-        description: "Maximum allowable facility floor area ratio"
-        data_type: float64
-
-      # Additional identifiers
-      - name: condono
-        description: "Condominium number"
-        data_type: int64
-      - name: tract2010
-        description: "2010 Census tract (full)"
-        data_type: string
-      - name: easements
-        description: "Number of easements on the lot"
-        data_type: int64
-
-      # Maps and references
-      - name: sanborn
-        description: "Sanborn map reference"
-        data_type: string
-      - name: taxmap
-        description: "Tax map reference"
-        data_type: string
-      - name: edesignum
-        description: "E-designation number"
-        data_type: string
-      - name: appbbl
-        description: "Application BBL"
-        data_type: float64
-      - name: mappluto_f
-        description: "MapPLUTO flag"
-        data_type: string
-      - name: plutomapid
-        description: "PLUTO map ID"
-        data_type: int64
-
-      # Flags and indicators
-      - name: firm07_flag
-        description: "2007 FIRM flood zone flag"
-        data_type: string
-      - name: pfirm15_flag
-        description: "2015 Preliminary FIRM flood zone flag"
-        data_type: string
-      - name: dcpedited
-        description: "DCP edited flag"
-        data_type: string
-
-      # Metadata
-      - name: version
-        description: "PLUTO version"
-        data_type: string
-      - name: geom
-        description: "Geometry column (spatial data)"
-        data_type: string
+    columns: *pluto_base_columns
+  - name: stg_vacant
+    description: "Staging model for NYC PLUTO lots data with all columns and proper data types"
+    columns: *pluto_base_columns

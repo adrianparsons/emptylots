@@ -1,5 +1,5 @@
 {{ config(materialized='view') }}
 
 select *
-from {{ source('nyc-lots', 'pluto') }}
+from `empty-lots`.`nyc_pluto_historical`.`pluto`
 where address is not null
