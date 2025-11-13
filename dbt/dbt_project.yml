@@ -35,3 +35,7 @@ models:
     staging:
       stg_lots:
         +materialized: view
+      stg_vacant:
+        +materialized: view
+      stg_vacancy:
+        +materialized: table
