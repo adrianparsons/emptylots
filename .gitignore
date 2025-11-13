@@ -7,7 +7,6 @@ dist/*
 node_modules/
 venv/
 .parcel-cache/
-dbt/logs
 
 # General
 .DS_Store
