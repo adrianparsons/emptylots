@@ -97,15 +97,7 @@ base_columns: &pluto_base_columns
   - name: overlay2
     description: "Secondary overlay district"
     data_type: string
-  - name: spdist1
-    description: "Primary special purpose district"
-    data_type: string
-  - name: spdist2
-    description: "Secondary special purpose district"
-    data_type: string
-  - name: spdist3
-    description: "Tertiary special purpose district"
-    data_type: string
+
   - name: ltdheight
     description: "Limited height district"
     data_type: string
@@ -194,22 +186,7 @@ base_columns: &pluto_base_columns
     description: "Building depth in feet"
     data_type: float64
 
-  # Building characteristics
-  - name: ext
-    description: "Exterior wall type"
-    data_type: string
-  - name: proxcode
-    description: "Proximity code"
-    data_type: string
-  - name: irrlotcode
-    description: "Irregular lot code"
-    data_type: string
-  - name: lottype
-    description: "Type of lot"
-    data_type: string
-  - name: bsmtcode
-    description: "Basement code"
-    data_type: string
+
 
   # Assessment and valuation
   - name: assessland
@@ -218,9 +195,6 @@ base_columns: &pluto_base_columns
   - name: assesstot
     description: "Total assessed value"
     data_type: float64
-  - name: exemptland
-    description: "Exempt land value"
-    data_type: int64
   - name: exempttot
     description: "Total exempt value"
     data_type: float64
@@ -237,30 +211,6 @@ base_columns: &pluto_base_columns
     data_type: int64
   - name: appdate
     description: "Application date"
-    data_type: string
-  - name: rpaddate
-    description: "Real Property Assessment Database date"
-    data_type: string
-  - name: dcasdate
-    description: "Department of Citywide Administrative Services date"
-    data_type: string
-  - name: zoningdate
-    description: "Zoning date"
-    data_type: string
-  - name: landmkdate
-    description: "Landmark date"
-    data_type: string
-  - name: basempdate
-    description: "Base map date"
-    data_type: string
-  - name: masdate
-    description: "Mass Appraisal System date"
-    data_type: string
-  - name: polidate
-    description: "Police precinct date"
-    data_type: string
-  - name: edesigdate
-    description: "E-designation date"
     data_type: string
 
   # Historic and landmark
@@ -286,20 +236,11 @@ base_columns: &pluto_base_columns
     data_type: float64
 
   # Additional identifiers
-  - name: condono
-    description: "Condominium number"
-    data_type: int64
-  - name: tract2010
-    description: "2010 Census tract (full)"
-    data_type: string
   - name: easements
     description: "Number of easements on the lot"
     data_type: int64
 
   # Maps and references
-  - name: sanborn
-    description: "Sanborn map reference"
-    data_type: string
   - name: taxmap
     description: "Tax map reference"
     data_type: string
@@ -309,35 +250,108 @@ base_columns: &pluto_base_columns
   - name: appbbl
     description: "Application BBL"
     data_type: float64
-  - name: mappluto_f
-    description: "MapPLUTO flag"
-    data_type: string
   - name: plutomapid
     description: "PLUTO map ID"
     data_type: int64
-
-  # Flags and indicators
-  - name: firm07_flag
-    description: "2007 FIRM flood zone flag"
-    data_type: string
-  - name: pfirm15_flag
-    description: "2015 Preliminary FIRM flood zone flag"
-    data_type: string
-  - name: dcpedited
-    description: "DCP edited flag"
-    data_type: string
 
   # Metadata
   - name: version
     description: "PLUTO version"
     data_type: string
-  - name: geom
-    description: "Geometry column (spatial data)"
-    data_type: string
 
 models:
   - name: stg_lots
     description: "Staging model for NYC PLUTO lots data with all columns and proper data types"
+    columns:
+      - <<: *pluto_base_columns
+
+      - name: spdist1
+        description: "Primary special purpose district"
+        data_type: string
+      - name: spdist2
+        description: "Secondary special purpose district"
+        data_type: string
+      - name: spdist3
+        description: "Tertiary special purpose district"
+        data_type: string
+
+      - name: condono
+        description: "Condominium number"
+        data_type: int64
+      - name: tract2010
+        description: "2010 Census tract (full)"
+        data_type: string
+
+      # Building characteristics
+      - name: ext
+        description: "Exterior wall type"
+        data_type: string
+      - name: proxcode
+        description: "Proximity code"
+        data_type: string
+      - name: irrlotcode
+        description: "Irregular lot code"
+        data_type: string
+      - name: lottype
+        description: "Type of lot"
+        data_type: string
+      - name: bsmtcode
+        description: "Basement code"
+        data_type: string
+
+      - name: geom
+        description: "Geometry column (spatial data)"
+        data_type: string
+
+      - name: sanborn
+        description: "Sanborn map reference"
+        data_type: string
+      - name: mappluto_f
+        description: "MapPLUTO flag"
+        data_type: string
+
+      # Flags and indicators
+      - name: firm07_flag
+        description: "2007 FIRM flood zone flag"
+        data_type: string
+      - name: pfirm15_flag
+        description: "2015 Preliminary FIRM flood zone flag"
+        data_type: string
+      - name: dcpedited
+        description: "DCP edited flag"
+        data_type: string
+      - name: exemptland
+        description: "Exempt land value"
+        data_type: int64
+
+      # Removed in 2020
+      - name: rpaddate
+        description: "Real Property Assessment Database date"
+        data_type: string
+      - name: dcasdate
+        description: "Department of Citywide Administrative Services date"
+        data_type: string
+      - name: zoningdate
+        description: "Zoning date"
+        data_type: string
+      - name: landmkdate
+        description: "Landmark date"
+        data_type: string
+      - name: basempdate
+        description: "Base map date"
+        data_type: string
+      - name: masdate
+        description: "Mass Appraisal System date"
+        data_type: string
+      - name: polidate
+        description: "Police precinct date"
+        data_type: string
+      - name: edesigdate
+        description: "E-designation date"
+        data_type: string
+
+  - name: stg_lots_filtered
+    description: "Subset of columns to make working with the data slightly more sane"
     columns: *pluto_base_columns
   - name: stg_vacant
     description: "Staging model for NYC PLUTO lots data with all columns and proper data types"
