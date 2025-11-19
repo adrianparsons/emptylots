@@ -1,5 +1,3 @@
-{{ config(materialized='view') }}
-
 select *
-from {{ ref('stg_lots') }}
+from {{ ref('stg_lots_filtered') }}
 where landuse = '11'
