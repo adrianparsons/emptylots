@@ -148,7 +148,6 @@ export async function initMap(): Promise<Map>{
       }
 
       map.easeTo({center: [lng, lat]})
-      //window.location.hash = `?lng=${lng}&lat=${lat}`
 
       const url = new URL(window.location);
       url.searchParams.set("lat", lat);
