@@ -13,7 +13,6 @@ async function init(): Promise<void> {
     m.on('load', () => {
           const params = new URLSearchParams(window.location.search)
           if ( params.size >= 2) {
-            //const param = new URLSearchParams(window.location.hash)
             showStreetViewPanorama([params.get("lng"), params.get("lat")])
           }
         m.on('click', ['parkinglots', 'lotpolygons'], markerClickHandler);

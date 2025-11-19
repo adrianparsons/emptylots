@@ -13,7 +13,6 @@ export async function initMap(): Promise<Map>{
 
   const params = new URLSearchParams(window.location.search)
   if ( params.size >= 2) {
-    //const param = new URLSearchParams(window.location.hash)
     center = [params.get("lng"), params.get("lat")]
     console.log(`setting center to ${center}`)
     zoom = 16
