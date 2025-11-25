@@ -18,8 +18,7 @@ async function init(): Promise<void> {
     })
     m.on('click', ['parkinglots', 'lotpolygons'], markerClickHandler);
   })
-  // TODO: what exactly do we need to import from google's library to get streetview?
-  await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+  await google.maps.importLibrary("streetView") as google.maps.MapsLibrary;
   initStreetview()
 }
 
