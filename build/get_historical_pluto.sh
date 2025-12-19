@@ -42,4 +42,3 @@ for year in "${!urls[@]}"; do
 done
 
 echo "All downloads complete!"
-
