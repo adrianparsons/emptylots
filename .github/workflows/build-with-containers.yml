@@ -6,7 +6,6 @@ on:
     paths: [ "*.dockerfile", "build/*" ]
   pull_request:
     branches: [ "**" ]
-    paths: [ "*.dockerfile", "build/*" ]
   workflow_dispatch:
 
 jobs:
