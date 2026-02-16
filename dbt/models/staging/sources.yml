@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw_dob_permits
+    database: empty-lots
+    schema: raw_dob_permits
+    tables:
+      - name: permit_issuance
+        description: "NYC DOB Permit Issuance data, loaded as all STRING columns from CSV"
