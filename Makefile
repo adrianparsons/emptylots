@@ -48,6 +48,12 @@ tiles.deploy:
 tiles.cors:
 	gcloud storage buckets update $(bucket) --cors-file=config/gcloud-bucket-cors-config.json
 
+tiles.from_bq:
+	mkdir -p tiles
+	./build/pull_bigquery_data_for_tiles.sh build/all_lots_with_vacancy_data.sql > tiles/lots.json
+	./build/json_to_geojsonl.sh tiles/lots.json tiles/lots.geojsonl
+	./build/geojson_to_pmtile.sh lots.geojsonl lots.pmtiles lots
+
 create_image.tippecanoe:
 	./build/create_tippecanoe_image.sh
 
@@ -60,8 +66,4 @@ push_image.tippecanoe:
 push_image.gdal:
 	docker push ghcr.io/adrianparsons/gdal
 
-tiles_from_bq:
-	mkdir -p tiles
-	./build/pull_bigquery_data_for_tiles.sh build/all_lots_with_vacancy_data.sql > tiles/lots.json
-	./build/json_to_geojsonl.sh tiles/lots.json tiles/lots.geojsonl
-	./build/geojson_to_pmtile.sh lots.geojsonl lots.pmtiles lots
+
