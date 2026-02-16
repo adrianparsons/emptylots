@@ -31,7 +31,7 @@ select
     coalesce(safe.parse_date('%m/%d/%Y', Expiration_Date), safe.parse_date('%Y-%m-%d', Expiration_Date)) as expiration_date,
     coalesce(safe.parse_date('%m/%d/%Y', Job_Start_Date), safe.parse_date('%Y-%m-%d', Job_Start_Date)) as job_start_date
 
-from {{ source('raw_dob_permits', 'permit_issuance') }}
+from {{ source('raw_dob', 'permit_issuance') }}
 where BOROUGH is not null
   and Block is not null
   and Lot is not null
