@@ -2,7 +2,7 @@
 
 bucket = gs://nyc-lots-tiles
 
-.PHONY: clean watch tiles.cors deploy build
+.PHONY: clean watch tiles.cors deploy build tiles_from_bq
 
 clean:
 	rm -rf dist/*
@@ -32,15 +32,15 @@ deploy: clean build.prod
 
 tiles.all_lots:
 	./build/query_to_geojson.sh MapPLUTO build/all_lots.sql
-	./build/geojson_to_pmtile.sh MapPLUTO MapPLUTO
+	./build/geojson_to_pmtile.sh MapPLUTO.geojson MapPLUTO.pmtiles MapPLUTO
 
 tiles.vacant:
 	./build/query_to_geojson.sh vacant build/filter_vacant_lots.sql
-	./build/geojson_to_pmtile.sh vacant vacant
+	./build/geojson_to_pmtile.sh vacant.geojson vacant.pmtiles vacant
 
 tiles.parking:
 	./build/query_to_geojson.sh parking build/filter_parking_lots.sql
-	./build/geojson_to_pmtile.sh parking parking
+	./build/geojson_to_pmtile.sh parking.geojson parking.pmtiles parking
 
 tiles.deploy:
 	gcloud storage cp tiles/*.pmtiles $(bucket)
@@ -60,3 +60,8 @@ push_image.tippecanoe:
 push_image.gdal:
 	docker push ghcr.io/adrianparsons/gdal
 
+tiles_from_bq:
+	mkdir -p tiles
+	./build/pull_bigquery_data_for_tiles.sh build/all_lots_with_vacancy_data.sql > tiles/lots.json
+	./build/json_to_geojsonl.sh tiles/lots.json tiles/lots.geojsonl
+	./build/geojson_to_pmtile.sh lots.geojsonl lots.pmtiles lots
