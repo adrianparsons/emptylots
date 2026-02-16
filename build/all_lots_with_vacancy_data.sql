@@ -12,9 +12,9 @@ vacancy_by_bbl as (
 )
 
 select
-    filtered.*
+    filtered.*,
     range_start as vacant_since,
-    st_asgeojson(geo.geometry) as geometry,
+    st_asgeojson(geo.geometry) as geometry
 from vacancy_by_bbl
 right join `empty-lots`.`nyc_pluto_historical.stg_lots_filtered` as filtered
     on bbl_key = cast(filtered.bbl as string)
