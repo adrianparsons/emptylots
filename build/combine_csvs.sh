@@ -2,4 +2,4 @@
 
 set -e
 
-find historical -type f -name "*.csv" | xargs csvstack > historical/pluto_historical.csv
+find historical -type f -name "*.csv" | xargs csvstack > pluto_historical.csv
