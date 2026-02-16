@@ -356,3 +356,23 @@ models:
   - name: stg_vacant
     description: "Staging model for NYC PLUTO lots data with all columns and proper data types"
     columns: *pluto_base_columns
+
+  - name: stg_permits
+    description: "Staged DOB permit issuance data with normalized BBL key and parsed dates"
+    columns:
+      - name: bbl_key
+        description: "11-digit BBL string: borocode(1) + block(5) + lot(5)"
+        tests:
+          - not_null
+
+  - name: stg_vacant_permits
+    description: "Vacant lots enriched with building permit summary (one row per lot)"
+    columns:
+      - name: bbl_key
+        description: "11-digit BBL string"
+        tests:
+          - not_null
+      - name: num_permits
+        description: "Total number of permits for this lot"
+        tests:
+          - not_null
