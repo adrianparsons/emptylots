@@ -54,6 +54,13 @@ tiles.from_bq:
 	./build/json_to_geojsonl.sh tiles/lots.json tiles/lots.geojsonl
 	./build/geojson_to_pmtile.sh lots.geojsonl lots.pmtiles lots
 
+tiles.vacant_bq:
+	@test -n "$(BQ_DATASET)" || (echo "Error: BQ_DATASET is required. Usage: make tiles.vacant_bq BQ_DATASET=<your_dataset>" && exit 1)
+	mkdir -p tiles
+	BQ_DATASET=$(BQ_DATASET) ./build/pull_bigquery_data_for_tiles.sh build/vacant_lots_from_bq.sql > tiles/vacant.json
+	./build/json_to_geojsonl.sh tiles/vacant.json tiles/vacant.geojsonl
+	./build/geojson_to_pmtile.sh vacant.geojsonl vacant.pmtiles vacant
+
 ## BigQuery data loading
 ## Usage: make bq.load.permits CSV=local/data/DOB_Permit_Issuance.csv
 
