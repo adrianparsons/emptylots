@@ -11,3 +11,10 @@ sources:
         description: "NYC DOB Stalled Construction Sites — complaints where construction has halted"
       - name: building
         description: "NYC Building Footprints — authoritative BIN to BBL mapping"
+
+  - name: nyc_pluto_historical
+    database: empty-lots
+    schema: nyc_pluto_historical
+    tables:
+      - name: stg_geometry
+        description: "Lot polygon geometry (GEOGRAPHY) keyed by BBL (float64)"

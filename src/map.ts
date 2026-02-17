@@ -37,21 +37,23 @@ export async function initMap(): Promise<Map>{
       })
     );
 
+    const tileBaseUrl = process.env.TILE_CDN_URL || 'https://cdn.empty.nyc';
+
     map.addSource('vacant', {
       type: 'vector',
-      url: 'pmtiles://https://cdn.empty.nyc/vacant.pmtiles',
+      url: `pmtiles://${tileBaseUrl}/vacant.pmtiles`,
       promoteId: 'BBL'
     });
 
     map.addSource('parking', {
       type: 'vector',
-      url: 'pmtiles://https://cdn.empty.nyc/parking.pmtiles',
+      url: `pmtiles://${tileBaseUrl}/parking.pmtiles`,
       promoteId: 'BBL'
     });
 
     map.addSource('alllots', {
       type: 'vector',
-      url: 'pmtiles://https://cdn.empty.nyc/alllotsnyc.pmtiles',
+      url: `pmtiles://${tileBaseUrl}/alllotsnyc.pmtiles`,
     });
 
     map.addLayer({
@@ -145,6 +147,9 @@ export async function initMap(): Promise<Map>{
         ownername: props.OwnerName,
         lotArea: Number(props.LotArea).toLocaleString(),
         zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.BoroCode}/${props.Block}/${props.Lot}`,
+        numPermits: Number(props.num_permits) || 0,
+        latestPermitDate: props.latest_permit_date,
+        numStalledComplaints: Number(props.num_stalled_complaints) || 0,
       }
 
       map.easeTo({center: [lng, lat]})
