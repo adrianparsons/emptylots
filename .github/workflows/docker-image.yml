@@ -12,8 +12,7 @@ on:
 env:
   REGISTRY: ghcr.io
 
-permissions:
-  packages: write
+permissions: write-all
 
 jobs:
 
