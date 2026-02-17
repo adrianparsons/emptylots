@@ -9,6 +9,12 @@ vacancy_by_bbl as (
         bbl_key,
         range_start(session_range) as range_start
     from has_vacancy
+),
+
+versions as (
+    select distinct
+        version
+    from `nyc_pluto_historical.stg_lots_filtered`
 )
 
 select
@@ -20,4 +26,4 @@ right join `empty-lots`.`nyc_pluto_historical.stg_lots_filtered` as filtered
     on bbl_key = cast(filtered.bbl as string)
 join `empty-lots.nyc_pluto_historical.stg_geometry` as geo
     on filtered.bbl = geo.bbl
-where filtered.version = '25v3'
+where filtered.version = (select max(version) from versions)
