@@ -37,21 +37,23 @@ export async function initMap(): Promise<Map>{
       })
     );
 
+    const tileBaseUrl = process.env.TILE_CDN_URL || 'https://cdn.empty.nyc';
+
     map.addSource('vacant', {
       type: 'vector',
-      url: 'pmtiles://https://cdn.empty.nyc/vacant.pmtiles',
+      url: `pmtiles://${tileBaseUrl}/vacant.pmtiles`,
       promoteId: 'BBL'
     });
 
     map.addSource('parking', {
       type: 'vector',
-      url: 'pmtiles://https://cdn.empty.nyc/parking.pmtiles',
+      url: `pmtiles://${tileBaseUrl}/parking.pmtiles`,
       promoteId: 'BBL'
     });
 
     map.addSource('alllots', {
       type: 'vector',
-      url: 'pmtiles://https://cdn.empty.nyc/alllotsnyc.pmtiles',
+      url: `pmtiles://${tileBaseUrl}/alllotsnyc.pmtiles`,
     });
 
     map.addLayer({
