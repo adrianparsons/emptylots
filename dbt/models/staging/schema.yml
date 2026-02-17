@@ -365,14 +365,10 @@ models:
         tests:
           - not_null
 
-  - name: stg_vacant_permits
-    description: "Vacant lots enriched with building permit summary (one row per lot)"
+  - name: stg_stalled_construction
+    description: "Staged DOB stalled construction sites with BIN→BBL mapping"
     columns:
-      - name: bbl_key
-        description: "11-digit BBL string"
-        tests:
-          - not_null
-      - name: num_permits
-        description: "Total number of permits for this lot"
+      - name: bin
+        description: "Building Identification Number"
         tests:
           - not_null
