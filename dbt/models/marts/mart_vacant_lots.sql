@@ -13,6 +13,11 @@ with vacant_lots as (
     where version = (select max(version) from {{ ref('stg_vacant') }})
 ),
 
+geometry as (
+    select bbl, geometry
+    from {{ source('nyc_pluto_historical', 'stg_geometry') }}
+),
+
 permit_summary as (
     select
         bbl_key,
@@ -37,6 +42,7 @@ stalled_summary as (
 
 select
     v.*,
+    g.geometry,
     coalesce(p.num_permits, 0) as num_permits,
     p.latest_permit_date,
     p.latest_filing_date,
@@ -45,6 +51,8 @@ select
     s.earliest_stalled_complaint,
     s.latest_stalled_report
 from vacant_lots v
+left join geometry g
+    on v.bbl = g.bbl
 left join permit_summary p
     on v.bbl_key = p.bbl_key
 left join stalled_summary s
