@@ -1,0 +1,18 @@
+[
+  {"name": "the_geom", "type": "STRING"},
+  {"name": "NAME", "type": "STRING"},
+  {"name": "BIN", "type": "STRING"},
+  {"name": "DOITT_ID", "type": "STRING"},
+  {"name": "SHAPE_AREA", "type": "STRING"},
+  {"name": "BASE_BBL", "type": "STRING"},
+  {"name": "OBJECTID", "type": "STRING"},
+  {"name": "Construction_Year", "type": "STRING"},
+  {"name": "Feature_Code", "type": "STRING"},
+  {"name": "Geometry_Source", "type": "STRING"},
+  {"name": "Ground_Elevation", "type": "STRING"},
+  {"name": "Height_Roof", "type": "STRING"},
+  {"name": "LAST_EDITED_DATE", "type": "STRING"},
+  {"name": "LAST_STATUS_TYPE", "type": "STRING"},
+  {"name": "Map_Pluto_BBL", "type": "STRING"},
+  {"name": "Length", "type": "STRING"}
+]

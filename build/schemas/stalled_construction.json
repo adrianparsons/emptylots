@@ -1,0 +1,10 @@
+[
+  {"name": "Borough_Name", "type": "STRING"},
+  {"name": "Community_Board", "type": "STRING"},
+  {"name": "BIN", "type": "STRING"},
+  {"name": "House_Number", "type": "STRING"},
+  {"name": "Street_Name", "type": "STRING"},
+  {"name": "Complaint_Number", "type": "STRING"},
+  {"name": "Date_Complaint_Received", "type": "STRING"},
+  {"name": "DOBRunDate", "type": "STRING"}
+]
