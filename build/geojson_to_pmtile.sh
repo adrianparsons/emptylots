@@ -4,6 +4,7 @@ set -e
 GEOJSON_FILE_NAME=$1
 PMTILE_FILE_NAME=$2
 LAYER_NAME=$3
+CONTAINER_CMD="${CONTAINER_CMD:-docker}"
 CMD="tippecanoe \
     -f \
     -zg \
@@ -15,6 +16,6 @@ CMD="tippecanoe \
     /usr/local/tiles/$GEOJSON_FILE_NAME"
 IMG_TAG="ghcr.io/adrianparsons/tippecanoe:latest"
 
-docker run --rm \
+$CONTAINER_CMD run --rm \
     --mount type=bind,source="$(pwd)"/tiles,target=/usr/local/tiles/ \
     $IMG_TAG bash -c "$CMD"
