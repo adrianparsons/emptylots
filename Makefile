@@ -54,6 +54,21 @@ tiles.from_bq:
 	./build/json_to_geojsonl.sh tiles/lots.json tiles/lots.geojsonl
 	./build/geojson_to_pmtile.sh lots.geojsonl lots.pmtiles lots
 
+## BigQuery data loading
+## Usage: make bq.load.permits CSV=local/data/DOB_Permit_Issuance_20260216.csv
+
+bq.load.permits:
+	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines \
+		empty-lots:raw_dob.permit_issuance \
+		$(CSV) \
+		build/schemas/permit_issuance.json
+
+bq.load.stalled:
+	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines \
+		empty-lots:raw_dob.stalled_construction \
+		$(CSV) \
+		build/schemas/stalled_construction.json
+
 create_image.tippecanoe:
 	./build/create_tippecanoe_image.sh
 
