@@ -55,7 +55,7 @@ tiles.from_bq:
 	./build/geojson_to_pmtile.sh lots.geojsonl lots.pmtiles lots
 
 ## BigQuery data loading
-## Usage: make bq.load.permits CSV=local/data/DOB_Permit_Issuance_20260216.csv
+## Usage: make bq.load.permits CSV=local/data/DOB_Permit_Issuance.csv
 
 bq.load.permits:
 	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines \
@@ -68,6 +68,12 @@ bq.load.stalled:
 		empty-lots:raw_dob.stalled_construction \
 		$(CSV) \
 		build/schemas/stalled_construction.json
+
+bq.load.building:
+	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines \
+		empty-lots:raw_dob.building \
+		$(CSV) \
+		build/schemas/building.json
 
 create_image.tippecanoe:
 	./build/create_tippecanoe_image.sh

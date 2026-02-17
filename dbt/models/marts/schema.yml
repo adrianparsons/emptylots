@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: mart_vacant_lots
+    description: "Vacant lots enriched with permit and stalled construction data. Tile-ready."
+    columns:
+      - name: bbl_key
+        description: "11-digit BBL string: borocode(1) + block(5) + lot(5)"
+        tests:
+          - not_null
+          - unique
+      - name: num_permits
+        description: "Total number of DOB permits for this lot"
+        tests:
+          - not_null
+      - name: num_stalled_complaints
+        description: "Total stalled construction complaints for this lot"
+        tests:
+          - not_null

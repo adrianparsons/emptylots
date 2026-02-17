@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: int_stalled_construction
+    description: "Deduplicated stalled construction sites — one row per complaint + BIN"
+    columns:
+      - name: complaint_number
+        description: "DOB complaint number"
+        tests:
+          - not_null
+      - name: bin
+        description: "Building Identification Number"
+        tests:
+          - not_null

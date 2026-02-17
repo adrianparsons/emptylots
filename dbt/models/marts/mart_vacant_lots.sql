@@ -1,6 +1,6 @@
 /*
-    Vacant lots enriched with building permit summary.
-    One row per vacant lot — permits are aggregated before joining to prevent fan-out.
+    Vacant lots enriched with permit and stalled construction data.
+    One row per vacant lot — tile-ready.
 */
 
 {{ config(materialized='table') }}
@@ -26,6 +26,17 @@ permit_summary as (
         date_diff(current_date(), max(issuance_date), year) as years_since_last_permit
     from {{ ref('stg_permits') }}
     group by bbl_key
+),
+
+stalled_summary as (
+    select
+        bbl_key,
+        count(*) as num_stalled_complaints,
+        min(complaint_received_at) as earliest_stalled_complaint,
+        max(last_reported_at) as latest_stalled_report
+    from {{ ref('int_stalled_construction') }}
+    where bbl_key is not null
+    group by bbl_key
 )
 
 select
@@ -33,7 +44,12 @@ select
     coalesce(p.num_permits, 0) as num_permits,
     p.latest_permit_date,
     p.latest_filing_date,
-    p.years_since_last_permit
+    p.years_since_last_permit,
+    coalesce(s.num_stalled_complaints, 0) as num_stalled_complaints,
+    s.earliest_stalled_complaint,
+    s.latest_stalled_report
 from vacant_lots v
 left join permit_summary p
     on v.bbl_key = p.bbl_key
+left join stalled_summary s
+    on v.bbl_key = s.bbl_key

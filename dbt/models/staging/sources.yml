@@ -6,4 +6,8 @@ sources:
     schema: raw_dob
     tables:
       - name: permit_issuance
-        description: "NYC DOB Permit Issuance data, loaded as all STRING columns from CSV"
+        description: "NYC DOB Permit Issuance data"
+      - name: stalled_construction
+        description: "NYC DOB Stalled Construction Sites — complaints where construction has halted"
+      - name: building
+        description: "NYC Building Footprints — authoritative BIN to BBL mapping"
