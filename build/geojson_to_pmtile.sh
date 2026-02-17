@@ -1,9 +1,18 @@
 #! /bin/bash
 
 set -e
-TILE_FILE_NAME=$1
-LAYER_NAME=$2
-CMD="tippecanoe -f -zg -o /usr/local/tiles/$TILE_FILE_NAME.pmtiles --projection=EPSG:4326 --extend-zooms-if-still-dropping --drop-densest-as-needed -l $LAYER_NAME /usr/local/tiles/$TILE_FILE_NAME.geojson"
+GEOJSON_FILE_NAME=$1
+PMTILE_FILE_NAME=$2
+LAYER_NAME=$3
+CMD="tippecanoe \
+    -f \
+    -zg \
+    -o /usr/local/tiles/$PMTILE_FILE_NAME \
+    --projection=EPSG:4326 \
+    --extend-zooms-if-still-dropping \
+    --drop-densest-as-needed \
+    -l $LAYER_NAME \
+    /usr/local/tiles/$GEOJSON_FILE_NAME"
 IMG_TAG="ghcr.io/adrianparsons/tippecanoe:latest"
 
 docker run --rm \
