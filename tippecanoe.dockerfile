@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.source="https://github.com/adrianparsons/empty-lo
 ARG TIPPECANOE_REPO=https://github.com/felt/tippecanoe.git
 
 RUN apt-get update && apt-get install -y \
+    mktemp \
     git \
     make \
     g++ \
