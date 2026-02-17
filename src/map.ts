@@ -147,6 +147,9 @@ export async function initMap(): Promise<Map>{
         ownername: props.OwnerName,
         lotArea: Number(props.LotArea).toLocaleString(),
         zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.BoroCode}/${props.Block}/${props.Lot}`,
+        numPermits: Number(props.num_permits) || 0,
+        latestPermitDate: props.latest_permit_date,
+        numStalledComplaints: Number(props.num_stalled_complaints) || 0,
       }
 
       map.easeTo({center: [lng, lat]})
