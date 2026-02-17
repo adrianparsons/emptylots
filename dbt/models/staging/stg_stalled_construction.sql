@@ -6,12 +6,7 @@
 with bin_to_bbl as (
     select distinct
         BIN as bin,
-        -- Map_Pluto_BBL is 10 digits: boro(1) + block(5) + lot(4)
-        -- Convert to 11 digits: boro(1) + block(5) + lot(5) to match PLUTO
-        concat(
-            substr(Map_Pluto_BBL, 1, 6),
-            lpad(substr(Map_Pluto_BBL, 7), 5, '0')
-        ) as bbl_key
+        {{ bbl_key_from_pluto_bbl('Map_Pluto_BBL') }} as bbl_key
     from {{ source('raw_dob', 'building') }}
     where BIN is not null
       and Map_Pluto_BBL is not null

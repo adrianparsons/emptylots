@@ -8,11 +8,7 @@
 with vacant_lots as (
     select
         *,
-        concat(
-            cast(borocode as string),
-            lpad(cast(block as string), 5, '0'),
-            lpad(cast(lot as string), 5, '0')
-        ) as bbl_key
+        {{ bbl_key_from_parts('borocode', 'block', 'lot') }} as bbl_key
     from {{ ref('stg_vacant') }}
     where version = (select max(version) from {{ ref('stg_vacant') }})
 ),
