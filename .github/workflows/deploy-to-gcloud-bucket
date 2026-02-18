@@ -18,5 +18,4 @@ jobs:
       with:
       project_id: 'empty-lots'
       workload_identity_provider: 'projects/415223443345/locations/global/workloadIdentityPools/github/providers/emptylots'
-
-
+      continue-on-error: true
