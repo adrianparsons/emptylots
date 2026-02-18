@@ -1,0 +1,23 @@
+name: Deploy assets to google cloud
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: ["**"] # TODO: remove after testing
+
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: 'google-github-actions/auth@v3'
+      with:
+      project_id: 'empty-lots'
+      workload_identity_provider: 'projects/415223443345/locations/global/workloadIdentityPools/github/providers/emptylots'
+
+
