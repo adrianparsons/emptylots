@@ -1,6 +1,7 @@
 # Makefile for this project
 
 bucket = gs://nyc-lots-tiles
+gcproject = empty-lots
 
 .PHONY: clean watch tiles.cors deploy build tiles_from_bq
 
@@ -43,7 +44,7 @@ tiles.parking:
 	./build/geojson_to_pmtile.sh parking.geojson parking.pmtiles parking
 
 tiles.deploy:
-	gcloud storage cp tiles/*.pmtiles $(bucket)
+	./build/cp_to_gcloud_bucket.sh tiles/*.pmtiles $(bucket) $(gcproject)
 
 tiles.cors:
 	gcloud storage buckets update $(bucket) --cors-file=config/gcloud-bucket-cors-config.json
