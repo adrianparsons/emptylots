@@ -3,6 +3,8 @@ name: Deploy assets to google cloud
 on:
   push:
     branches: [ "main", "**" ] # TODO: remove catchall after testing
+  pull_request:
+    branches: [ "**" ] # TODO: remove after testing
   workflow_dispatch:
 
 jobs:
