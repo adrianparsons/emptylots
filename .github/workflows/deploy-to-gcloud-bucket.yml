@@ -13,9 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
     - uses: 'google-github-actions/auth@v3'
       with:
-      project_id: 'empty-lots'
-      workload_identity_provider: 'projects/415223443345/locations/global/workloadIdentityPools/github/providers/emptylots'
-      continue-on-error: true
+        project_id: 'empty-lots'
+        workload_identity_provider: 'projects/415223443345/locations/global/workloadIdentityPools/github/providers/emptylots'
+        continue-on-error: true
