@@ -27,7 +27,7 @@
     "@tailwindcss/postcss": "^4.1.13",
     "@turf/bearing": "^7.2.0",
     "@turf/helpers": "^7.2.0",
-    "maplibre-gl": "^5.7.3",
+    "maplibre-gl": "^5.18.0",
     "pmtiles": "^4.3.0",
     "tailwindcss": "^4.1.13"
   }
