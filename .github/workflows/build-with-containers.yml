@@ -3,7 +3,7 @@ name: Generate map tiles
 on:
   push:
     branches: [ "**" ]
-    paths: [ "*.dockerfile", "build/*" ]
+    paths: [ "*.dockerfile", "build/*", "*.github/workflows" ]
   pull_request:
     branches: [ "**" ]
   workflow_dispatch:
@@ -12,6 +12,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     steps:
     - uses: actions/checkout@v4
@@ -25,3 +30,16 @@ jobs:
         name: emptynyc-tiles
         path: tiles/*.pmtiles
         if-no-files-found: error
+
+    - id: auth
+      uses: 'google-github-actions/auth@v3'
+      continue-on-error: true # TODO: remove after testing
+      with:
+        project_id: 'empty-lots'
+        workload_identity_provider: 'projects/415223443345/locations/global/workloadIdentityPools/github/providers/emptylots'
+
+    - id: 'upload-files'
+      uses: 'google-github-actions/upload-cloud-storage@v3'
+      with:
+        path: 'tiles'
+        destination: 'nyc-lots-tiles/dev'
