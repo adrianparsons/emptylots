@@ -42,4 +42,4 @@ jobs:
       uses: 'google-github-actions/upload-cloud-storage@v3'
       with:
         path: 'tiles/parking.pmtiles'
-        destination: 'nyc-lots-tiles'
+        destination: 'dev-tiles'
