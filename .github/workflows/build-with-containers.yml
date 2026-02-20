@@ -47,6 +47,6 @@ jobs:
       uses: 'google-github-actions/upload-cloud-storage@v3'
       with:
         path: 'tiles'
-        destination: ${{ env.GCP_BUCKET_TILES  }} '/' ${{ github.head_ref || github.ref_name }}
+        destination: ${{ env.GCP_BUCKET_TILES }} '/' ${{ github.head_ref || github.ref_name }}
         parent: false # will not create a "tiles" directory in the bucket
         glob: "**/*.pmtiles"
