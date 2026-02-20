@@ -9,8 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  # GCP_BUCKET_TILES: 'nyc-lots-tiles' TODO: this is the eventual bucket we want.
-  GCP_BUCKET_TILES: 'dev-tiles'
+  GCP_BUCKET_TILES: 'nyc-lots-tiles'
   GCP_PROJECT: 'empty-lots'
   GCP_WORKLOAD_IDENTITY_PROVIDER: 'projects/415223443345/locations/global/workloadIdentityPools/github/providers/emptylots'
 
@@ -27,8 +26,7 @@ jobs:
     - uses: actions/checkout@v4
     - run: make tiles.vacant
     - run: make tiles.parking
-    # TODO: re-enable after testing
-    # - run: make tiles.all_lots
+    - run: make tiles.all_lots
 
     - name: Create zip of pmtiles (parking and vacant)
       uses: actions/upload-artifact@v4
