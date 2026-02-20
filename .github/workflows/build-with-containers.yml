@@ -40,13 +40,13 @@ jobs:
     - id: auth
       uses: 'google-github-actions/auth@v3'
       with:
-        project_id: '$GCP_PROJECT'
-        workload_identity_provider: '$GCP_WORKLOAD_IDENTITY_PROVIDER'
+        project_id: ${{ env.GCP_PROJECT }}
+        workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
 
     - id: 'upload-files'
       uses: 'google-github-actions/upload-cloud-storage@v3'
       with:
         path: 'tiles'
-        destination: '$GCP_BUCKET_TILES/${{ github.head_ref || github.ref_name }}'
+        destination: ${{ env.GCP_BUCKET_TILES  }} '/' ${{ github.head_ref || github.ref_name }}
         parent: false # will not create a "tiles" directory in the bucket
         glob: "**/*.pmtiles"
