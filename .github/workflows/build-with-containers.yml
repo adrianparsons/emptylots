@@ -3,7 +3,7 @@ name: Generate map tiles
 on:
   push:
     branches: [ "**" ]
-    paths: [ "*.dockerfile", "build/*", "*.github/workflows" ]
+    paths: [ "*.dockerfile", "build/*", ".github/workflows/**" ]
   pull_request:
     branches: [ "**" ]
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
 env:
   GCP_BUCKET_TILES: 'nyc-lots-tiles'
   GCP_PROJECT: 'empty-lots'
-  GCP_WORKLOAD_IDENTITY_PROVIDER: 'projects/415223443345/locations/global/workloadIdentityPools/github/providers/emptylots'
+  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GITHUB_GCP_WORKLOAD_IDENTITY_PROVIDER }}
 
 jobs:
   build:
@@ -48,3 +48,4 @@ jobs:
         destination: ${{env.GCP_BUCKET_TILES}}/${{github.head_ref || github.ref_name}}
         parent: false # will not create a "tiles" directory in the bucket
         glob: "**/*.pmtiles"
+        project_id: ${{ env.GCP_PROJECT }}
