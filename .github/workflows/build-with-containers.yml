@@ -2,10 +2,8 @@ name: Generate map tiles
 
 on:
   push:
-    branches: [ "**" ]
-    paths: [ "*.dockerfile", "build/*", ".github/workflows/**" ]
-  pull_request:
-    branches: [ "**" ]
+    branches: [main]
+    paths: ["*.dockerfile", "build/*", ".github/workflows/**"]
   workflow_dispatch:
 
 env:
