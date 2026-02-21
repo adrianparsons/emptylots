@@ -39,4 +39,3 @@ jobs:
       run: make push_image.tippecanoe
     - name: Push gdal image
       run: make push_image.gdal
-      
