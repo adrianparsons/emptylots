@@ -3,7 +3,7 @@ name: Generate map tiles
 on:
   push:
     branches: ["**"]
-    paths: ["*.dockerfile", "build/*", ".github/workflows/**"]
+    paths: ["*.dockerfile", "build/*", ".github/workflows/**", "**"] # TODO, remove wildcard path
   workflow_dispatch:
 
 env:
