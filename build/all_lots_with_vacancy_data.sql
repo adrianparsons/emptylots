@@ -27,3 +27,4 @@ right join `empty-lots`.`nyc_pluto_historical.stg_lots_filtered` as filtered
 join `empty-lots.nyc_pluto_historical.stg_geometry` as geo
     on filtered.bbl = geo.bbl
 where filtered.version = (select max(version) from versions)
+    and landuse = '11'
