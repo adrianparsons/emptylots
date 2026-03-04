@@ -5,8 +5,7 @@ on:
     branches: ["main"]
   pull_request:
     paths: ["*.dockerfile", "build/*", ".github/workflows/**"]
-
-workflow_dispatch:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
