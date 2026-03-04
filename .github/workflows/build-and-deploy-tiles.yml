@@ -57,3 +57,6 @@ jobs:
         parent: false # will not create a "tiles" directory in the bucket
         glob: "**/*.pmtiles"
         project_id: ${{ env.GCP_PROJECT }}
+        gzip: false
+        headers: |-
+          content-type: application/octet-stream
