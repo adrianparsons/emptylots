@@ -2,9 +2,15 @@ name: Generate map tiles
 
 on:
   push:
-    branches: ["**"]
-    paths: ["*.dockerfile", "build/*", ".github/workflows/**", "**"] # TODO, remove wildcard path
-  workflow_dispatch:
+    branches: ["main"]
+  pull_request:
+    paths: ["*.dockerfile", "build/*", ".github/workflows/**"]
+
+workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   GCP_BUCKET_TILES: 'nyc-lots-tiles'
