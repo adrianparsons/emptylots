@@ -58,4 +58,4 @@ jobs:
         glob: "**/*.pmtiles"
         project_id: ${{ env.GCP_PROJECT }}
         headers: |-
-          content-type: 'application/octet-stream'
+          content-type: application/octet-stream
