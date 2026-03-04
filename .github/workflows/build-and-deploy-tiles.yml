@@ -31,10 +31,11 @@ jobs:
 
     - uses: google-github-actions/setup-gcloud@v2
 
-   # - run: make tiles.vacant
-   # - run: make tiles.parking
-   # - run: make tiles.all_lots
+    - run: make tiles.vacant
+    - run: make tiles.parking
     - run: make tiles.from_bq
+
+    - run: make tiles.all_lots
 
     - name: Create zip of pmtiles (parking and vacant)
       uses: actions/upload-artifact@v4
