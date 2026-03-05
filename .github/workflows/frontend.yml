@@ -18,6 +18,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     strategy:
       matrix:
         node-version: [25.x]
