@@ -3,8 +3,15 @@ name: Build and deploy static Frontend with Node.js
 on:
   push:
     branches: [ "**" ]
-  pull_request:
-    branches: [ "**" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GCP_BUCKET_WEB: 'nyc-lots-web'
+  GCP_PROJECT: 'empty-lots'
+  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
 
 jobs:
   build:
