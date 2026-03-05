@@ -40,3 +40,17 @@ jobs:
         name: emptynyc-prod
         path: dist/**
         if-no-files-found: error
+
+    - id: auth
+      uses: 'google-github-actions/auth@v3'
+      with:
+        project_id: ${{ env.GCP_PROJECT }}
+        workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+    - id: 'upload-files'
+      uses: 'google-github-actions/upload-cloud-storage@v3'
+      with:
+        path: 'dist'
+        destination: ${{env.GCP_BUCKET_WEB}}/${{github.head_ref || github.ref_name}}
+        parent: false # will not create a "dist" directory in the bucket
+        project_id: ${{ env.GCP_PROJECT }}
