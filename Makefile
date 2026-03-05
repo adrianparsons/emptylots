@@ -17,7 +17,7 @@ build:
 	NODE_ENV=development npx parcel build src/index.html --log-level verbose
 
 build.prod:
-	NODE_ENV=production npx parcel build src/index.html --log-level verbose --public-url="$$PUBLIC_URL"
+	NODE_ENV=production npx parcel build src/index.html --log-level verbose --public-url=$$PUBLIC_URL
 
 watch:
 	cp -r static dist/
