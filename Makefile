@@ -14,10 +14,10 @@ style:
 	npx @tailwindcss/cli -i ./src/style.css -o ./dist/style.css
 
 build:
-	NODE_ENV=development npx parcel build src/index.html --log-level verbose && cp -r static dist/
+	NODE_ENV=development npx parcel build src/index.html --log-level verbose
 
 build.prod:
-	NODE_ENV=production npx parcel build src/index.html --log-level verbose && cp -r static dist/
+	NODE_ENV=production npx parcel build src/index.html --log-level verbose --public-url=/$(PUBLIC_URL)/
 
 watch:
 	cp -r static dist/

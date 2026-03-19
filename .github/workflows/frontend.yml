@@ -12,11 +12,17 @@ env:
   GCP_BUCKET_WEB: 'nyc-lots-web'
   GCP_PROJECT: 'empty-lots'
   GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+  URL_PREFIX: ${{ github.head_ref || github.ref_name }}
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     strategy:
       matrix:
@@ -33,7 +39,7 @@ jobs:
 
     - run: npm ci
     - run: npm audit --audit-level=moderate
-    - run: make build.prod
+    - run: PUBLIC_URL=${{ env.GCP_BUCKET_WEB }}/${{ env.URL_PREFIX }} make build.prod
     - name: Create zip file of static production site
       uses: actions/upload-artifact@v4
       with:
