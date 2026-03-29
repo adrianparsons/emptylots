@@ -23,7 +23,7 @@
     "parcel": "^2.16.0"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.2.1",
+    "@tailwindcss/cli": "^4.2.2",
     "@tailwindcss/postcss": "^4.2.2",
     "@turf/bearing": "^7.3.4",
     "@turf/helpers": "^7.2.0",
