@@ -5,9 +5,26 @@ resource "google_compute_backend_bucket" "emptynyc" {
   compression_mode = "DISABLED"
 }
 
+resource "google_compute_backend_bucket" "emptynyc_web" {
+  name             = "emptynyc-web"
+  bucket_name      = google_storage_bucket.nyc_lots_web.name
+  enable_cdn       = false
+  compression_mode = "DISABLED"
+}
+
 resource "google_compute_url_map" "nyc_lots_tiles" {
   name            = "nyc-lots-tiles"
   default_service = google_compute_backend_bucket.emptynyc.self_link
+
+  host_rule {
+    hosts        = ["static.${var.domain}"]
+    path_matcher = "static"
+  }
+
+  path_matcher {
+    name            = "static"
+    default_service = google_compute_backend_bucket.emptynyc_web.self_link
+  }
 }
 
 resource "google_compute_managed_ssl_certificate" "cdn_emptynyc" {
@@ -18,17 +35,28 @@ resource "google_compute_managed_ssl_certificate" "cdn_emptynyc" {
   }
 }
 
+resource "google_compute_managed_ssl_certificate" "static_emptynyc" {
+  name = "static-emptynyc"
+  type = "MANAGED"
+  managed {
+    domains = ["static.${var.domain}"]
+  }
+}
+
 resource "google_compute_target_http_proxy" "nyc_lots_tiles" {
   name    = "nyc-lots-tiles-target-proxy"
   url_map = google_compute_url_map.nyc_lots_tiles.self_link
 }
 
 resource "google_compute_target_https_proxy" "nyc_lots_tiles" {
-  name             = "nyc-lots-tiles-target-proxy-2"
-  url_map          = google_compute_url_map.nyc_lots_tiles.self_link
-  ssl_certificates = [google_compute_managed_ssl_certificate.cdn_emptynyc.self_link]
-  quic_override    = "NONE"
-  tls_early_data   = "DISABLED"
+  name    = "nyc-lots-tiles-target-proxy-2"
+  url_map = google_compute_url_map.nyc_lots_tiles.self_link
+  ssl_certificates = [
+    google_compute_managed_ssl_certificate.cdn_emptynyc.self_link,
+    google_compute_managed_ssl_certificate.static_emptynyc.self_link,
+  ]
+  quic_override  = "NONE"
+  tls_early_data = "DISABLED"
 }
 
 resource "google_compute_global_forwarding_rule" "cdn_empty_frontend" {
