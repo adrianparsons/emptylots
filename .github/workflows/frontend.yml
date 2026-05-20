@@ -9,8 +9,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GCP_BUCKET_WEB: 'nyc-lots-web'
-  GCP_PROJECT: 'empty-lots'
+  GCP_BUCKET_WEB: ${{ vars.GCP_BUCKET_WEB }}
+  GCP_PROJECT: ${{ vars.GCP_PROJECT }}
   GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
   URL_PREFIX: ${{ github.head_ref || github.ref_name }}
 
