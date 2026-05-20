@@ -1,0 +1,7 @@
+project         = "your-gcp-project-id"
+region          = "us-central1"
+zone            = "us-central1-c"
+billing_account = "XXXXXX-XXXXXX-XXXXXX"
+org_id          = "000000000000"
+domain          = "example.com"
+bucket_prefix   = "myapp"
