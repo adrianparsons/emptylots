@@ -2,6 +2,10 @@ resource "google_storage_bucket" "nyc_lots_web" {
   name     = "${var.bucket_prefix}-web"
   location = var.region
 
+  website {
+    main_page_suffix = "index.html"
+  }
+
   lifecycle {
     prevent_destroy = true
   }
