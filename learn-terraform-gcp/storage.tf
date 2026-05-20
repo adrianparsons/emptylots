@@ -43,8 +43,3 @@ resource "google_storage_bucket" "nyc_lots_tiles" {
     prevent_destroy = true
   }
 }
-
-import {
-  to = google_storage_bucket.nyc_lots_tiles
-  id = "nyc-lots-tiles"
-}
