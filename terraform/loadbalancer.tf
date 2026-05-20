@@ -14,7 +14,7 @@ resource "google_compute_managed_ssl_certificate" "cdn_emptynyc" {
   name = "cdn-emptynyc"
   type = "MANAGED"
   managed {
-    domains = ["cdn.empty.nyc"]
+    domains = ["cdn.${var.domain}"]
   }
 }
 

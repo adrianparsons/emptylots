@@ -1,5 +1,5 @@
 resource "google_storage_bucket" "nyc_lots_web" {
-  name     = "nyc-lots-web"
+  name     = "${var.bucket_prefix}-web"
   location = var.region
 
   lifecycle {
@@ -8,7 +8,7 @@ resource "google_storage_bucket" "nyc_lots_web" {
 }
 
 resource "google_storage_bucket" "nyc_lots_tiles" {
-  name     = "nyc-lots-tiles"
+  name     = "${var.bucket_prefix}-tiles"
   location = "US-EAST4"
 
   uniform_bucket_level_access = true
@@ -33,7 +33,7 @@ resource "google_storage_bucket" "nyc_lots_tiles" {
   }
 
   cors {
-    origin          = ["https://empty.nyc"]
+    origin          = ["https://${var.domain}"]
     method          = ["GET"]
     response_header = ["Content-Type"]
     max_age_seconds = 3600
