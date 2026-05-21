@@ -2,7 +2,10 @@ name: Build and deploy static Frontend with Node.js
 
 on:
   push:
-    branches: [ "**" ]
+    branches: [ "main" ]
+    tags: [ "**" ]
+  pull_request:
+    branches: [ "main" ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -39,7 +42,9 @@ jobs:
 
     - run: npm ci
     - run: npm audit --audit-level=moderate
-    - run: PUBLIC_URL=${{ env.URL_PREFIX }} make build.prod
+    - run: make build.prod
+      env:
+        PUBLIC_URL: ${{ (github.ref_name == 'main' || github.ref_type == 'tag' || github.event_name == 'deployment') && '' || env.URL_PREFIX }}
     - name: Create zip file of static production site
       uses: actions/upload-artifact@v4
       with:
