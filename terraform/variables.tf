@@ -36,3 +36,25 @@ variable "bucket_prefix" {
   description = "Prefix for project storage buckets (e.g. \"my-app\" yields \"my-app-web\", \"my-app-tiles\")."
   type        = string
 }
+
+variable "maps_api_key_uid" {
+  description = "UUID of the existing Google Maps Platform API key (from `gcloud services api-keys list`). Imported, not created — changing this would force replacement and rotate the key string used by the frontend."
+  type        = string
+}
+
+variable "additional_allowed_referrers" {
+  description = "Extra HTTP referrer patterns allowed to use the Maps API key, beyond the primary domain and its `prod.` subdomain."
+  type        = list(string)
+  default     = []
+}
+
+variable "localhost_api_key_uid" {
+  description = "UUID of the existing Localhost Google Maps Platform API key (from `gcloud services api-keys list`). Imported, not created."
+  type        = string
+}
+
+variable "additional_localhost_referrers" {
+  description = "Extra HTTP referrer patterns allowed to use the localhost dev key, beyond `http://localhost:8000` and `http://localhost:1234` (e.g. your machine's `.local` hostnames)."
+  type        = list(string)
+  default     = []
+}
