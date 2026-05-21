@@ -15,3 +15,14 @@ graph TB
     GMapsAPI -->|Returns| StreetView
     StreetView -->|Display| FrontEnd
 ```
+
+## Build
+
+```mermaid
+flowchart LR
+    A["Build images<br/>(gdal, tippecanoe)"] --> B[("ghcr.io image registry")]
+    C["Build frontend<br/>(parcel)"] --> D[("GCP bucket")]
+    B --> E["Generate map tiles with images"]
+    E --> F[("GCP bucket")]
+```
+
