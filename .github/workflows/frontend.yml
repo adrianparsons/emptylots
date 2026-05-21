@@ -15,7 +15,7 @@ env:
   GCP_BUCKET_WEB: ${{ vars.GCP_BUCKET_WEB }}
   GCP_PROJECT: ${{ vars.GCP_PROJECT }}
   GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-  URL_PREFIX: ${{ github.head_ref || github.ref_name }}
+  URL_PREFIX: /${{ github.head_ref || github.ref_name }}/
 
 jobs:
   build:
@@ -44,7 +44,7 @@ jobs:
     - run: npm audit --audit-level=moderate
     - run: make build.prod
       env:
-        PUBLIC_URL: ${{ (github.ref_name != 'main' && github.ref_type != 'tag' && github.event_name != 'deployment') && env.URL_PREFIX || '' }}
+        PUBLIC_URL: ${{ (github.ref_name != 'main' && github.ref_type != 'tag' && github.event_name != 'deployment') && env.URL_PREFIX || '/' }}
     - name: Create zip file of static production site
       uses: actions/upload-artifact@v4
       with:
