@@ -2,6 +2,10 @@ resource "google_storage_bucket" "nyc_lots_web" {
   name     = "${var.bucket_prefix}-web"
   location = var.region
 
+  website {
+    main_page_suffix = "index.html"
+  }
+
   lifecycle {
     prevent_destroy = true
   }
@@ -26,14 +30,21 @@ resource "google_storage_bucket" "nyc_lots_tiles" {
   }
 
   cors {
-    origin          = ["https://storage.googleapis.com/"]
+    origin          = ["https://${var.domain}"]
     method          = ["GET"]
     response_header = ["Content-Type"]
-    max_age_seconds = 0
+    max_age_seconds = 3600
   }
 
   cors {
-    origin          = ["https://${var.domain}"]
+    origin          = ["https://static.${var.domain}"]
+    method          = ["GET"]
+    response_header = ["Content-Type"]
+    max_age_seconds = 3600
+  }
+
+  cors {
+    origin          = ["https://prod.${var.domain}"]
     method          = ["GET"]
     response_header = ["Content-Type"]
     max_age_seconds = 3600

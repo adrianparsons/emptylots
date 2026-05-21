@@ -3,7 +3,7 @@
 bucket = gs://nyc-lots-tiles
 gcproject = empty-lots
 
-.PHONY: clean watch tiles.cors deploy build tiles_from_bq
+.PHONY: clean watch tiles.cors build tiles_from_bq
 
 clean:
 	rm -rf dist/*
@@ -22,14 +22,6 @@ build.prod:
 watch:
 	cp -r static dist/
 	npx parcel
-
-# rsync the dist directory on a remote server, ignore dotfiles
-deploy: clean build.prod
-	rsync -e "ssh -i ~/.ssh/id_ed25519" \
-	-av --delete dist/ \
-	amp926@adrianparsons.com:/home/amp926/emptylots.adrianparsons.com \
-	--exclude="\.*" \
-	--verbose
 
 tiles.all_lots:
 	./build/query_to_geojson.sh MapPLUTO build/all_lots.sql

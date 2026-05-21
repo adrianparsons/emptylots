@@ -28,7 +28,7 @@ variable "org_id" {
 }
 
 variable "domain" {
-  description = "Primary domain. CDN is served at cdn.<domain>."
+  description = "Primary domain. Tiles CDN is served at cdn.<domain>; static frontend is served at static.<domain>."
   type        = string
 }
 
