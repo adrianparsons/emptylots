@@ -16,4 +16,9 @@ provider "google" {
   project = var.project
   region  = var.region
   zone    = var.zone
+
+  # Required for APIs like apikeys.googleapis.com that demand an explicit
+  # quota/billing project on each request.
+  billing_project       = var.project
+  user_project_override = true
 }
