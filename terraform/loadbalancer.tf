@@ -42,7 +42,7 @@ resource "google_compute_url_map" "nyc_lots_tiles" {
 
     default_route_action {
       url_rewrite {
-        path_prefix_rewrite = "/main/"
+        path_prefix_rewrite = "/main"
       }
     }
   }
