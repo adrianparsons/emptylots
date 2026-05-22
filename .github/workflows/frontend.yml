@@ -15,7 +15,8 @@ env:
   GCP_BUCKET_WEB: ${{ vars.GCP_BUCKET_WEB }}
   GCP_PROJECT: ${{ vars.GCP_PROJECT }}
   GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-  URL_PREFIX: /${{ github.head_ref || github.ref_name }}/
+  BRANCH: ${{ github.head_ref || github.ref_name }}
+  IS_PREVIEW: ${{ github.ref_name != 'main' && github.ref_type != 'tag' }}
 
 jobs:
   build:
@@ -45,7 +46,8 @@ jobs:
     - run: npm audit --audit-level=moderate
     - run: make build.prod
       env:
-        PUBLIC_URL: ${{ (github.ref_name != 'main' && github.ref_type != 'tag' && github.event_name != 'deployment') && './' || '/' }}
+        PUBLIC_URL: ${{ env.IS_PREVIEW == 'true' && './' || '/' }}
+        TILE_CDN_URL: https://cdn.empty.nyc/${{ env.BRANCH }}
     - name: Create zip file of static production site
       uses: actions/upload-artifact@v4
       with:
@@ -63,7 +65,7 @@ jobs:
       uses: 'google-github-actions/upload-cloud-storage@v3'
       with:
         path: 'dist'
-        destination: ${{env.GCP_BUCKET_WEB}}/${{github.head_ref || github.ref_name}}
+        destination: ${{ env.GCP_BUCKET_WEB }}/${{ env.BRANCH }}
         parent: false # will not create a "dist" directory in the bucket
         project_id: ${{ env.GCP_PROJECT }}
 
@@ -73,5 +75,5 @@ jobs:
       with:
         header: preview-url
         message: |
-          Preview: https://static.empty.nyc/${{ github.head_ref }}
+          Preview: https://static.empty.nyc/${{ env.BRANCH }}
           (updated for commit ${{ github.event.pull_request.head.sha }})

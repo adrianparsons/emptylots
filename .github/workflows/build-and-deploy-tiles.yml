@@ -3,8 +3,8 @@ name: Generate map tiles
 on:
   push:
     branches: ["main"]
+    tags: ["**"]
   pull_request:
-    paths: ["*.dockerfile", "build/*", ".github/workflows/**"]
   workflow_dispatch:
 
 concurrency:
