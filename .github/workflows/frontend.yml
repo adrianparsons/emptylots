@@ -26,6 +26,7 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
+      pull-requests: 'write'
 
     strategy:
       matrix:
@@ -65,3 +66,12 @@ jobs:
         destination: ${{env.GCP_BUCKET_WEB}}/${{github.head_ref || github.ref_name}}
         parent: false # will not create a "dist" directory in the bucket
         project_id: ${{ env.GCP_PROJECT }}
+
+    - name: Post preview URL to PR
+      if: github.event_name == 'pull_request'
+      uses: marocchino/sticky-pull-request-comment@v3
+      with:
+        header: preview-url
+        message: |
+          Preview: https://static.empty.nyc/${{ github.head_ref }}
+          (updated for commit ${{ github.event.pull_request.head.sha }})
