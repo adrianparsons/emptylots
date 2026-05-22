@@ -22,6 +22,7 @@ resource "google_apikeys_key" "maps_frontend" {
         [
           var.domain,
           "prod.${var.domain}",
+          "static.${var.domain}",
         ],
         var.additional_allowed_referrers,
       )
