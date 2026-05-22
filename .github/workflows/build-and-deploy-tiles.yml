@@ -4,7 +4,6 @@ on:
   push:
     branches: ["main"]
   pull_request:
-    paths: ["*.dockerfile", "build/*", ".github/workflows/**"]
   workflow_dispatch:
 
 concurrency:
