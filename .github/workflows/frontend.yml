@@ -44,7 +44,7 @@ jobs:
     - run: npm audit --audit-level=moderate
     - run: make build.prod
       env:
-        PUBLIC_URL: ${{ (github.ref_name != 'main' && github.ref_type != 'tag' && github.event_name != 'deployment') && env.URL_PREFIX || '/' }}
+        PUBLIC_URL: ${{ (github.ref_name != 'main' && github.ref_type != 'tag' && github.event_name != 'deployment') && './' || '/' }}
     - name: Create zip file of static production site
       uses: actions/upload-artifact@v4
       with:
