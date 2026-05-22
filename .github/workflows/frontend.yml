@@ -47,7 +47,7 @@ jobs:
     - run: make build.prod
       env:
         PUBLIC_URL: ${{ env.IS_PREVIEW == 'true' && './' || '/' }}
-        TILE_CDN_URL: ${{ env.IS_PREVIEW == 'true' && format('https://cdn.empty.nyc/{0}', env.BRANCH) || 'https://cdn.empty.nyc' }}
+        TILE_CDN_URL: https://cdn.empty.nyc/${{ env.BRANCH }}
     - name: Create zip file of static production site
       uses: actions/upload-artifact@v4
       with:
