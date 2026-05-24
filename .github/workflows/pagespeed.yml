@@ -1,0 +1,125 @@
+name: PageSpeed Insights
+
+on:
+  workflow_run:
+    workflows: ["Generate map tiles"]
+    types: [completed]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  pagespeed:
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      pull-requests: 'write'
+      actions: 'read'
+
+    env:
+      BRANCH: ${{ github.event.workflow_run.head_branch }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+    - name: Verify frontend workflow also succeeded for this SHA
+      run: |
+        set -euo pipefail
+        CONCLUSION=$(gh api \
+          "repos/${GITHUB_REPOSITORY}/actions/workflows/frontend.yml/runs?head_sha=${HEAD_SHA}&per_page=1" \
+          --jq '.workflow_runs[0].conclusion // "pending"')
+        echo "Frontend workflow for ${HEAD_SHA}: ${CONCLUSION}"
+        if [ "$CONCLUSION" != "success" ]; then
+          echo "::warning::Skipping PSI — frontend workflow for ${HEAD_SHA} is '${CONCLUSION}'"
+          exit 1
+        fi
+
+    - name: Find PR number for SHA
+      id: pr
+      run: |
+        set -euo pipefail
+        PR_NUMBER=$(gh api \
+          "repos/${GITHUB_REPOSITORY}/commits/${HEAD_SHA}/pulls" \
+          --jq '.[0].number // empty')
+        if [ -z "$PR_NUMBER" ]; then
+          echo "::error::No PR found for SHA ${HEAD_SHA}"
+          exit 1
+        fi
+        echo "number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+
+    - name: Run PageSpeed Insights against preview
+      id: psi
+      continue-on-error: true
+      env:
+        PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
+      run: |
+        set -euo pipefail
+        HOME_URL="https://static.empty.nyc/${BRANCH}"
+        DEEPLINK_URL="${HOME_URL}?lat=40.71237739081636&lng=-73.94554574256036"
+
+        run_psi() {
+          local url="$1" out="$2" enc
+          enc=$(jq -rn --arg u "$url" '$u|@uri')
+          curl -fsSL --retry 3 --retry-delay 5 \
+            "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${enc}&strategy=mobile&category=performance&key=${PAGESPEED_API_KEY}" \
+            > "$out"
+        }
+
+        extract_row() {
+          jq -r '[
+            (.lighthouseResult.categories.performance.score * 100 | round | tostring),
+            .lighthouseResult.audits["largest-contentful-paint"].displayValue,
+            .lighthouseResult.audits["total-blocking-time"].displayValue,
+            .lighthouseResult.audits["cumulative-layout-shift"].displayValue,
+            .lighthouseResult.audits["first-contentful-paint"].displayValue,
+            .lighthouseResult.audits["speed-index"].displayValue
+          ] | @tsv' "$1"
+        }
+
+        run_psi "$HOME_URL" psi-home.json
+        run_psi "$DEEPLINK_URL" psi-deeplink.json
+
+        IFS=$'\t' read -r H_SCORE H_LCP H_TBT H_CLS H_FCP H_SI < <(extract_row psi-home.json)
+        IFS=$'\t' read -r D_SCORE D_LCP D_TBT D_CLS D_FCP D_SI < <(extract_row psi-deeplink.json)
+
+        ENC_HOME=$(jq -rn --arg u "$HOME_URL" '$u|@uri')
+        ENC_DEEPLINK=$(jq -rn --arg u "$DEEPLINK_URL" '$u|@uri')
+
+        cat > psi-comment.md <<EOF
+        ## PageSpeed Insights — mobile
+
+        | Metric | [Home]($HOME_URL) | [Deep-link]($DEEPLINK_URL) |
+        | --- | --- | --- |
+        | Performance | ${H_SCORE} | ${D_SCORE} |
+        | LCP | ${H_LCP} | ${D_LCP} |
+        | TBT | ${H_TBT} | ${D_TBT} |
+        | CLS | ${H_CLS} | ${D_CLS} |
+        | FCP | ${H_FCP} | ${D_FCP} |
+        | Speed Index | ${H_SI} | ${D_SI} |
+
+        Full reports: [home](https://pagespeed.web.dev/analysis?url=${ENC_HOME}) · [deep-link](https://pagespeed.web.dev/analysis?url=${ENC_DEEPLINK})
+        EOF
+
+    - name: Upload PageSpeed reports
+      if: steps.psi.outcome == 'success'
+      uses: actions/upload-artifact@v4
+      with:
+        name: pagespeed-insights
+        path: |
+          psi-home.json
+          psi-deeplink.json
+          psi-comment.md
+        if-no-files-found: error
+
+    - name: Post PageSpeed results to PR
+      if: steps.psi.outcome == 'success'
+      uses: marocchino/sticky-pull-request-comment@v3
+      with:
+        header: pagespeed
+        number: ${{ steps.pr.outputs.number }}
+        path: psi-comment.md
