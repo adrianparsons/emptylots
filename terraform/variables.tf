@@ -58,3 +58,8 @@ variable "additional_localhost_referrers" {
   type        = list(string)
   default     = []
 }
+
+variable "pagespeed_api_key_uid" {
+  description = "UUID of the existing PageSpeed Insights API key (from `gcloud services api-keys list`). Imported, not created — changing this would force replacement and rotate the key string used by CI."
+  type        = string
+}

@@ -32,6 +32,22 @@ resource "google_apikeys_key" "maps_frontend" {
   depends_on = [google_project_service.apikeys]
 }
 
+resource "google_apikeys_key" "pagespeed" {
+  # UUID of the existing console-created key used by CI to call the PageSpeed
+  # Insights API. Server-side use, so no browser referrer restrictions.
+  name         = var.pagespeed_api_key_uid
+  display_name = "PageSpeed Insights API Key"
+  project      = google_project.empty_lots.project_id
+
+  restrictions {
+    api_targets {
+      service = "pagespeedonline.googleapis.com"
+    }
+  }
+
+  depends_on = [google_project_service.apikeys]
+}
+
 locals {
   # Mirrors the broad Maps Platform API surface enabled for the existing dev key.
   localhost_api_services = [

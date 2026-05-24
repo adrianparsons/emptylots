@@ -11,3 +11,6 @@ maps_api_key_uid               = "00000000-0000-0000-0000-000000000000"
 additional_allowed_referrers   = ["*.example.org"]
 localhost_api_key_uid          = "00000000-0000-0000-0000-000000000000"
 additional_localhost_referrers = ["http://yourmachine.local:1234"]
+
+# UUID of the existing PageSpeed Insights API key used by CI.
+pagespeed_api_key_uid = "00000000-0000-0000-0000-000000000000"
