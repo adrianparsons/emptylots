@@ -19,7 +19,6 @@ jobs:
     permissions:
       contents: 'read'
       pull-requests: 'write'
-      actions: 'read'
 
     env:
       BRANCH: ${{ github.event.workflow_run.head_branch }}
@@ -27,18 +26,6 @@ jobs:
       GH_TOKEN: ${{ github.token }}
 
     steps:
-    - name: Verify frontend workflow also succeeded for this SHA
-      run: |
-        set -euo pipefail
-        CONCLUSION=$(gh api \
-          "repos/${GITHUB_REPOSITORY}/actions/workflows/frontend.yml/runs?head_sha=${HEAD_SHA}&per_page=1" \
-          --jq '.workflow_runs[0].conclusion // "pending"')
-        echo "Frontend workflow for ${HEAD_SHA}: ${CONCLUSION}"
-        if [ "$CONCLUSION" != "success" ]; then
-          echo "::warning::Skipping PSI — frontend workflow for ${HEAD_SHA} is '${CONCLUSION}'"
-          exit 1
-        fi
-
     - name: Find PR number for SHA
       id: pr
       run: |
