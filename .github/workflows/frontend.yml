@@ -132,6 +132,17 @@ jobs:
         Full reports: [home](https://pagespeed.web.dev/analysis?url=${ENC_HOME}) · [deep-link](https://pagespeed.web.dev/analysis?url=${ENC_DEEPLINK})
         EOF
 
+    - name: Upload PageSpeed reports
+      if: github.event_name == 'pull_request' && steps.psi.outcome == 'success'
+      uses: actions/upload-artifact@v4
+      with:
+        name: pagespeed-insights
+        path: |
+          psi-home.json
+          psi-deeplink.json
+          psi-comment.md
+        if-no-files-found: error
+
     - name: Post PageSpeed results to PR
       if: github.event_name == 'pull_request' && steps.psi.outcome == 'success'
       uses: marocchino/sticky-pull-request-comment@v3
