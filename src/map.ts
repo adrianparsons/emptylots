@@ -105,7 +105,7 @@ export async function initMap(): Promise<Map>{
       }
     });
 
-    map.on('click', ['parkinglots', 'lotpolygons'], (e: MapSourceMapEvent) => {
+    map.on('click', ['lotpolygons'], (e: MapSourceMapEvent) => {
       const { lng, lat } = e.lngLat
       if (!e.features || e.features.length === 0) return;
       const props = e.features[0].properties;
@@ -116,7 +116,7 @@ export async function initMap(): Promise<Map>{
         {
           source: 'vacant',
           sourceLayer: 'vacant',
-          id: props.BBL,
+          id: props.bbl,
         },
         {
           selected: true,
@@ -125,14 +125,15 @@ export async function initMap(): Promise<Map>{
 
       const lotinfowindow = document.createElement("info-window") as any
       lotinfowindow.data = {
-        bbl: props.BBL,
-        address: props.Address,
-        ownername: props.OwnerName,
-        lotArea: Number(props.LotArea).toLocaleString(),
-        zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.BoroCode}/${props.Block}/${props.Lot}`,
+        bbl: props.bbl,
+        address: props.address,
+        ownername: props.ownername,
+        lotArea: Number(props.lotarea).toLocaleString(),
+        zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.borocode}/${props.block}/${props.lot}`,
         numPermits: Number(props.num_permits) || 0,
         latestPermitDate: props.latest_permit_date,
         numStalledComplaints: Number(props.num_stalled_complaints) || 0,
+        vacantSince: props.vacant_since
       }
 
       map.easeTo({center: [lng, lat]})
