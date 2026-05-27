@@ -51,11 +51,6 @@ export async function initMap(): Promise<Map>{
       promoteId: 'BBL'
     });
 
-    map.addSource('alllots', {
-      type: 'vector',
-      url: `pmtiles://${tileBaseUrl}/alllotsnyc.pmtiles`,
-    });
-
     map.addLayer({
       'id': 'parkinglots',
       'source-layer': 'parking',
@@ -65,18 +60,6 @@ export async function initMap(): Promise<Map>{
         'fill-color': '#777777'
       }
     });
-
-    map.addLayer({
-      'id': 'alllots',
-      'source-layer': 'MapPLUTO',
-      'type': 'line',
-      'minzoom': 16,
-      'source': 'alllots',
-      'paint': {
-        'line-color': '#111111'
-      }
-    });
-
 
     map.addLayer({
       'id': 'lotpolygons',
