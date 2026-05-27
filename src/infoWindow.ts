@@ -25,7 +25,7 @@ class InfoWindow extends HTMLElement {
         ${numPermits > 0 ? `<p>${numPermits} DOB permit${numPermits > 1 ? 's' : ''}${latestPermitDate ? ` (latest: ${latestPermitDate})` : ''}</p>` : ''}
         ${numStalledComplaints > 0 ? `<p>${numStalledComplaints} stalled construction complaint${numStalledComplaints > 1 ? 's' : ''}</p>` : ''}
         ${zolaLink ? `<p><a href="${zolaLink}" target="_blank">ZoLa ⤴</a></p>` : ''}
-        ${vacantSince ? `<p>vacant since ${}` : ''}
+        ${vacantSince ? `<p>vacant since ${vacantSince.getFullYear()}</p>` : ''}
       </div>
     `;
   }
