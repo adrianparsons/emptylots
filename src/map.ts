@@ -42,7 +42,7 @@ export async function initMap(): Promise<Map>{
     map.addSource('vacant', {
       type: 'vector',
       url: `pmtiles://${tileBaseUrl}/lots.pmtiles`,
-      promoteId: 'BBL'
+      promoteId: 'bbl'
     });
 
     map.addSource('parking', {
@@ -78,17 +78,17 @@ export async function initMap(): Promise<Map>{
 
     var hovered: [] = []
 
-    map.on('mousemove', ['parkinglots', 'lotpolygons'], (e: MapLayerMouseEvent) => {
+    map.on('mousemove', ['lotpolygons'], (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "pointer";
       if (e.features && e.features.length > 0) {
         map.setFeatureState({
           source: 'vacant',
-          sourceLayer: 'vacant',
-          id: e.features[0].properties.BBL,
+          sourceLayer: 'lots',
+          id: e.features[0].properties.bbl,
         }, {
           hover: true
         });
-        e.features[0].id && hovered.push(e.features[0].properties.BBL)
+        e.features[0].id && hovered.push(e.features[0].properties.bbl)
       }
     });
 
@@ -111,11 +111,11 @@ export async function initMap(): Promise<Map>{
       const props = e.features[0].properties;
 
 
-      map.removeFeatureState({ source: 'vacant', sourceLayer:'vacant' });
+      map.removeFeatureState({ source: 'vacant', sourceLayer:'lots' });
       map.setFeatureState(
         {
           source: 'vacant',
-          sourceLayer: 'vacant',
+          sourceLayer: 'lots',
           id: props.bbl,
         },
         {
