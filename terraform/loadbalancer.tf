@@ -76,10 +76,14 @@ resource "google_compute_managed_ssl_certificate" "static_emptynyc" {
 }
 
 resource "google_compute_managed_ssl_certificate" "apex_emptynyc" {
-  name = "apex-emptynyc"
+  name = "apex-emptynyc-2"
   type = "MANAGED"
   managed {
     domains = [var.domain, "www.${var.domain}"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
