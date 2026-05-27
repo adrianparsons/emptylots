@@ -41,7 +41,7 @@ export async function initMap(): Promise<Map>{
 
     map.addSource('vacant', {
       type: 'vector',
-      url: `pmtiles://${tileBaseUrl}/vacant.pmtiles`,
+      url: `pmtiles://${tileBaseUrl}/lots.pmtiles`,
       promoteId: 'BBL'
     });
 
@@ -65,7 +65,7 @@ export async function initMap(): Promise<Map>{
       'id': 'lotpolygons',
       'type': 'fill',
       'source': 'vacant',
-      'source-layer': 'vacant',
+      'source-layer': 'lots',
       'layout': {},
       'paint': {
         'fill-color': ['case', ['boolean', ['feature-state', 'selected'], false],
