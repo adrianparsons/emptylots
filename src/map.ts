@@ -133,7 +133,7 @@ export async function initMap(): Promise<Map>{
         numPermits: Number(props.num_permits) || 0,
         latestPermitDate: props.latest_permit_date,
         numStalledComplaints: Number(props.num_stalled_complaints) || 0,
-        vacantSince: props.vacant_since
+        vacantSince: props.vacant_since ? new Date(`${props.vacant_since}T00:00:00`) : null
       }
 
       map.easeTo({center: [lng, lat]})
