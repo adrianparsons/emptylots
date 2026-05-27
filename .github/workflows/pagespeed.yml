@@ -68,7 +68,8 @@ jobs:
             .lighthouseResult.audits["total-blocking-time"].displayValue,
             .lighthouseResult.audits["cumulative-layout-shift"].displayValue,
             .lighthouseResult.audits["first-contentful-paint"].displayValue,
-            .lighthouseResult.audits["speed-index"].displayValue
+            .lighthouseResult.audits["speed-index"].displayValue,
+            .lighthouseResult.audits["total-byte-weight"].displayValue
           ] | @tsv' "$1"
         }
 
@@ -77,10 +78,10 @@ jobs:
         run_psi "$PROD_HOME_URL" psi-prod-home.json
         run_psi "$PROD_DEEPLINK_URL" psi-prod-deeplink.json
 
-        IFS=$'\t' read -r PH_SCORE PH_LCP PH_TBT PH_CLS PH_FCP PH_SI < <(extract_row psi-preview-home.json)
-        IFS=$'\t' read -r PD_SCORE PD_LCP PD_TBT PD_CLS PD_FCP PD_SI < <(extract_row psi-preview-deeplink.json)
-        IFS=$'\t' read -r RH_SCORE RH_LCP RH_TBT RH_CLS RH_FCP RH_SI < <(extract_row psi-prod-home.json)
-        IFS=$'\t' read -r RD_SCORE RD_LCP RD_TBT RD_CLS RD_FCP RD_SI < <(extract_row psi-prod-deeplink.json)
+        IFS=$'\t' read -r PH_SCORE PH_LCP PH_TBT PH_CLS PH_FCP PH_SI PH_TBW < <(extract_row psi-preview-home.json)
+        IFS=$'\t' read -r PD_SCORE PD_LCP PD_TBT PD_CLS PD_FCP PD_SI PD_TBW < <(extract_row psi-preview-deeplink.json)
+        IFS=$'\t' read -r RH_SCORE RH_LCP RH_TBT RH_CLS RH_FCP RH_SI RH_TBW < <(extract_row psi-prod-home.json)
+        IFS=$'\t' read -r RD_SCORE RD_LCP RD_TBT RD_CLS RD_FCP RD_SI RD_TBW < <(extract_row psi-prod-deeplink.json)
 
         ENC_PREVIEW_HOME=$(jq -rn --arg u "$PREVIEW_HOME_URL" '$u|@uri')
         ENC_PREVIEW_DEEPLINK=$(jq -rn --arg u "$PREVIEW_DEEPLINK_URL" '$u|@uri')
@@ -93,11 +94,12 @@ jobs:
         | Metric | [Preview home]($PREVIEW_HOME_URL) | [Preview deep-link]($PREVIEW_DEEPLINK_URL) | [Prod home]($PROD_HOME_URL) | [Prod deep-link]($PROD_DEEPLINK_URL) |
         | --- | --- | --- | --- | --- |
         | Performance | ${PH_SCORE} | ${PD_SCORE} | ${RH_SCORE} | ${RD_SCORE} |
-        | LCP | ${PH_LCP} | ${PD_LCP} | ${RH_LCP} | ${RD_LCP} |
-        | TBT | ${PH_TBT} | ${PD_TBT} | ${RH_TBT} | ${RD_TBT} |
-        | CLS | ${PH_CLS} | ${PD_CLS} | ${RH_CLS} | ${RD_CLS} |
-        | FCP | ${PH_FCP} | ${PD_FCP} | ${RH_FCP} | ${RD_FCP} |
+        | Largest Contentful Paint | ${PH_LCP} | ${PD_LCP} | ${RH_LCP} | ${RD_LCP} |
+        | Total Blocking Time | ${PH_TBT} | ${PD_TBT} | ${RH_TBT} | ${RD_TBT} |
+        | Cumulative Layout Shift | ${PH_CLS} | ${PD_CLS} | ${RH_CLS} | ${RD_CLS} |
+        | First Contentful Paint | ${PH_FCP} | ${PD_FCP} | ${RH_FCP} | ${RD_FCP} |
         | Speed Index | ${PH_SI} | ${PD_SI} | ${RH_SI} | ${RD_SI} |
+        | Total Page Weight | ${PH_TBW} | ${PD_TBW} | ${RH_TBW} | ${RD_TBW} |
 
         Full reports: [preview home](https://pagespeed.web.dev/analysis?url=${ENC_PREVIEW_HOME}) · [preview deep-link](https://pagespeed.web.dev/analysis?url=${ENC_PREVIEW_DEEPLINK}) · [prod home](https://pagespeed.web.dev/analysis?url=${ENC_PROD_HOME}) · [prod deep-link](https://pagespeed.web.dev/analysis?url=${ENC_PROD_DEEPLINK})
         EOF
