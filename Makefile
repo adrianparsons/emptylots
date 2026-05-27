@@ -27,10 +27,6 @@ tiles.all_lots:
 	./build/query_to_geojson.sh MapPLUTO build/all_lots.sql
 	./build/geojson_to_pmtile.sh MapPLUTO.geojson MapPLUTO.pmtiles MapPLUTO
 
-tiles.vacant:
-	./build/query_to_geojson.sh vacant build/filter_vacant_lots.sql
-	./build/geojson_to_pmtile.sh vacant.geojson vacant.pmtiles vacant
-
 tiles.parking:
 	./build/query_to_geojson.sh parking build/filter_parking_lots.sql
 	./build/geojson_to_pmtile.sh parking.geojson parking.pmtiles parking
