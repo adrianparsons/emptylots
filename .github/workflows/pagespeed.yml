@@ -46,8 +46,12 @@ jobs:
         PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
       run: |
         set -euo pipefail
-        HOME_URL="https://static.empty.nyc/${BRANCH}"
-        DEEPLINK_URL="${HOME_URL}?lat=40.71237739081636&lng=-73.94554574256036"
+        DEEPLINK_QS="lat=40.71237739081636&lng=-73.94554574256036"
+
+        PREVIEW_HOME_URL="https://static.empty.nyc/${BRANCH}"
+        PREVIEW_DEEPLINK_URL="${PREVIEW_HOME_URL}?${DEEPLINK_QS}"
+        PROD_HOME_URL="https://empty.nyc"
+        PROD_DEEPLINK_URL="${PROD_HOME_URL}?${DEEPLINK_QS}"
 
         run_psi() {
           local url="$1" out="$2" enc
@@ -68,28 +72,34 @@ jobs:
           ] | @tsv' "$1"
         }
 
-        run_psi "$HOME_URL" psi-home.json
-        run_psi "$DEEPLINK_URL" psi-deeplink.json
+        run_psi "$PREVIEW_HOME_URL" psi-preview-home.json
+        run_psi "$PREVIEW_DEEPLINK_URL" psi-preview-deeplink.json
+        run_psi "$PROD_HOME_URL" psi-prod-home.json
+        run_psi "$PROD_DEEPLINK_URL" psi-prod-deeplink.json
 
-        IFS=$'\t' read -r H_SCORE H_LCP H_TBT H_CLS H_FCP H_SI < <(extract_row psi-home.json)
-        IFS=$'\t' read -r D_SCORE D_LCP D_TBT D_CLS D_FCP D_SI < <(extract_row psi-deeplink.json)
+        IFS=$'\t' read -r PH_SCORE PH_LCP PH_TBT PH_CLS PH_FCP PH_SI < <(extract_row psi-preview-home.json)
+        IFS=$'\t' read -r PD_SCORE PD_LCP PD_TBT PD_CLS PD_FCP PD_SI < <(extract_row psi-preview-deeplink.json)
+        IFS=$'\t' read -r RH_SCORE RH_LCP RH_TBT RH_CLS RH_FCP RH_SI < <(extract_row psi-prod-home.json)
+        IFS=$'\t' read -r RD_SCORE RD_LCP RD_TBT RD_CLS RD_FCP RD_SI < <(extract_row psi-prod-deeplink.json)
 
-        ENC_HOME=$(jq -rn --arg u "$HOME_URL" '$u|@uri')
-        ENC_DEEPLINK=$(jq -rn --arg u "$DEEPLINK_URL" '$u|@uri')
+        ENC_PREVIEW_HOME=$(jq -rn --arg u "$PREVIEW_HOME_URL" '$u|@uri')
+        ENC_PREVIEW_DEEPLINK=$(jq -rn --arg u "$PREVIEW_DEEPLINK_URL" '$u|@uri')
+        ENC_PROD_HOME=$(jq -rn --arg u "$PROD_HOME_URL" '$u|@uri')
+        ENC_PROD_DEEPLINK=$(jq -rn --arg u "$PROD_DEEPLINK_URL" '$u|@uri')
 
         cat > psi-comment.md <<EOF
         ## PageSpeed Insights — mobile
 
-        | Metric | [Home]($HOME_URL) | [Deep-link]($DEEPLINK_URL) |
-        | --- | --- | --- |
-        | Performance | ${H_SCORE} | ${D_SCORE} |
-        | LCP | ${H_LCP} | ${D_LCP} |
-        | TBT | ${H_TBT} | ${D_TBT} |
-        | CLS | ${H_CLS} | ${D_CLS} |
-        | FCP | ${H_FCP} | ${D_FCP} |
-        | Speed Index | ${H_SI} | ${D_SI} |
+        | Metric | [Preview home]($PREVIEW_HOME_URL) | [Preview deep-link]($PREVIEW_DEEPLINK_URL) | [Prod home]($PROD_HOME_URL) | [Prod deep-link]($PROD_DEEPLINK_URL) |
+        | --- | --- | --- | --- | --- |
+        | Performance | ${PH_SCORE} | ${PD_SCORE} | ${RH_SCORE} | ${RD_SCORE} |
+        | LCP | ${PH_LCP} | ${PD_LCP} | ${RH_LCP} | ${RD_LCP} |
+        | TBT | ${PH_TBT} | ${PD_TBT} | ${RH_TBT} | ${RD_TBT} |
+        | CLS | ${PH_CLS} | ${PD_CLS} | ${RH_CLS} | ${RD_CLS} |
+        | FCP | ${PH_FCP} | ${PD_FCP} | ${RH_FCP} | ${RD_FCP} |
+        | Speed Index | ${PH_SI} | ${PD_SI} | ${RH_SI} | ${RD_SI} |
 
-        Full reports: [home](https://pagespeed.web.dev/analysis?url=${ENC_HOME}) · [deep-link](https://pagespeed.web.dev/analysis?url=${ENC_DEEPLINK})
+        Full reports: [preview home](https://pagespeed.web.dev/analysis?url=${ENC_PREVIEW_HOME}) · [preview deep-link](https://pagespeed.web.dev/analysis?url=${ENC_PREVIEW_DEEPLINK}) · [prod home](https://pagespeed.web.dev/analysis?url=${ENC_PROD_HOME}) · [prod deep-link](https://pagespeed.web.dev/analysis?url=${ENC_PROD_DEEPLINK})
         EOF
 
     - name: Upload PageSpeed reports
@@ -98,8 +108,10 @@ jobs:
       with:
         name: pagespeed-insights
         path: |
-          psi-home.json
-          psi-deeplink.json
+          psi-preview-home.json
+          psi-preview-deeplink.json
+          psi-prod-home.json
+          psi-prod-deeplink.json
           psi-comment.md
         if-no-files-found: error
 
