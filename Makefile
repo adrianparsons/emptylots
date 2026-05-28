@@ -23,18 +23,6 @@ watch:
 	cp -r static dist/
 	npx parcel
 
-tiles.all_lots:
-	./build/query_to_geojson.sh MapPLUTO build/all_lots.sql
-	./build/geojson_to_pmtile.sh MapPLUTO.pmtiles -L MapPLUTO:MapPLUTO.geojson
-
-tiles.vacant:
-	./build/query_to_geojson.sh vacant build/filter_vacant_lots.sql
-	./build/geojson_to_pmtile.sh vacant.pmtiles -L vacant:vacant.geojson
-
-tiles.parking:
-	./build/query_to_geojson.sh parking build/filter_parking_lots.sql
-	./build/geojson_to_pmtile.sh parking.pmtiles -L parking:parking.geojson
-
 tiles.deploy:
 	./build/cp_to_gcloud_bucket.sh tiles/*.pmtiles $(bucket) $(gcproject)
 
