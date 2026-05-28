@@ -41,21 +41,15 @@ export async function initMap(): Promise<Map>{
 
     map.addSource('vacant', {
       type: 'vector',
-      url: `pmtiles://${tileBaseUrl}/lots.pmtiles`,
+      url: `pmtiles://https://cdn.empty.nyc/amp/use-bq-data/lots.pmtiles`,
       promoteId: 'bbl'
-    });
-
-    map.addSource('parking', {
-      type: 'vector',
-      url: `pmtiles://${tileBaseUrl}/parking.pmtiles`,
-      promoteId: 'BBL'
     });
 
     map.addLayer({
       'id': 'parkinglots',
       'source-layer': 'parking',
       'type': 'fill',
-      'source': 'parking',
+      'source': 'vacant',
       'paint': {
         'fill-color': '#777777'
       }
@@ -78,7 +72,7 @@ export async function initMap(): Promise<Map>{
 
     var hovered: [] = []
 
-    map.on('mousemove', ['lotpolygons'], (e: MapLayerMouseEvent) => {
+    map.on('mousemove', ['lotpolygons', 'parkinglots'], (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "pointer";
       if (e.features && e.features.length > 0) {
         map.setFeatureState({
@@ -105,7 +99,7 @@ export async function initMap(): Promise<Map>{
       }
     });
 
-    map.on('click', ['lotpolygons'], (e: MapSourceMapEvent) => {
+    map.on('click', ['lotpolygons', 'parkinglots'], (e: MapSourceMapEvent) => {
       const { lng, lat } = e.lngLat
       if (!e.features || e.features.length === 0) return;
       const props = e.features[0].properties;
