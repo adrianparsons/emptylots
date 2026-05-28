@@ -44,8 +44,10 @@ tiles.cors:
 tiles.from_bq:
 	mkdir -p tiles
 	./build/pull_bigquery_data_for_tiles.sh build/all_lots_with_vacancy_data.sql > tiles/lots.json
+	./build/pull_bigquery_data_for_tiles.sh build/parking_lots_from_bq.sql > tiles/parking.json
 	./build/json_to_geojsonl.sh tiles/lots.json tiles/lots.geojsonl
-	./build/geojson_to_pmtile.sh lots.geojsonl lots.pmtiles lots
+	./build/json_to_geojsonl.sh tiles/parking.json tiles/parking.geojsonl
+	./build/geojson_to_pmtile.sh lots.pmtiles -L lots:lots.geojsonl parking:parking.geojsonl
 
 tiles.vacant_bq:
 	@test -n "$(BQ_DATASET)" || (echo "Error: BQ_DATASET is required. Usage: make tiles.vacant_bq BQ_DATASET=<your_dataset>" && exit 1)
