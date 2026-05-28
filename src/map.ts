@@ -41,7 +41,7 @@ export async function initMap(): Promise<Map>{
 
     map.addSource('vacant', {
       type: 'vector',
-      url: `pmtiles://https://cdn.empty.nyc/amp/use-bq-data/lots.pmtiles`,
+      url: `pmtiles://${tileBaseUrl}/lots.pmtiles`,
       promoteId: 'bbl'
     });
 
