@@ -25,15 +25,15 @@ watch:
 
 tiles.all_lots:
 	./build/query_to_geojson.sh MapPLUTO build/all_lots.sql
-	./build/geojson_to_pmtile.sh MapPLUTO.geojson MapPLUTO.pmtiles MapPLUTO
+	./build/geojson_to_pmtile.sh MapPLUTO.pmtiles -L MapPLUTO:MapPLUTO.geojson
 
 tiles.vacant:
 	./build/query_to_geojson.sh vacant build/filter_vacant_lots.sql
-	./build/geojson_to_pmtile.sh vacant.geojson vacant.pmtiles vacant
+	./build/geojson_to_pmtile.sh vacant.pmtiles -L vacant:vacant.geojson
 
 tiles.parking:
 	./build/query_to_geojson.sh parking build/filter_parking_lots.sql
-	./build/geojson_to_pmtile.sh parking.geojson parking.pmtiles parking
+	./build/geojson_to_pmtile.sh parking.pmtiles -L parking:parking.geojson
 
 tiles.deploy:
 	./build/cp_to_gcloud_bucket.sh tiles/*.pmtiles $(bucket) $(gcproject)
@@ -54,7 +54,7 @@ tiles.vacant_bq:
 	mkdir -p tiles
 	BQ_DATASET=$(BQ_DATASET) ./build/pull_bigquery_data_for_tiles.sh build/vacant_lots_from_bq.sql > tiles/vacant.json
 	./build/json_to_geojsonl.sh tiles/vacant.json tiles/vacant.geojsonl
-	./build/geojson_to_pmtile.sh vacant.geojsonl vacant.pmtiles vacant
+	./build/geojson_to_pmtile.sh vacant.pmtiles -L vacant:vacant.geojsonl
 
 ## BigQuery data loading
 ## Usage: make bq.load.permits CSV=local/data/DOB_Permit_Issuance.csv
