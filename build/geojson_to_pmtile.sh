@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -e
+set -euo pipefail
 PMTILE_FILE_NAME=$1; shift   # remaining args forwarded to tippecanoe (e.g. -L '{"layer":"lots","file":"/usr/local/tiles/lots.geojson"}')
 CONTAINER_CMD="${CONTAINER_CMD:-docker}"
 
