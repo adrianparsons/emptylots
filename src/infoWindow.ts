@@ -16,7 +16,7 @@ class InfoWindow extends HTMLElement {
   }
 
   private render() {
-    const { address, ownername, lotArea, zolaLink, bbl, numPermits, latestPermitDate, numStalledComplaints } = this._data;
+    const { address, ownername, lotArea, zolaLink, bbl, numPermits, latestPermitDate, numStalledComplaints, vacantSince } = this._data;
     this.innerHTML = `
       <div>
         <h3 style="margin-top: 0">${address || ''}</h3>
@@ -25,7 +25,7 @@ class InfoWindow extends HTMLElement {
         ${numPermits > 0 ? `<p>${numPermits} DOB permit${numPermits > 1 ? 's' : ''}${latestPermitDate ? ` (latest: ${latestPermitDate})` : ''}</p>` : ''}
         ${numStalledComplaints > 0 ? `<p>${numStalledComplaints} stalled construction complaint${numStalledComplaints > 1 ? 's' : ''}</p>` : ''}
         ${zolaLink ? `<p><a href="${zolaLink}" target="_blank">ZoLa ⤴</a></p>` : ''}
-        <p>${bbl}</p>
+        ${vacantSince ? `<p>vacant since ${vacantSince.getFullYear()}</p>` : ''}
       </div>
     `;
   }

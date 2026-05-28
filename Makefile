@@ -23,18 +23,6 @@ watch:
 	cp -r static dist/
 	npx parcel
 
-tiles.all_lots:
-	./build/query_to_geojson.sh MapPLUTO build/all_lots.sql
-	./build/geojson_to_pmtile.sh MapPLUTO.geojson MapPLUTO.pmtiles MapPLUTO
-
-tiles.vacant:
-	./build/query_to_geojson.sh vacant build/filter_vacant_lots.sql
-	./build/geojson_to_pmtile.sh vacant.geojson vacant.pmtiles vacant
-
-tiles.parking:
-	./build/query_to_geojson.sh parking build/filter_parking_lots.sql
-	./build/geojson_to_pmtile.sh parking.geojson parking.pmtiles parking
-
 tiles.deploy:
 	./build/cp_to_gcloud_bucket.sh tiles/*.pmtiles $(bucket) $(gcproject)
 
@@ -44,15 +32,17 @@ tiles.cors:
 tiles.from_bq:
 	mkdir -p tiles
 	./build/pull_bigquery_data_for_tiles.sh build/all_lots_with_vacancy_data.sql > tiles/lots.json
+	./build/pull_bigquery_data_for_tiles.sh build/parking_lots_from_bq.sql > tiles/parking.json
 	./build/json_to_geojsonl.sh tiles/lots.json tiles/lots.geojsonl
-	./build/geojson_to_pmtile.sh lots.geojsonl lots.pmtiles lots
+	./build/json_to_geojsonl.sh tiles/parking.json tiles/parking.geojsonl
+	./build/geojson_to_pmtile.sh lots.pmtiles -L lots:/usr/local/tiles/lots.geojsonl -L parking:/usr/local/tiles/parking.geojsonl
 
 tiles.vacant_bq:
 	@test -n "$(BQ_DATASET)" || (echo "Error: BQ_DATASET is required. Usage: make tiles.vacant_bq BQ_DATASET=<your_dataset>" && exit 1)
 	mkdir -p tiles
 	BQ_DATASET=$(BQ_DATASET) ./build/pull_bigquery_data_for_tiles.sh build/vacant_lots_from_bq.sql > tiles/vacant.json
 	./build/json_to_geojsonl.sh tiles/vacant.json tiles/vacant.geojsonl
-	./build/geojson_to_pmtile.sh vacant.geojsonl vacant.pmtiles vacant
+	./build/geojson_to_pmtile.sh vacant.pmtiles -L vacant:vacant.geojsonl
 
 ## BigQuery data loading
 ## Usage: make bq.load.permits CSV=local/data/DOB_Permit_Issuance.csv

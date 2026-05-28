@@ -41,48 +41,25 @@ export async function initMap(): Promise<Map>{
 
     map.addSource('vacant', {
       type: 'vector',
-      url: `pmtiles://${tileBaseUrl}/vacant.pmtiles`,
-      promoteId: 'BBL'
-    });
-
-    map.addSource('parking', {
-      type: 'vector',
-      url: `pmtiles://${tileBaseUrl}/parking.pmtiles`,
-      promoteId: 'BBL'
-    });
-
-    map.addSource('alllots', {
-      type: 'vector',
-      url: `pmtiles://${tileBaseUrl}/alllotsnyc.pmtiles`,
+      url: `pmtiles://${tileBaseUrl}/lots.pmtiles`,
+      promoteId: 'bbl'
     });
 
     map.addLayer({
       'id': 'parkinglots',
       'source-layer': 'parking',
       'type': 'fill',
-      'source': 'parking',
+      'source': 'vacant',
       'paint': {
         'fill-color': '#777777'
       }
     });
 
     map.addLayer({
-      'id': 'alllots',
-      'source-layer': 'MapPLUTO',
-      'type': 'line',
-      'minzoom': 16,
-      'source': 'alllots',
-      'paint': {
-        'line-color': '#111111'
-      }
-    });
-
-
-    map.addLayer({
       'id': 'lotpolygons',
       'type': 'fill',
       'source': 'vacant',
-      'source-layer': 'vacant',
+      'source-layer': 'lots',
       'layout': {},
       'paint': {
         'fill-color': ['case', ['boolean', ['feature-state', 'selected'], false],
@@ -95,17 +72,17 @@ export async function initMap(): Promise<Map>{
 
     var hovered: [] = []
 
-    map.on('mousemove', ['parkinglots', 'lotpolygons'], (e: MapLayerMouseEvent) => {
+    map.on('mousemove', ['lotpolygons', 'parkinglots'], (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "pointer";
       if (e.features && e.features.length > 0) {
         map.setFeatureState({
           source: 'vacant',
-          sourceLayer: 'vacant',
-          id: e.features[0].properties.BBL,
+          sourceLayer: 'lots',
+          id: e.features[0].properties.bbl,
         }, {
           hover: true
         });
-        e.features[0].id && hovered.push(e.features[0].properties.BBL)
+        e.features[0].id && hovered.push(e.features[0].properties.bbl)
       }
     });
 
@@ -122,18 +99,18 @@ export async function initMap(): Promise<Map>{
       }
     });
 
-    map.on('click', ['parkinglots', 'lotpolygons'], (e: MapSourceMapEvent) => {
+    map.on('click', ['lotpolygons', 'parkinglots'], (e: MapSourceMapEvent) => {
       const { lng, lat } = e.lngLat
       if (!e.features || e.features.length === 0) return;
       const props = e.features[0].properties;
 
 
-      map.removeFeatureState({ source: 'vacant', sourceLayer:'vacant' });
+      map.removeFeatureState({ source: 'vacant', sourceLayer:'lots' });
       map.setFeatureState(
         {
           source: 'vacant',
-          sourceLayer: 'vacant',
-          id: props.BBL,
+          sourceLayer: 'lots',
+          id: props.bbl,
         },
         {
           selected: true,
@@ -142,14 +119,15 @@ export async function initMap(): Promise<Map>{
 
       const lotinfowindow = document.createElement("info-window") as any
       lotinfowindow.data = {
-        bbl: props.BBL,
-        address: props.Address,
-        ownername: props.OwnerName,
-        lotArea: Number(props.LotArea).toLocaleString(),
-        zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.BoroCode}/${props.Block}/${props.Lot}`,
+        bbl: props.bbl,
+        address: props.address,
+        ownername: props.ownername,
+        lotArea: Number(props.lotarea).toLocaleString(),
+        zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.borocode}/${props.block}/${props.lot}`,
         numPermits: Number(props.num_permits) || 0,
         latestPermitDate: props.latest_permit_date,
         numStalledComplaints: Number(props.num_stalled_complaints) || 0,
+        vacantSince: props.vacant_since ? new Date(`${props.vacant_since}T00:00:00`) : null
       }
 
       map.easeTo({center: [lng, lat]})

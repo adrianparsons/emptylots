@@ -4,7 +4,7 @@ import type { Map, MapLayerMouseEvent} from "maplibre-gl";
 
 function markerClickHandler(e: MapLayerMouseEvent) {
   if (!e.features || e.features.length == 0) return;
-  e.features[0] && showStreetViewPanorama([e.features[0].properties.Longitude, e.features[0].properties.Latitude]);
+  e.features[0] && showStreetViewPanorama([e.features[0].properties.longitude, e.features[0].properties.latitude]);
 }
 
 async function init(): Promise<void> {
