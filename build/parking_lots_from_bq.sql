@@ -1,19 +1,13 @@
-with parking as (
-    select *
-    from `empty-lots`.`nyc_pluto_historical`.`stg_parking`
-),
-
-
-versions as (
+with versions as (
     select distinct
         version
     from `nyc_pluto_historical.stg_lots_filtered`
 )
 
 select
-    *,
+    parking.*,
     st_asgeojson(geo.geometry) as geometry
-from parking
+from `empty-lots`.`nyc_pluto_historical`.`stg_parking` as parking
 join `empty-lots.nyc_pluto_historical.stg_geometry` as geo
     on parking.bbl = geo.bbl
-where filtered.version = (select max(version) from versions)
+where parking.version = (select max(version) from versions)
