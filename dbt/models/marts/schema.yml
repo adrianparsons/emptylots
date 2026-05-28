@@ -17,3 +17,11 @@ models:
         description: "Total stalled construction complaints for this lot"
         tests:
           - not_null
+
+  - name: mart_parking_lots
+    description: "Parking lots from the latest PLUTO version joined with lot geometry. Tile-ready."
+    columns:
+      - name: bbl
+        description: "BBL as float64 — join key to stg_geometry"
+        tests:
+          - not_null
