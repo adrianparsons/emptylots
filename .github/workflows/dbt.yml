@@ -25,7 +25,6 @@ jobs:
       run:
         working-directory: dbt
 
-    # Add "id-token" with the intended permissions.
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -49,8 +48,8 @@ jobs:
 
     - name: Write dbt profile
       # Read-only docs build. Uses the Application Default Credentials provided
-      # by the auth step above (Workload Identity Federation) — no SA key. The
-      # identity only needs BigQuery read access; docs generate never writes.
+      # by the auth step above (Workload Identity Federation) — no SA key, and
+      # the identity only needs BigQuery read access.
       run: |
         mkdir -p "$HOME/.dbt"
         cat > "$HOME/.dbt/profiles.yml" <<EOF
@@ -63,34 +62,29 @@ jobs:
               project: ${GCP_PROJECT}
               dataset: nyc_pluto_historical
               location: US
-              threads: 4
-              job_execution_timeout_seconds: 300
         EOF
 
     - name: dbt docs generate
       # Compiles the manifest from this branch's models and reads table/column
       # metadata from BigQuery. --static bundles manifest + catalog into a
       # single self-contained HTML file, ideal for hosting from a bucket.
-      run: dbt docs generate --static
-
-    - name: Stage docs for upload
       run: |
-        mkdir -p dbt-docs
-        cp target/static_index.html dbt-docs/index.html
+        dbt docs generate --static
+        mv target/static_index.html target/index.html
 
     - name: Upload docs artifact
       uses: actions/upload-artifact@v4
       with:
         name: dbt-docs
-        path: dbt/dbt-docs/index.html
+        path: dbt/target/index.html
         if-no-files-found: error
 
     - id: 'upload-docs'
       uses: 'google-github-actions/upload-cloud-storage@v3'
       with:
-        path: 'dbt/dbt-docs'
+        path: 'dbt/target/index.html'
         destination: ${{ env.GCP_BUCKET_WEB }}/${{ env.BRANCH }}/dbt-docs
-        parent: false # do not create a "dbt-docs" dir inside the destination
+        parent: false # upload as <branch>/dbt-docs/index.html, no extra dirs
         project_id: ${{ env.GCP_PROJECT }}
 
     - name: Post docs URL to PR
