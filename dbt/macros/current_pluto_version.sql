@@ -6,7 +6,7 @@
 {% macro current_pluto_version() %}
   {%- set result = run_query("select max(version) as v from " ~ ref('stg_lots_filtered')) -%}
   {%- if execute -%}
-    '{{ result.columns[0].values()[0] }}'
+    '{{ result.rows[0][0] }}'
   {%- else -%}
     ''
   {%- endif -%}
