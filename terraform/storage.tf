@@ -11,6 +11,17 @@ resource "google_storage_bucket" "nyc_lots_web" {
   }
 }
 
+# Source PLUTO historical data archive. Name is literal (does not follow the
+# `${var.bucket_prefix}-` convention used by the buckets this app provisions).
+resource "google_storage_bucket" "nyc_pluto_historical" {
+  name     = "nyc-pluto-historical"
+  location = "US"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "google_storage_bucket" "nyc_lots_tiles" {
   name     = "${var.bucket_prefix}-tiles"
   location = "US-EAST4"
