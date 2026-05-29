@@ -8,7 +8,7 @@
 with parking as (
     select *
     from {{ ref('stg_parking') }}
-    where version = (select max(version) from {{ ref('stg_parking') }})
+    where version = {{ current_pluto_version() }}
 ),
 
 geometry as (
