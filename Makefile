@@ -5,7 +5,7 @@ gcproject = empty-lots
 
 .PHONY: clean watch tiles.cors build tiles_from_bq \
 	vendor.permits vendor.stalled vendor.building vendor.pluto \
-	dbt.deps dbt.stage_external dbt.build
+	bq.load.permits bq.load.stalled bq.load.building dbt.build
 
 clean:
 	rm -rf dist/*
@@ -46,12 +46,19 @@ tiles.vacant_bq:
 	./build/json_to_geojsonl.sh tiles/vacant.json tiles/vacant.geojsonl
 	./build/geojson_to_pmtile.sh vacant.pmtiles -L vacant:vacant.geojsonl
 
-## Raw data: vendor (snapshot to GCS) then expose as dbt external tables.
+## Raw data: vendor (snapshot to GCS), then bq load into native BigQuery tables.
 ##
-## 1. Vendor a dataset (download from NYC -> immutable dated path in the bucket).
-##    Each target prints a provenance block to paste into
-##    dbt/models/staging/sources.yml (set `version` + the external `location`).
-## 2. Run `make dbt.stage_external` to (re)create the BigQuery external tables.
+## 1. `make vendor.<dataset>` downloads from NYC -> immutable dated path in the
+##    bucket, and prints a provenance block to paste into
+##    dbt/models/staging/sources.yml.
+## 2. Bump the matching *_CSV path below to the dated snapshot it printed.
+## 3. `make bq.load.<dataset>` loads that snapshot into raw_dob.* (schema from
+##    build/schemas/, --replace so the table mirrors the snapshot).
+
+# Vendored snapshots to load from (bump the date after each `make vendor.*`).
+PERMITS_CSV  = gs://nyc-pluto-historical/raw/dob_permit_issuance/TODO/permit_issuance.csv
+STALLED_CSV  = gs://nyc-pluto-historical/raw/dob_stalled_construction/TODO/stalled_construction.csv
+BUILDING_CSV = gs://nyc-pluto-historical/raw/dob_building/TODO/building.csv
 
 vendor.permits:
 	./build/vendor_dataset.sh \
@@ -82,13 +89,25 @@ vendor.pluto:
 	./build/combine_csvs.sh
 	./build/cp_csv_to_bucket.sh
 
+bq.load.permits:
+	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
+		empty-lots:raw_dob.permit_issuance \
+		$(PERMITS_CSV) \
+		build/schemas/permit_issuance.json
+
+bq.load.stalled:
+	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
+		empty-lots:raw_dob.stalled_construction \
+		$(STALLED_CSV) \
+		build/schemas/stalled_construction.json
+
+bq.load.building:
+	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
+		empty-lots:raw_dob.building \
+		$(BUILDING_CSV) \
+		build/schemas/building.json
+
 ## dbt
-dbt.deps:
-	cd dbt && dbt deps
-
-dbt.stage_external: dbt.deps
-	cd dbt && dbt run-operation stage_external_sources
-
 dbt.build:
 	cd dbt && dbt build
 

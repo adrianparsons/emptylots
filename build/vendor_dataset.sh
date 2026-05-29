@@ -70,21 +70,15 @@ gcloud storage cp "$local_file" "$dest"
 cat <<EOF
 
 ────────────────────────────────────────────────────────────────────────────
-Vendored ${slug} @ ${version}. Paste under this table in sources.yml:
-────────────────────────────────────────────────────────────────────────────
-        meta:
-          publisher: "${publisher}"
-          source_url: "${url}"
-          dataset_id: "${dataset_id:-TODO}"
-          version: "${version}"
-          retrieved_at: "${retrieved_at}"
-          row_count: ${row_count}
-          sha256: "${sha256}"
-        external:
-          location: "${dest}"
-          options:
-            format: csv
-            skip_leading_rows: 1
-            allow_quoted_newlines: true
+Vendored ${slug} @ ${version}
+  snapshot:  ${dest}
+  rows:      ${row_count}
+  sha256:    ${sha256}
+
+Next:
+  1. In dbt/models/staging/sources.yml, set this table's meta.version: "${version}"
+  2. In the Makefile, point its *_CSV variable at:
+        ${dest}
+  3. make bq.load.<dataset>
 ────────────────────────────────────────────────────────────────────────────
 EOF
