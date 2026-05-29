@@ -3,7 +3,9 @@
 bucket = gs://nyc-lots-tiles
 gcproject = empty-lots
 
-.PHONY: clean watch tiles.cors build tiles_from_bq
+.PHONY: clean watch tiles.cors build tiles_from_bq \
+	vendor.permits vendor.stalled vendor.building vendor.pluto \
+	dbt.deps dbt.stage_external dbt.build
 
 clean:
 	rm -rf dist/*
@@ -44,26 +46,51 @@ tiles.vacant_bq:
 	./build/json_to_geojsonl.sh tiles/vacant.json tiles/vacant.geojsonl
 	./build/geojson_to_pmtile.sh vacant.pmtiles -L vacant:vacant.geojsonl
 
-## BigQuery data loading
-## Usage: make bq.load.permits CSV=local/data/DOB_Permit_Issuance.csv
+## Raw data: vendor (snapshot to GCS) then expose as dbt external tables.
+##
+## 1. Vendor a dataset (download from NYC -> immutable dated path in the bucket).
+##    Each target prints a provenance block to paste into
+##    dbt/models/staging/sources.yml (set `version` + the external `location`).
+## 2. Run `make dbt.stage_external` to (re)create the BigQuery external tables.
 
-bq.load.permits:
-	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines \
-		empty-lots:raw_dob.permit_issuance \
-		$(CSV) \
-		build/schemas/permit_issuance.json
+vendor.permits:
+	./build/vendor_dataset.sh \
+		--slug dob_permit_issuance \
+		--filename permit_issuance.csv \
+		--publisher 'NYC Department of Buildings' \
+		--dataset-id ipu4-2q9a \
+		--url 'https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD'
 
-bq.load.stalled:
-	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines \
-		empty-lots:raw_dob.stalled_construction \
-		$(CSV) \
-		build/schemas/stalled_construction.json
+vendor.stalled:
+	./build/vendor_dataset.sh \
+		--slug dob_stalled_construction \
+		--filename stalled_construction.csv \
+		--publisher 'NYC Department of Buildings' \
+		--dataset-id i296-73x5 \
+		--url 'https://data.cityofnewyork.us/api/views/i296-73x5/rows.csv?accessType=DOWNLOAD'
 
-bq.load.building:
-	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines \
-		empty-lots:raw_dob.building \
-		$(CSV) \
-		build/schemas/building.json
+vendor.building:
+	./build/vendor_dataset.sh \
+		--slug dob_building \
+		--filename building.csv \
+		--publisher 'NYC DOITT' \
+		--dataset-id 5zhs-2jue \
+		--url 'https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD'
+
+vendor.pluto:
+	./build/get_historical_pluto.sh
+	./build/combine_csvs.sh
+	./build/cp_csv_to_bucket.sh
+
+## dbt
+dbt.deps:
+	cd dbt && dbt deps
+
+dbt.stage_external: dbt.deps
+	cd dbt && dbt run-operation stage_external_sources
+
+dbt.build:
+	cd dbt && dbt build
 
 create_image.tippecanoe:
 	./build/create_tippecanoe_image.sh
