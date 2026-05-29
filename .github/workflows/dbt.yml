@@ -61,7 +61,7 @@ jobs:
               method: oauth
               project: ${GCP_PROJECT}
               dataset: nyc_pluto_historical
-              location: US
+              location: us-east4
         EOF
 
     - name: dbt docs generate
