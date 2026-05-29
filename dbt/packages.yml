@@ -1,0 +1,6 @@
+packages:
+  # Declaratively manage BigQuery external tables over the vendored CSVs in GCS.
+  # Source definitions live in models/staging/sources.yml; create/refresh the
+  # external tables with `dbt run-operation stage_external_sources`.
+  - package: dbt-labs/dbt_external_tables
+    version: [">=0.11.0", "<1.0.0"]
