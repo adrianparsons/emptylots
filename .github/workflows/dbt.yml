@@ -1,0 +1,97 @@
+name: dbt docs
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+  GCP_BUCKET_WEB: ${{ vars.GCP_BUCKET_WEB }}
+  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+  BRANCH: ${{ github.head_ref || github.ref_name }}
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: dbt
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      pull-requests: 'write'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    # Pinned to match the locally installed toolchain (dbt-core 1.11.x).
+    - run: pip install 'dbt-bigquery==1.10.2'
+
+    - id: auth
+      uses: 'google-github-actions/auth@v3'
+      with:
+        project_id: ${{ env.GCP_PROJECT }}
+        workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+    - name: Write dbt profile
+      # Read-only docs build. Uses the Application Default Credentials provided
+      # by the auth step above (Workload Identity Federation) — no SA key, and
+      # the identity only needs BigQuery read access.
+      run: |
+        mkdir -p "$HOME/.dbt"
+        cat > "$HOME/.dbt/profiles.yml" <<EOF
+        empty_lots:
+          target: docs
+          outputs:
+            docs:
+              type: bigquery
+              method: oauth
+              project: ${GCP_PROJECT}
+              dataset: nyc_pluto_historical
+              location: us-east4
+        EOF
+
+    - name: dbt docs generate
+      # Compiles the manifest from this branch's models and reads table/column
+      # metadata from BigQuery. --static bundles manifest + catalog into a
+      # single self-contained HTML file, ideal for hosting from a bucket.
+      run: |
+        dbt docs generate --static
+        mv target/static_index.html target/index.html
+
+    - name: Upload docs artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dbt-docs
+        path: dbt/target/index.html
+        if-no-files-found: error
+
+    - id: 'upload-docs'
+      uses: 'google-github-actions/upload-cloud-storage@v3'
+      with:
+        path: 'dbt/target/index.html'
+        destination: ${{ env.GCP_BUCKET_WEB }}/${{ env.BRANCH }}/dbt-docs
+        parent: false # upload as <branch>/dbt-docs/index.html, no extra dirs
+        project_id: ${{ env.GCP_PROJECT }}
+
+    - name: Post docs URL to PR
+      if: github.event_name == 'pull_request'
+      uses: marocchino/sticky-pull-request-comment@v3
+      with:
+        header: dbt-docs-url
+        message: |
+          📚 dbt docs: https://static.empty.nyc/${{ env.BRANCH }}/dbt-docs/
+          (updated for commit ${{ github.event.pull_request.head.sha }})
