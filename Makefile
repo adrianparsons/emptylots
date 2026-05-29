@@ -68,13 +68,5 @@ bq.load.building:
 create_image.tippecanoe:
 	./build/create_tippecanoe_image.sh
 
-create_image.gdal:
-	./build/create_gdal_image.sh
-
 push_image.tippecanoe:
 	docker push ghcr.io/adrianparsons/tippecanoe
-
-push_image.gdal:
-	docker push ghcr.io/adrianparsons/gdal
-
-
