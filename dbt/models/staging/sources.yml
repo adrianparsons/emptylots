@@ -1,20 +1,196 @@
 version: 2
 
+# Raw, vendored City of New York data. Each table is an external table over an
+# immutable CSV snapshot in gs://nyc-pluto-historical, created/refreshed with:
+#
+#     dbt run-operation stage_external_sources   (make dbt.stage_external)
+#
+# `meta` records provenance (publisher, source URL, NYC Open Data id, the
+# vendored version, checksum) and shows up in `dbt docs`. To refresh a dataset,
+# re-vendor it (build/vendor_dataset.sh), bump `version` + the external location
+# to the new dated path, and re-run stage_external_sources.
+
 sources:
   - name: raw_dob
     database: empty-lots
     schema: raw_dob
+    loader: gcloud storage
+    description: "NYC Department of Buildings open datasets, vendored as CSV snapshots."
     tables:
       - name: permit_issuance
-        description: "NYC DOB Permit Issuance data"
+        description: "DOB Permit Issuance — permits for construction and demolition."
+        meta:
+          publisher: "NYC Department of Buildings"
+          source_url: "https://data.cityofnewyork.us/Housing-Development/DOB-Permit-Issuance/ipu4-2q9a"
+          dataset_id: "ipu4-2q9a"
+          download_url: "https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD"
+          version: TODO   # set to the vendored dated version, e.g. 2026-05-29
+          sha256: TODO
+        external:
+          # Vendor first: build/vendor_dataset.sh --slug dob_permit_issuance ...
+          location: "gs://nyc-pluto-historical/raw/dob_permit_issuance/TODO/permit_issuance.csv"
+          options:
+            format: csv
+            skip_leading_rows: 1
+            allow_quoted_newlines: true
+        columns:
+          - { name: BOROUGH, data_type: STRING }
+          - { name: Bin_No, data_type: STRING }
+          - { name: House_No, data_type: STRING }
+          - { name: Street_Name, data_type: STRING }
+          - { name: Job_No, data_type: STRING }
+          - { name: Job_doc_No, data_type: STRING }
+          - { name: Job_Type, data_type: STRING }
+          - { name: Self_Cert, data_type: STRING }
+          - { name: Block, data_type: STRING }
+          - { name: Lot, data_type: STRING }
+          - { name: Community_Board, data_type: STRING }
+          - { name: Zip_Code, data_type: STRING }
+          - { name: Bldg_Type, data_type: STRING }
+          - { name: Residential, data_type: STRING }
+          - { name: Special_District_1, data_type: STRING }
+          - { name: Special_District_2, data_type: STRING }
+          - { name: Work_Type, data_type: STRING }
+          - { name: Permit_Status, data_type: STRING }
+          - { name: Filing_Status, data_type: STRING }
+          - { name: Permit_Type, data_type: STRING }
+          - { name: Permit_Sequence_No, data_type: STRING }
+          - { name: Permit_Subtype, data_type: STRING }
+          - { name: Oil_Gas, data_type: STRING }
+          - { name: Site_Fill, data_type: STRING }
+          - { name: Filing_Date, data_type: STRING }
+          - { name: Issuance_Date, data_type: STRING }
+          - { name: Expiration_Date, data_type: STRING }
+          - { name: Job_Start_Date, data_type: STRING }
+          - { name: Permittee_First_Name, data_type: STRING }
+          - { name: Permittee_Last_Name, data_type: STRING }
+          - { name: Permittee_Business_Name, data_type: STRING }
+          - { name: Permittee_Phone, data_type: STRING }
+          - { name: Permittee_License_Type, data_type: STRING }
+          - { name: Permittee_License_No, data_type: STRING }
+          - { name: Act_as_Superintendent, data_type: STRING }
+          - { name: Permittee_Other_Title, data_type: STRING }
+          - { name: HIC_License, data_type: STRING }
+          - { name: Site_Safety_Mgr_First_Name, data_type: STRING }
+          - { name: Site_Safety_Mgr_Last_Name, data_type: STRING }
+          - { name: Site_Safety_Mgr_Business_Name, data_type: STRING }
+          - { name: Superintendent_First_Last_Name, data_type: STRING }
+          - { name: Superintendent_Business_Name, data_type: STRING }
+          - { name: Owner_Business_Type, data_type: STRING }
+          - { name: Non_Profit, data_type: STRING }
+          - { name: Owner_Business_Name, data_type: STRING }
+          - { name: Owner_First_Name, data_type: STRING }
+          - { name: Owner_Last_Name, data_type: STRING }
+          - { name: Owner_House_No, data_type: STRING }
+          - { name: Owner_House_Street_Name, data_type: STRING }
+          - { name: Owner_House_City, data_type: STRING }
+          - { name: Owner_House_State, data_type: STRING }
+          - { name: Owner_House_Zip_Code, data_type: STRING }
+          - { name: Owner_Phone, data_type: STRING }
+          - { name: DOBRunDate, data_type: STRING }
+          - { name: PERMIT_SI_NO, data_type: STRING }
+          - { name: LATITUDE, data_type: STRING }
+          - { name: LONGITUDE, data_type: STRING }
+          - { name: COUNCIL_DISTRICT, data_type: STRING }
+          - { name: CENSUS_TRACT, data_type: STRING }
+          - { name: NTA_NAME, data_type: STRING }
+
       - name: stalled_construction
-        description: "NYC DOB Stalled Construction Sites — complaints where construction has halted"
+        description: "DOB Stalled Construction Sites — complaints where construction has halted."
+        meta:
+          publisher: "NYC Department of Buildings"
+          source_url: "https://data.cityofnewyork.us/Housing-Development/DOB-Stalled-Construction-Sites/i296-73x5"
+          dataset_id: "i296-73x5"
+          download_url: "https://data.cityofnewyork.us/api/views/i296-73x5/rows.csv?accessType=DOWNLOAD"
+          version: TODO
+          sha256: TODO
+        external:
+          location: "gs://nyc-pluto-historical/raw/dob_stalled_construction/TODO/stalled_construction.csv"
+          options:
+            format: csv
+            skip_leading_rows: 1
+            allow_quoted_newlines: true
+        columns:
+          - { name: Borough_Name, data_type: STRING }
+          - { name: Community_Board, data_type: STRING }
+          - { name: BIN, data_type: STRING }
+          - { name: House_Number, data_type: STRING }
+          - { name: Street_Name, data_type: STRING }
+          - { name: Complaint_Number, data_type: STRING }
+          - { name: Date_Complaint_Received, data_type: STRING }
+          - { name: DOBRunDate, data_type: STRING }
+
       - name: building
-        description: "NYC Building Footprints — authoritative BIN to BBL mapping"
+        description: "NYC Building Footprints — authoritative BIN to BBL mapping."
+        meta:
+          publisher: "NYC Department of Information Technology & Telecommunications (DOITT)"
+          source_url: "https://data.cityofnewyork.us/City-Government/Building-Footprints/5zhs-2jue"
+          dataset_id: "5zhs-2jue"
+          download_url: "https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD"
+          version: TODO
+          sha256: TODO
+        external:
+          location: "gs://nyc-pluto-historical/raw/dob_building/TODO/building.csv"
+          options:
+            format: csv
+            skip_leading_rows: 1
+            allow_quoted_newlines: true
+        columns:
+          - { name: the_geom, data_type: STRING }
+          - { name: NAME, data_type: STRING }
+          - { name: BIN, data_type: STRING }
+          - { name: DOITT_ID, data_type: STRING }
+          - { name: SHAPE_AREA, data_type: STRING }
+          - { name: BASE_BBL, data_type: STRING }
+          - { name: OBJECTID, data_type: STRING }
+          - { name: Construction_Year, data_type: STRING }
+          - { name: Feature_Code, data_type: STRING }
+          - { name: Geometry_Source, data_type: STRING }
+          - { name: Ground_Elevation, data_type: STRING }
+          - { name: Height_Roof, data_type: STRING }
+          - { name: LAST_EDITED_DATE, data_type: STRING }
+          - { name: LAST_STATUS_TYPE, data_type: STRING }
+          - { name: Map_Pluto_BBL, data_type: STRING }
+          - { name: Length, data_type: STRING }
 
   - name: nyc_pluto_historical
     database: empty-lots
     schema: nyc_pluto_historical
+    loader: gcloud storage
+    description: "NYC Primary Land Use Tax Lot Output (PLUTO) from DCP's BYTES of the BIG APPLE."
     tables:
+      - name: pluto
+        description: >
+          Historical PLUTO, eight yearly releases (2018-2025) stacked into one
+          CSV. Fetched + combined by build/get_historical_pluto.sh and
+          build/combine_csvs.sh. Schema is auto-detected from the CSV header.
+        meta:
+          publisher: "NYC Department of City Planning"
+          source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
+          dataset_id: "BYTES of the BIG APPLE — PLUTO"
+          # Per-release archives (download_url base + nyc_pluto_<ver>_csv.zip):
+          releases: "18v2_1, 19v2, 20v8, 21v3, 22v3, 23v3_1, 24v4_1, 25v3"
+          version: TODO
+        external:
+          # Combined CSV currently lives at the bucket root; normalize under
+          # raw/pluto/<version>/ on the next vendoring pass.
+          location: "gs://nyc-pluto-historical/pluto_historical.csv"
+          options:
+            format: csv
+            skip_leading_rows: 1
+            allow_quoted_newlines: true
+
       - name: stg_geometry
-        description: "Lot polygon geometry (GEOGRAPHY) keyed by BBL (float64)"
+        description: >
+          Lot polygon geometry (GEOGRAPHY) keyed by BBL (float64), from
+          MapPLUTO.geojsonl. Loaded natively via build/load_geojson_to_bigquery.sh
+          (NEWLINE_DELIMITED_JSON / GEOJSON) rather than as a CSV external table,
+          because the GEOGRAPHY column needs a typed load.
+        meta:
+          publisher: "NYC Department of City Planning"
+          source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
+          dataset_id: "MapPLUTO"
+          loaded_by: "build/load_geojson_to_bigquery.sh"
+        columns:
+          - { name: geometry, data_type: GEOGRAPHY }
+          - { name: BBL, data_type: FLOAT64 }
