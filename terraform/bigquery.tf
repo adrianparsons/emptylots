@@ -6,7 +6,7 @@ resource "google_project_service" "bigquery" {
 }
 
 # Raw vendored PLUTO / MapPLUTO source data, loaded from the CSV/GeoJSON
-# snapshots in gs://nyc-lots-raw (not built by dbt). Kept separate from
+# snapshots in gs://nyc-lots-raw-data (not built by dbt). Kept separate from
 # the dataset dbt writes models into, so raw vs. derived is unambiguous.
 resource "google_bigquery_dataset" "raw_pluto" {
   dataset_id  = "raw_pluto"

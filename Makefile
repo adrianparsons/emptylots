@@ -5,7 +5,7 @@ gcproject = empty-lots
 
 # Raw data bucket (vendored snapshots). The load/vendor scripts read this via
 # the RAW_BUCKET env var, which the targets below pass in.
-raw_bucket = gs://nyc-pluto-historical
+raw_bucket = gs://nyc-lots-raw-data
 
 # BigQuery datasets the raw data loads into (project is $(gcproject) above).
 raw_pluto_dataset = raw_pluto

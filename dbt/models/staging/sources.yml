@@ -1,7 +1,7 @@
 version: 2
 
 # Raw, vendored City of New York data. Each table is loaded into native
-# BigQuery storage from an immutable CSV snapshot in gs://nyc-pluto-historical:
+# BigQuery storage from an immutable CSV snapshot in gs://nyc-lots-raw-data:
 #
 #   make vendor.<dataset>     # download from NYC -> dated path in the bucket
 #   make bq.load.<dataset>    # bq load that snapshot -> raw_dob.* (schema in build/schemas/)

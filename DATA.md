@@ -11,7 +11,7 @@ checkout).
 NYC source (data.cityofnewyork.us, DCP BYTES)
    │  vendor: download → immutable dated snapshot in GCS
    ▼
-gs://nyc-pluto-historical/raw/<dataset>/<version>/<file>.csv      (raw snapshots)
+gs://nyc-lots-raw-data/raw/<dataset>/<version>/<file>.csv         (raw snapshots)
    │  bq load (explicit all-STRING schema from build/schemas/)
    ▼
 BigQuery native tables  (raw_dob.*, raw_pluto.*)                  (one dataset per source)
