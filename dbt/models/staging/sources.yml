@@ -23,7 +23,6 @@ sources:
           source_url: "https://data.cityofnewyork.us/Housing-Development/DOB-Permit-Issuance/ipu4-2q9a"
           dataset_id: "ipu4-2q9a"
           download_url: "https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD"
-          schema_file: "build/schemas/permit_issuance.json"
           version: TODO   # dated snapshot loaded, e.g. 2026-05-29
 
       - name: stalled_construction
@@ -33,7 +32,6 @@ sources:
           source_url: "https://data.cityofnewyork.us/Housing-Development/DOB-Stalled-Construction-Sites/i296-73x5"
           dataset_id: "i296-73x5"
           download_url: "https://data.cityofnewyork.us/api/views/i296-73x5/rows.csv?accessType=DOWNLOAD"
-          schema_file: "build/schemas/stalled_construction.json"
           version: TODO
 
       - name: building
@@ -43,7 +41,6 @@ sources:
           source_url: "https://data.cityofnewyork.us/City-Government/Building-Footprints/5zhs-2jue"
           dataset_id: "5zhs-2jue"
           download_url: "https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD"
-          schema_file: "build/schemas/building.json"
           version: TODO
 
   - name: nyc_pluto_historical
@@ -58,7 +55,6 @@ sources:
         meta:
           publisher: "NYC Department of City Planning"
           source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
-          dataset_id: "BYTES of the BIG APPLE — PLUTO"
           releases: "18v2_1, 19v2, 20v8, 21v3, 22v3, 23v3_1, 24v4_1, 25v3"
 
       - name: stg_geometry
@@ -69,5 +65,4 @@ sources:
         meta:
           publisher: "NYC Department of City Planning"
           source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
-          dataset_id: "MapPLUTO"
           loaded_by: "build/load_geojson_to_bigquery.sh"
