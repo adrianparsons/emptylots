@@ -85,8 +85,6 @@ vendor.building:
 
 vendor.pluto:
 	./build/get_historical_pluto.sh
-	./build/combine_csvs.sh
-	./build/cp_csv_to_bucket.sh
 
 bq.load.permits:
 	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \

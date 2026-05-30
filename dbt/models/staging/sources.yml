@@ -53,9 +53,8 @@ sources:
     tables:
       - name: pluto
         description: >
-          Historical PLUTO, eight yearly releases (2018-2025) stacked into one
-          CSV. Fetched + combined by build/get_historical_pluto.sh and
-          build/combine_csvs.sh, then loaded into BigQuery.
+          Legacy combined PLUTO (all yearly releases in one table). Superseded by
+          the per-release raw_pluto.pluto_<version> tables; pending repoint + removal.
         meta:
           publisher: "NYC Department of City Planning"
           source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"

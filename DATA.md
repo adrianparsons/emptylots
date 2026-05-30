@@ -125,8 +125,7 @@ first load.
   `raw_pluto.pluto_*` tables into one logical PLUTO in dbt
   (`dbt_utils.union_relations`, all-STRING, cast in staging), repoint `stg_lots` /
   `mart_vacant_lots` / the `build/*.sql` tile queries from `nyc_pluto_historical`
-  to `raw_pluto`, then drop the old `nyc_pluto_historical.pluto` / `stg_geometry`
-  and retire `combine_csvs.sh` + the combined `pluto_historical.csv`.
+  to `raw_pluto`, then drop the old `nyc_pluto_historical.pluto` / `stg_geometry`.
 - **Declare `raw_pluto` sources in dbt.** Add the per-release tables +
   `mappluto_geometry` to `sources.yml` (with provenance `meta`) as part of that
   union work.
