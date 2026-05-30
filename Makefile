@@ -3,6 +3,14 @@
 bucket = gs://nyc-lots-tiles
 gcproject = empty-lots
 
+# Raw data bucket (vendored snapshots). The load/vendor scripts read this via
+# the RAW_BUCKET env var, which the targets below pass in.
+raw_bucket = gs://nyc-pluto-historical
+
+# BigQuery datasets the raw data loads into (project is $(gcproject) above).
+raw_pluto_dataset = raw_pluto
+raw_dob_dataset = raw_dob
+
 .PHONY: clean watch tiles.cors build tiles_from_bq \
 	vendor.permits vendor.stalled vendor.building vendor.pluto \
 	bq.load.permits bq.load.stalled bq.load.building \
@@ -56,48 +64,48 @@ tiles.vacant_bq:
 ##    build/schemas/, --replace so the table mirrors the snapshot).
 
 # Vendored snapshots to load from (bump the date after each `make vendor.*`).
-PERMITS_CSV  = gs://nyc-pluto-historical/raw/dob_permit_issuance/TODO/permit_issuance.csv
-STALLED_CSV  = gs://nyc-pluto-historical/raw/dob_stalled_construction/TODO/stalled_construction.csv
-BUILDING_CSV = gs://nyc-pluto-historical/raw/dob_building/TODO/building.csv
+PERMITS_CSV  = $(raw_bucket)/raw/dob_permit_issuance/TODO/permit_issuance.csv
+STALLED_CSV  = $(raw_bucket)/raw/dob_stalled_construction/TODO/stalled_construction.csv
+BUILDING_CSV = $(raw_bucket)/raw/dob_building/TODO/building.csv
 
 vendor.permits:
-	./build/vendor_dataset.sh --slug dob_permit_issuance
+	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug dob_permit_issuance
 
 vendor.stalled:
-	./build/vendor_dataset.sh --slug dob_stalled_construction
+	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug dob_stalled_construction
 
 vendor.building:
-	./build/vendor_dataset.sh --slug dob_building
+	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug dob_building
 
 vendor.pluto:
 	./build/get_historical_pluto.sh
 
 bq.load.permits:
 	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
-		empty-lots:raw_dob.permit_issuance \
+		$(gcproject):$(raw_dob_dataset).permit_issuance \
 		$(PERMITS_CSV) \
 		build/schemas/permit_issuance.json
 
 bq.load.stalled:
 	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
-		empty-lots:raw_dob.stalled_construction \
+		$(gcproject):$(raw_dob_dataset).stalled_construction \
 		$(STALLED_CSV) \
 		build/schemas/stalled_construction.json
 
 bq.load.building:
 	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
-		empty-lots:raw_dob.building \
+		$(gcproject):$(raw_dob_dataset).building \
 		$(BUILDING_CSV) \
 		build/schemas/building.json
 
 # PLUTO: one all-STRING table per yearly release in raw_pluto (dataset is
 # created in terraform/bigquery.tf). Combining the releases is a dbt concern.
 bq.load.pluto:
-	./build/load_pluto_to_bigquery.sh
+	RAW_BUCKET=$(raw_bucket) GCP_PROJECT=$(gcproject) PLUTO_DATASET=$(raw_pluto_dataset) ./build/load_pluto_to_bigquery.sh
 
 # MapPLUTO lot geometry (GEOGRAPHY) -> raw_pluto.mappluto_geometry.
 bq.load.geometry:
-	./build/load_geojson_to_bigquery.sh
+	RAW_BUCKET=$(raw_bucket) GCP_PROJECT=$(gcproject) PLUTO_DATASET=$(raw_pluto_dataset) ./build/load_geojson_to_bigquery.sh
 
 ## dbt
 dbt.build:

@@ -12,8 +12,9 @@
 
 set -euo pipefail
 
-bucket="gs://nyc-pluto-historical"
-dataset="empty-lots:raw_pluto"
+bucket="${RAW_BUCKET:?set RAW_BUCKET (e.g. run via 'make bq.load.pluto')}"
+project="${GCP_PROJECT:?set GCP_PROJECT (e.g. run via 'make bq.load.pluto')}"
+dataset="${project}:${PLUTO_DATASET:?set PLUTO_DATASET (e.g. run via 'make bq.load.pluto')}"
 here="$(cd "$(dirname "$0")" && pwd)"
 
 # Yearly snapshots are pluto_<version>.csv; skip the legacy combined file.
@@ -34,5 +35,5 @@ gcloud storage ls "${bucket}/pluto_*.csv" \
         "${dataset}.${base}" "$uri" "$schema"
     done
 
-echo "Done. Tables in raw_pluto:"
-bq ls "${dataset%%:*}:raw_pluto"
+echo "Done. Tables in ${dataset}:"
+bq ls "${dataset}"

@@ -9,7 +9,7 @@
 # Usage:
 #   build/vendor_dataset.sh --slug dob_permit_issuance \
 #     [--version 2026-05-29]              # snapshot date, defaults to today (UTC) \
-#     [--bucket gs://nyc-pluto-historical] \
+#     [--bucket gs://...]                 # defaults to $RAW_BUCKET
 #     [--force]                           # allow overwriting an existing version
 
 set -euo pipefail
@@ -17,7 +17,7 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 manifest="${here}/sources.tsv"
 
-bucket="gs://nyc-pluto-historical"
+bucket="${RAW_BUCKET:-}"   # default from env; --bucket overrides
 version="$(date -u +%Y-%m-%d)"
 slug="" force=""
 
@@ -35,6 +35,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$slug" ]]      || die "--slug is required"
+[[ -n "$bucket" ]]    || die "set RAW_BUCKET or pass --bucket"
 [[ -f "$manifest" ]]  || die "manifest not found: $manifest"
 
 # Look up this slug's row in the catalog.
