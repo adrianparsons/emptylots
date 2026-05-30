@@ -3,7 +3,8 @@
 # vendor_dataset.sh — fetch a City of New York dataset and snapshot it to GCS.
 #
 # Looks the dataset up by --slug in build/sources.tsv (url, filename, publisher,
-# dataset_id), downloads it, uploads it to a dated path in the raw bucket, and
+# dataset_id), downloads it, uploads it to a dated path in the raw bucket
+# (<bucket>/<slug>/<version>/<file>), and
 # prints a block to paste into dbt/models/staging/sources.yml.
 #
 # Usage:
@@ -50,7 +51,7 @@ done < "$manifest"
 
 [[ -n "$url" ]] || die "slug '$slug' not found in $manifest"
 
-dest="${bucket}/raw/${slug}/${version}/${filename}"
+dest="${bucket}/${slug}/${version}/${filename}"
 
 # Dated paths are meant to be stable snapshots; don't clobber one by accident.
 if [[ -z "$force" ]] && gcloud storage ls "$dest" >/dev/null 2>&1; then

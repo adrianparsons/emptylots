@@ -11,7 +11,7 @@ checkout).
 NYC source (data.cityofnewyork.us, DCP BYTES)
    │  vendor: download → immutable dated snapshot in GCS
    ▼
-gs://nyc-lots-raw-data/raw/<dataset>/<version>/<file>.csv         (raw snapshots)
+gs://nyc-lots-raw-data/<dataset>/<version>/<file>.csv            (raw snapshots)
    │  bq load (explicit all-STRING schema from build/schemas/)
    ▼
 BigQuery native tables  (raw_dob.*, raw_pluto.*)                  (one dataset per source)
@@ -66,7 +66,7 @@ make vendor.permits      # or vendor.stalled / vendor.building
 ```
 
 This runs [`build/vendor_dataset.sh`](build/vendor_dataset.sh): downloads from
-NYC, uploads to a dated, never-overwritten path (`raw/<dataset>/<YYYY-MM-DD>/`),
+NYC, uploads to a dated, never-overwritten path (`<dataset>/<YYYY-MM-DD>/`),
 and prints a provenance block. Paste the relevant bits into the matching table
 in `sources.yml` (set `version`), and bump the matching `*_CSV` variable in the
 Makefile to the new dated path.

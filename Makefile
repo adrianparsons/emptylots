@@ -64,9 +64,9 @@ tiles.vacant_bq:
 ##    build/schemas/, --replace so the table mirrors the snapshot).
 
 # Vendored snapshots to load from (bump the date after each `make vendor.*`).
-PERMITS_CSV  = $(raw_bucket)/raw/dob_permit_issuance/TODO/permit_issuance.csv
-STALLED_CSV  = $(raw_bucket)/raw/dob_stalled_construction/TODO/stalled_construction.csv
-BUILDING_CSV = $(raw_bucket)/raw/dob_building/TODO/building.csv
+PERMITS_CSV  = $(raw_bucket)/dob_permit_issuance/TODO/permit_issuance.csv
+STALLED_CSV  = $(raw_bucket)/dob_stalled_construction/TODO/stalled_construction.csv
+BUILDING_CSV = $(raw_bucket)/dob_building/TODO/building.csv
 
 vendor.permits:
 	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug dob_permit_issuance
