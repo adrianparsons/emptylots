@@ -46,6 +46,7 @@ tiles.vacant_bq:
 	./build/geojson_to_pmtile.sh vacant.pmtiles -L vacant:vacant.geojsonl
 
 ## Raw data: vendor (snapshot to GCS), then bq load into native BigQuery tables.
+## Source URLs for every dataset live in build/sources.tsv (looked up by slug).
 ##
 ## 1. `make vendor.<dataset>` downloads from NYC -> immutable dated path in the
 ##    bucket, and prints a provenance block to paste into
@@ -60,28 +61,13 @@ STALLED_CSV  = gs://nyc-pluto-historical/raw/dob_stalled_construction/TODO/stall
 BUILDING_CSV = gs://nyc-pluto-historical/raw/dob_building/TODO/building.csv
 
 vendor.permits:
-	./build/vendor_dataset.sh \
-		--slug dob_permit_issuance \
-		--filename permit_issuance.csv \
-		--publisher 'NYC Department of Buildings' \
-		--dataset-id ipu4-2q9a \
-		--url 'https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD'
+	./build/vendor_dataset.sh --slug dob_permit_issuance
 
 vendor.stalled:
-	./build/vendor_dataset.sh \
-		--slug dob_stalled_construction \
-		--filename stalled_construction.csv \
-		--publisher 'NYC Department of Buildings' \
-		--dataset-id i296-73x5 \
-		--url 'https://data.cityofnewyork.us/api/views/i296-73x5/rows.csv?accessType=DOWNLOAD'
+	./build/vendor_dataset.sh --slug dob_stalled_construction
 
 vendor.building:
-	./build/vendor_dataset.sh \
-		--slug dob_building \
-		--filename building.csv \
-		--publisher 'NYC DOITT' \
-		--dataset-id 5zhs-2jue \
-		--url 'https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD'
+	./build/vendor_dataset.sh --slug dob_building
 
 vendor.pluto:
 	./build/get_historical_pluto.sh

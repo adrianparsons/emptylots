@@ -2,49 +2,52 @@
 #
 # vendor_dataset.sh — fetch a City of New York dataset and snapshot it to GCS.
 #
-# The one reproducible step for bringing raw data into the project: download the
-# source file, upload it to a dated path in the raw bucket, and print a block to
-# paste into dbt/models/staging/sources.yml. dbt does the rest — the external
-# table (`make dbt.stage_external`) points at the path this writes.
+# Looks the dataset up by --slug in build/sources.tsv (url, filename, publisher,
+# dataset_id), downloads it, uploads it to a dated path in the raw bucket, and
+# prints a block to paste into dbt/models/staging/sources.yml.
 #
 # Usage:
-#   build/vendor_dataset.sh \
-#     --slug dob_permit_issuance \
-#     --url  'https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD' \
-#     --publisher 'NYC Department of Buildings' \
-#     [--dataset-id ipu4-2q9a]            # NYC Open Data id, for the docs \
-#     [--version 2026-05-29]              # defaults to today (UTC) \
-#     [--filename permit_issuance.csv]    # defaults to <slug>.csv \
+#   build/vendor_dataset.sh --slug dob_permit_issuance \
+#     [--version 2026-05-29]              # snapshot date, defaults to today (UTC) \
 #     [--bucket gs://nyc-pluto-historical] \
 #     [--force]                           # allow overwriting an existing version
 
 set -euo pipefail
 
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+manifest="${here}/sources.tsv"
+
 bucket="gs://nyc-pluto-historical"
 version="$(date -u +%Y-%m-%d)"
-slug="" url="" publisher="" dataset_id="" filename="" force=""
+slug="" force=""
 
 die() { echo "error: $*" >&2; exit 1; }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --slug)       slug="$2"; shift 2 ;;
-    --url)        url="$2"; shift 2 ;;
-    --publisher)  publisher="$2"; shift 2 ;;
-    --dataset-id) dataset_id="$2"; shift 2 ;;
-    --version)    version="$2"; shift 2 ;;
-    --filename)   filename="$2"; shift 2 ;;
-    --bucket)     bucket="${2%/}"; shift 2 ;;
-    --force)      force=1; shift ;;
-    -h|--help)    sed -n '2,20p' "$0"; exit 0 ;;
-    *)            die "unknown argument: $1" ;;
+    --slug)    slug="$2"; shift 2 ;;
+    --version) version="$2"; shift 2 ;;
+    --bucket)  bucket="${2%/}"; shift 2 ;;
+    --force)   force=1; shift ;;
+    -h|--help) sed -n '2,15p' "$0"; exit 0 ;;
+    *)         die "unknown argument: $1" ;;
   esac
 done
 
 [[ -n "$slug" ]]      || die "--slug is required"
-[[ -n "$url" ]]       || die "--url is required"
-[[ -n "$publisher" ]] || die "--publisher is required"
-[[ -n "$filename" ]]  || filename="${slug}.csv"
+[[ -f "$manifest" ]]  || die "manifest not found: $manifest"
+
+# Look up this slug's row in the catalog.
+url="" filename="" publisher="" dataset_id=""
+while IFS=$'\t' read -r m_type m_slug m_url m_filename m_publisher m_dataset_id || [[ -n "$m_type" ]]; do
+  case "$m_type" in ''|'#'*|type) continue ;; esac
+  if [[ "$m_slug" == "$slug" ]]; then
+    url="$m_url"; filename="$m_filename"; publisher="$m_publisher"; dataset_id="$m_dataset_id"
+    break
+  fi
+done < "$manifest"
+
+[[ -n "$url" ]] || die "slug '$slug' not found in $manifest"
 
 dest="${bucket}/raw/${slug}/${version}/${filename}"
 
@@ -71,6 +74,8 @@ cat <<EOF
 
 ────────────────────────────────────────────────────────────────────────────
 Vendored ${slug} @ ${version}
+  publisher: ${publisher}
+  dataset:   ${dataset_id}
   snapshot:  ${dest}
   rows:      ${row_count}
   sha256:    ${sha256}

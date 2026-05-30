@@ -54,6 +54,11 @@ parsing happen later, in the `stg_*` models.
 
 ## Vendoring a dataset
 
+Every source URL lives in one place — [`build/sources.tsv`](build/sources.tsv),
+a tab-separated catalog with a row per fetchable file (`type`, `slug`, `url`,
+`filename`, `publisher`, `dataset_id`). Both fetch scripts read it, so adding a
+PLUTO release or a new dataset is a one-line edit there rather than a code change.
+
 ### Single-CSV datasets (the DOB sets)
 
 ```bash
