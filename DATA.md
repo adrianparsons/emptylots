@@ -14,7 +14,7 @@ NYC source (data.cityofnewyork.us, DCP BYTES)
 gs://nyc-pluto-historical/raw/<dataset>/<version>/<file>.csv      (raw snapshots)
    │  bq load (explicit all-STRING schema from build/schemas/)
    ▼
-BigQuery native tables  (raw_dob.*, nyc_pluto_historical.pluto)  (declared in sources.yml)
+BigQuery native tables  (raw_dob.*, raw_pluto.*)                  (one dataset per source)
    │  dbt build
    ▼
 staging → intermediate → marts                                    (dbt models)
@@ -40,8 +40,13 @@ visible without digging.
 | `raw_dob.permit_issuance` | DOB Permit Issuance | `ipu4-2q9a` | `build/schemas/permit_issuance.json` |
 | `raw_dob.stalled_construction` | DOB Stalled Construction Sites | `i296-73x5` | `build/schemas/stalled_construction.json` |
 | `raw_dob.building` | Building Footprints | `5zhs-2jue` | `build/schemas/building.json` |
-| `nyc_pluto_historical.pluto` | PLUTO (DCP BYTES, 2018–2025) | — | 8 zips → stacked CSV |
-| `nyc_pluto_historical.stg_geometry` | MapPLUTO geometry | — | GeoJSON → `bq load` (GEOGRAPHY) |
+| `raw_pluto.pluto_18v2_1` … `pluto_25v3` | PLUTO (DCP BYTES, 2018–2025) | — | one all-STRING table per release, `build/schemas/pluto_<ver>.json` |
+| `raw_pluto.mappluto_geometry` | MapPLUTO geometry | — | GeoJSON → `bq load` (GEOGRAPHY) |
+
+> **Transition note:** `nyc_pluto_historical.pluto` (a single csvstack'd table) and
+> `nyc_pluto_historical.stg_geometry` still exist and feed the current dbt models.
+> The per-release `raw_pluto.*` tables above are the new home; combining them into
+> one logical PLUTO and repointing the models is the next branch (see follow-ups).
 
 The `build/schemas/*.json` files are the load-time schema — every column is
 typed `STRING` on purpose, so messy NYC values never break the load. Casting and
@@ -61,46 +66,74 @@ and prints a provenance block. Paste the relevant bits into the matching table
 in `sources.yml` (set `version`), and bump the matching `*_CSV` variable in the
 Makefile to the new dated path.
 
-### PLUTO (multi-version archive)
+### PLUTO (multi-version)
+
+The eight yearly PLUTO releases are vendored as individual CSVs in the bucket
+(`pluto_18v2_1.csv` … `pluto_25v3.csv`). Each is loaded into its own all-STRING
+table in `raw_pluto`:
 
 ```bash
-make vendor.pluto
+make bq.load.pluto
 ```
 
-Downloads the eight yearly PLUTO releases, `csvstack`s them into one CSV, and
-uploads it. (See `build/get_historical_pluto.sh`, `combine_csvs.sh`,
-`cp_csv_to_bucket.sh`.)
+This runs [`build/load_pluto_to_bigquery.sh`](build/load_pluto_to_bigquery.sh):
+for each yearly CSV it generates an all-STRING schema from the header (PLUTO
+columns drift year to year — see [`build/gen_string_schema.sh`](build/gen_string_schema.sh)),
+committing it to `build/schemas/pluto_<ver>.json`, then `bq load --replace`s it
+into `raw_pluto.pluto_<ver>`. The releases are *not* stacked here — combining
+them is a dbt concern (next branch), which keeps the per-release provenance and
+avoids the csvstack artifacts the old combined table had.
 
-### Geometry (`stg_geometry`)
+### Geometry (`mappluto_geometry`)
 
-GeoJSON with a `GEOGRAPHY` column, loaded via
-`build/load_geojson_to_bigquery.sh`.
+MapPLUTO lot polygons (GeoJSON with a `GEOGRAPHY` column), loaded into
+`raw_pluto.mappluto_geometry`:
+
+```bash
+make bq.load.geometry
+```
 
 ## Loading and building
 
 ```bash
-make bq.load.permits      # or bq.load.stalled / bq.load.building
+make bq.load.permits      # or bq.load.stalled / bq.load.building  -> raw_dob.*
+make bq.load.pluto        # all yearly PLUTO releases              -> raw_pluto.*
+make bq.load.geometry     # MapPLUTO geometry                      -> raw_pluto.mappluto_geometry
 make dbt.build            # run + test all models
 ```
 
-`bq.load.*` loads the vendored snapshot into the native `raw_dob.*` table with
-`--replace` (so the table mirrors the snapshot) and the explicit JSON schema.
+`bq.load.*` loads with `--replace` (so the table mirrors the snapshot) and an
+explicit all-STRING schema.
 
 ## Reproducing from scratch
 
 ```bash
-make vendor.permits vendor.stalled vendor.building vendor.pluto
+make vendor.permits vendor.stalled vendor.building
 # set each version in sources.yml and each *_CSV path in the Makefile
-make bq.load.permits bq.load.stalled bq.load.building
+make bq.load.permits bq.load.stalled bq.load.building   # raw_dob.*
+make bq.load.pluto bq.load.geometry                     # raw_pluto.*
 make dbt.build
 ```
 
+The `raw_pluto` dataset is provisioned in
+[`terraform/bigquery.tf`](terraform/bigquery.tf) — `terraform apply` before the
+first load.
+
 ## Known follow-ups
 
-- **Layer separation.** dbt currently builds models *into* `nyc_pluto_historical`,
-  the same dataset that holds raw vendored tables. Splitting raw landing
-  (`raw_*`) from dbt-built datasets (`staging`/`marts`) would make raw vs.
-  derived obvious. Deferred because the frontend reads model tables from
-  BigQuery and renaming datasets would need coordinated changes.
-- **Normalize PLUTO path.** The combined PLUTO CSV still lives at the bucket
-  root; move it under `raw/pluto/<version>/` on the next vendoring pass.
+- **Combine + repoint PLUTO (next branch).** Union the per-release
+  `raw_pluto.pluto_*` tables into one logical PLUTO in dbt
+  (`dbt_utils.union_relations`, all-STRING, cast in staging), repoint `stg_lots` /
+  `mart_vacant_lots` / the `build/*.sql` tile queries from `nyc_pluto_historical`
+  to `raw_pluto`, then drop the old `nyc_pluto_historical.pluto` / `stg_geometry`
+  and retire `combine_csvs.sh` + the combined `pluto_historical.csv`.
+- **Declare `raw_pluto` sources in dbt.** Add the per-release tables +
+  `mappluto_geometry` to `sources.yml` (with provenance `meta`) as part of that
+  union work.
+- **Layer separation.** dbt still builds models *into* `nyc_pluto_historical`.
+  Splitting dbt-built datasets (`staging`/`marts`) from raw would make raw vs.
+  derived fully unambiguous. Deferred — the frontend reads model tables from
+  BigQuery, so renaming those datasets needs coordinated changes.
+- **Vendor the per-release CSVs reproducibly.** The yearly `pluto_<ver>.csv`
+  files are already in the bucket; `get_historical_pluto.sh` downloads/unzips
+  them locally but doesn't yet upload them under that naming.

@@ -5,7 +5,8 @@ gcproject = empty-lots
 
 .PHONY: clean watch tiles.cors build tiles_from_bq \
 	vendor.permits vendor.stalled vendor.building vendor.pluto \
-	bq.load.permits bq.load.stalled bq.load.building dbt.build
+	bq.load.permits bq.load.stalled bq.load.building \
+	bq.load.pluto bq.load.geometry dbt.build
 
 clean:
 	rm -rf dist/*
@@ -32,7 +33,6 @@ tiles.cors:
 	gcloud storage buckets update $(bucket) --cors-file=config/gcloud-bucket-cors-config.json
 
 tiles.from_bq:
-	mkdir -p tiles
 	./build/pull_bigquery_data_for_tiles.sh build/all_lots_with_vacancy_data.sql > tiles/lots.json
 	./build/pull_bigquery_data_for_tiles.sh build/parking_lots_from_bq.sql > tiles/parking.json
 	./build/json_to_geojsonl.sh tiles/lots.json tiles/lots.geojsonl
@@ -41,7 +41,6 @@ tiles.from_bq:
 
 tiles.vacant_bq:
 	@test -n "$(BQ_DATASET)" || (echo "Error: BQ_DATASET is required. Usage: make tiles.vacant_bq BQ_DATASET=<your_dataset>" && exit 1)
-	mkdir -p tiles
 	BQ_DATASET=$(BQ_DATASET) ./build/pull_bigquery_data_for_tiles.sh build/vacant_lots_from_bq.sql > tiles/vacant.json
 	./build/json_to_geojsonl.sh tiles/vacant.json tiles/vacant.geojsonl
 	./build/geojson_to_pmtile.sh vacant.pmtiles -L vacant:vacant.geojsonl
@@ -106,6 +105,15 @@ bq.load.building:
 		empty-lots:raw_dob.building \
 		$(BUILDING_CSV) \
 		build/schemas/building.json
+
+# PLUTO: one all-STRING table per yearly release in raw_pluto (dataset is
+# created in terraform/bigquery.tf). Combining the releases is a dbt concern.
+bq.load.pluto:
+	./build/load_pluto_to_bigquery.sh
+
+# MapPLUTO lot geometry (GEOGRAPHY) -> raw_pluto.mappluto_geometry.
+bq.load.geometry:
+	./build/load_geojson_to_bigquery.sh
 
 ## dbt
 dbt.build:
