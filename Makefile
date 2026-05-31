@@ -3,7 +3,19 @@
 bucket = gs://nyc-lots-tiles
 gcproject = empty-lots
 
-.PHONY: clean watch tiles.cors build tiles_from_bq
+# Raw data bucket (vendored snapshots). The load/vendor scripts read this via
+# the RAW_BUCKET env var, which the targets below pass in.
+raw_bucket = gs://nyc-lots-raw-data
+
+# BigQuery datasets the raw data loads into (project is $(gcproject) above).
+raw_pluto_dataset = raw_pluto
+raw_dob_dataset = raw_dob
+
+.PHONY: clean watch tiles.cors build tiles_from_bq \
+	vendor.permits vendor.stalled vendor.building vendor.pluto vendor.pluto.upload \
+	vendor.geometry.upload \
+	bq.load.permits bq.load.stalled bq.load.building \
+	bq.load.pluto bq.load.geometry dbt.build
 
 clean:
 	rm -rf dist/*
@@ -30,7 +42,6 @@ tiles.cors:
 	gcloud storage buckets update $(bucket) --cors-file=config/gcloud-bucket-cors-config.json
 
 tiles.from_bq:
-	mkdir -p tiles
 	./build/pull_bigquery_data_for_tiles.sh build/all_lots_with_vacancy_data.sql > tiles/lots.json
 	./build/pull_bigquery_data_for_tiles.sh build/parking_lots_from_bq.sql > tiles/parking.json
 	./build/json_to_geojsonl.sh tiles/lots.json tiles/lots.geojsonl
@@ -39,31 +50,77 @@ tiles.from_bq:
 
 tiles.vacant_bq:
 	@test -n "$(BQ_DATASET)" || (echo "Error: BQ_DATASET is required. Usage: make tiles.vacant_bq BQ_DATASET=<your_dataset>" && exit 1)
-	mkdir -p tiles
 	BQ_DATASET=$(BQ_DATASET) ./build/pull_bigquery_data_for_tiles.sh build/vacant_lots_from_bq.sql > tiles/vacant.json
 	./build/json_to_geojsonl.sh tiles/vacant.json tiles/vacant.geojsonl
 	./build/geojson_to_pmtile.sh vacant.pmtiles -L vacant:vacant.geojsonl
 
-## BigQuery data loading
-## Usage: make bq.load.permits CSV=local/data/DOB_Permit_Issuance.csv
+## Raw data: vendor (snapshot to GCS), then bq load into native BigQuery tables.
+## Source URLs for every dataset live in build/sources.tsv (looked up by slug).
+##
+## 1. `make vendor.<dataset>` downloads from NYC -> stable path in the bucket
+##    (overwriting the previous snapshot; the bucket records upload time/history).
+## 2. `make bq.load.<dataset>` loads that snapshot into raw_dob.* (schema from
+##    build/schemas/, --replace so the table mirrors the snapshot).
+
+# Vendored snapshots to load from (overwritten in place by `make vendor.*`).
+PERMITS_CSV  = $(raw_bucket)/dob/permit_issuance.csv
+STALLED_CSV  = $(raw_bucket)/dob/stalled_construction.csv
+BUILDING_CSV = $(raw_bucket)/dob/building.csv
+
+vendor.permits:
+	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug dob_permit_issuance
+
+vendor.stalled:
+	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug dob_stalled_construction
+
+vendor.building:
+	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug dob_building
+
+vendor.pluto:
+	./build/get_historical_pluto.sh
+
+# Upload the locally-vendored PLUTO CSVs to the raw bucket so bq.load.pluto can
+# read them (vendor.pluto only downloads into historical/).
+vendor.pluto.upload:
+	RAW_BUCKET=$(raw_bucket) ./build/upload_pluto_to_gcs.sh
+
+# Upload the MapPLUTO geometry GeoJSONL to the raw bucket so bq.load.geometry
+# can read it. FILE defaults to MapPLUTO.geojsonl in the repo root.
+vendor.geometry.upload:
+	RAW_BUCKET=$(raw_bucket) FILE=$(FILE) ./build/upload_geometry_to_gcs.sh
 
 bq.load.permits:
-	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines \
-		empty-lots:raw_dob.permit_issuance \
-		$(CSV) \
+	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
+		$(gcproject):$(raw_dob_dataset).permit_issuance \
+		$(PERMITS_CSV) \
 		build/schemas/permit_issuance.json
 
 bq.load.stalled:
-	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines \
-		empty-lots:raw_dob.stalled_construction \
-		$(CSV) \
+	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
+		$(gcproject):$(raw_dob_dataset).stalled_construction \
+		$(STALLED_CSV) \
 		build/schemas/stalled_construction.json
 
 bq.load.building:
-	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines \
-		empty-lots:raw_dob.building \
-		$(CSV) \
+	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
+		$(gcproject):$(raw_dob_dataset).building \
+		$(BUILDING_CSV) \
 		build/schemas/building.json
+
+# PLUTO: one all-STRING table per yearly release in raw_pluto (dataset is
+# created in terraform/bigquery.tf). Combining the releases is a dbt concern.
+# Run `make vendor.pluto && make vendor.pluto.upload` first to get the CSVs into
+# the raw bucket that this target loads from.
+bq.load.pluto:
+	RAW_BUCKET=$(raw_bucket) GCP_PROJECT=$(gcproject) PLUTO_DATASET=$(raw_pluto_dataset) ./build/load_pluto_to_bigquery.sh
+
+# MapPLUTO lot geometry (GEOGRAPHY) -> raw_pluto.mappluto_geometry.
+bq.load.geometry:
+	RAW_BUCKET=$(raw_bucket) GCP_PROJECT=$(gcproject) PLUTO_DATASET=$(raw_pluto_dataset) ./build/load_geojson_to_bigquery.sh
+
+## dbt
+dbt.build:
+	cd dbt && dbt build
 
 create_image.tippecanoe:
 	./build/create_tippecanoe_image.sh

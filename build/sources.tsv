@@ -1,0 +1,31 @@
+# Catalog of vendored City of New York source files — one row per fetchable
+# artifact. Tab-separated. The fetch scripts read this, so adding a release or
+# dataset is a one-line edit here, not a code change.
+#
+# Columns:
+#   type        pluto | dob   — which fetch workflow handles the row
+#   slug        stable id (also the BigQuery table / build/schemas basename)
+#   url         where the file is fetched from
+#   filename    downloaded artifact name (zip for pluto, csv for dob)
+#   publisher   source agency (provenance)
+#   dataset_id  NYC Open Data 4x4 id, or the DCP PLUTO release code
+#
+# PLUTO releases (DCP BYTES of the BIG APPLE) — zip of CSV, fetched by
+# build/get_historical_pluto.sh  (make vendor.pluto).
+type	slug	url	filename	publisher	dataset_id
+pluto	pluto_25v3	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_25v3_arc_csv.zip	pluto_25v3.zip	NYC Department of City Planning	25v3
+pluto	pluto_24v4_1	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_24v4_1_arc_csv.zip	pluto_24v4_1.zip	NYC Department of City Planning	24v4_1
+pluto	pluto_23v3_1	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_23v3_1_arc_csv.zip	pluto_23v3_1.zip	NYC Department of City Planning	23v3_1
+pluto	pluto_22v3	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_22v3_arc_csv.zip	pluto_22v3.zip	NYC Department of City Planning	22v3
+pluto	pluto_21v3	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_21v3_arc_csv.zip	pluto_21v3.zip	NYC Department of City Planning	21v3
+pluto	pluto_20v8	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_20v8_arc_csv.zip	pluto_20v8.zip	NYC Department of City Planning	20v8
+pluto	pluto_19v2	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_19v2_csv.zip	pluto_19v2.zip	NYC Department of City Planning	19v2
+pluto	pluto_18v2_1	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_18v2_1_csv.zip	pluto_18v2_1.zip	NYC Department of City Planning	18v2_1
+# MapPLUTO lot geometry (DCP) — zip of a shapefile, converted to GeoJSONL and
+# loaded into raw_pluto.mappluto_geometry (make bq.load.geometry).
+mappluto	mappluto_26v1	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/mappluto/nyc_mappluto_26v1_shp.zip	mappluto_26v1.zip	NYC Department of City Planning	26v1
+# DOB open datasets (data.cityofnewyork.us) — single CSV, fetched + snapshotted
+# to GCS by build/vendor_dataset.sh  (make vendor.permits / vendor.stalled / vendor.building).
+dob	dob_permit_issuance	https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD	permit_issuance.csv	NYC Department of Buildings	ipu4-2q9a
+dob	dob_stalled_construction	https://data.cityofnewyork.us/api/views/i296-73x5/rows.csv?accessType=DOWNLOAD	stalled_construction.csv	NYC Department of Buildings	i296-73x5
+dob	dob_building	https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD	building.csv	NYC DOITT	5zhs-2jue
