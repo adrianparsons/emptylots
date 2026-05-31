@@ -1,13 +1,14 @@
 version: 2
 
 # Raw, vendored City of New York data. Each table is loaded into native
-# BigQuery storage from an immutable CSV snapshot in gs://nyc-lots-raw-data:
+# BigQuery storage from a CSV snapshot in gs://nyc-lots-raw-data:
 #
-#   make vendor.<dataset>     # download from NYC -> dated path in the bucket
+#   make vendor.<dataset>     # download from NYC -> stable path in the bucket
 #   make bq.load.<dataset>    # bq load that snapshot -> raw_dob.* (schema in build/schemas/)
 #
-# `meta` records provenance (publisher, source URL, NYC Open Data id, the
-# vendored version) and shows up in `dbt docs`. The load-time schema lives in
+# `meta` records provenance (publisher, source URL, NYC Open Data id) and shows
+# up in `dbt docs`. The upload time (and history, if object versioning is on) is
+# tracked by GCS, not here. The load-time schema lives in
 # build/schemas/<table>.json — all columns STRING, by design.
 
 sources:
@@ -23,7 +24,6 @@ sources:
           source_url: "https://data.cityofnewyork.us/Housing-Development/DOB-Permit-Issuance/ipu4-2q9a"
           dataset_id: "ipu4-2q9a"
           download_url: "https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD"
-          version: TODO   # dated snapshot loaded, e.g. 2026-05-29
 
       - name: stalled_construction
         description: "DOB Stalled Construction Sites — complaints where construction has halted."
@@ -32,7 +32,6 @@ sources:
           source_url: "https://data.cityofnewyork.us/Housing-Development/DOB-Stalled-Construction-Sites/i296-73x5"
           dataset_id: "i296-73x5"
           download_url: "https://data.cityofnewyork.us/api/views/i296-73x5/rows.csv?accessType=DOWNLOAD"
-          version: TODO
 
       - name: building
         description: "NYC Building Footprints — authoritative BIN to BBL mapping."
@@ -41,7 +40,6 @@ sources:
           source_url: "https://data.cityofnewyork.us/City-Government/Building-Footprints/5zhs-2jue"
           dataset_id: "5zhs-2jue"
           download_url: "https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD"
-          version: TODO
 
   - name: nyc_pluto_historical
     database: empty-lots
