@@ -86,8 +86,9 @@ vendor.pluto.upload:
 
 # Download the MapPLUTO shapefile, convert to GeoJSONL, and upload to the raw
 # bucket. Requires Docker (runs ogr2ogr via ghcr.io/osgeo/gdal).
+_mappluto_url := $(shell awk -F'\t' '$$1 == "mappluto" {print $$3; exit}' build/sources.tsv)
 vendor.geometry:
-	RAW_BUCKET=$(raw_bucket) DEST=pluto/MapPLUTO.geojsonl ./build/get_mappluto_geometry.sh
+	RAW_BUCKET=$(raw_bucket) URL=$(_mappluto_url) DEST=pluto/MapPLUTO.geojsonl ./build/get_mappluto_geometry.sh
 
 # Escape hatch: upload a pre-converted local GeoJSONL to the raw bucket.
 # FILE defaults to MapPLUTO.geojsonl in the repo root.

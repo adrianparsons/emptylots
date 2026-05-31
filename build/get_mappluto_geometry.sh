@@ -1,54 +1,39 @@
 #!/usr/bin/env bash
 #
-# get_mappluto_geometry.sh — download the MapPLUTO shapefile zip, convert it
-# to GeoJSONL, and upload it to the raw bucket.
+# get_mappluto_geometry.sh — download a MapPLUTO shapefile zip, convert it to
+# GeoJSONL, and upload it to the raw bucket.
 #
-# Reads the first mappluto entry in build/sources.tsv, downloads the zip,
-# extracts the shapefile, and converts it to a newline-delimited GeoJSON file
-# (one Feature per line, WGS-84, BBL property only) before uploading to
-# ${RAW_BUCKET}/${DEST} — the path bq.load.geometry reads.
+# Converts a newline-delimited GeoJSON file (one Feature per line, WGS-84, BBL
+# property only) and uploads to ${RAW_BUCKET}/${DEST}.
 #
-# Requires: Docker (runs ogr2ogr via ghcr.io/osgeo/gdal:ubuntu-small-latest).
+# Required env vars:
+#   RAW_BUCKET   — GCS bucket (e.g. gs://nyc-lots-raw-data)
+#   URL          — URL of the shapefile zip to download
+#   DEST         — bucket-relative output path (e.g. pluto/MapPLUTO.geojsonl)
+#
+# Optional:
+#   CONTAINER_CMD — container runtime (default: docker)
 #
 #   make vendor.geometry
 
 set -euo pipefail
 
-here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-manifest="${here}/sources.tsv"
-
 bucket="${RAW_BUCKET:?set RAW_BUCKET (e.g. run via 'make vendor.geometry')}"
 bucket="${bucket%/}"
+url="${URL:?set URL (e.g. run via 'make vendor.geometry')}"
 dest_path="${DEST:?set DEST (e.g. run via 'make vendor.geometry')}"
 container_cmd="${CONTAINER_CMD:-docker}"
 
 command -v "$container_cmd" >/dev/null 2>&1 \
   || { echo "error: ${container_cmd} not found — install Docker Desktop or set CONTAINER_CMD" >&2; exit 1; }
-[[ -f "$manifest" ]] \
-  || { echo "error: manifest not found: $manifest" >&2; exit 1; }
-
-# First mappluto entry in the catalog (newest release, listed first).
-slug="" url="" filename="" publisher="" dataset_id=""
-while IFS=$'\t' read -r m_type m_slug m_url m_filename m_publisher m_dataset_id \
-      || [[ -n "$m_type" ]]; do
-  case "$m_type" in ''|'#'*|type) continue ;; esac
-  if [[ "$m_type" == "mappluto" ]]; then
-    slug="$m_slug"; url="$m_url"; filename="$m_filename"
-    publisher="$m_publisher"; dataset_id="$m_dataset_id"
-    break
-  fi
-done < "$manifest"
-
-[[ -n "$slug" ]] || { echo "error: no mappluto entry found in $manifest" >&2; exit 1; }
 
 tmpdir="$(mktemp -d)"; trap 'rm -rf "$tmpdir"' EXIT
 
-zip="${tmpdir}/${filename}"
-echo ">> downloading ${slug}"
-echo "   ${url}"
+zip="${tmpdir}/$(basename "$url")"
+echo ">> downloading ${url}"
 curl --fail --location --progress-bar "$url" -o "$zip"
 
-echo ">> unzipping ${zip}"
+echo ">> unzipping"
 unzip -q "$zip" -d "${tmpdir}/extracted"
 
 shp="$(find "${tmpdir}/extracted" -name "*.shp" | head -1)"
@@ -80,11 +65,10 @@ retrieved_at="$(date -u +%Y-%m-%d)"
 cat <<EOF
 
 ────────────────────────────────────────────────────────────────────────────
-Vendored ${slug} @ ${retrieved_at}
-  publisher: ${publisher}
-  dataset:   ${dataset_id}
-  snapshot:  ${dest}
-  sha256:    ${sha256}
+Vendored @ ${retrieved_at}
+  source:   ${url}
+  snapshot: ${dest}
+  sha256:   ${sha256}
 
 Next:
   make bq.load.geometry
