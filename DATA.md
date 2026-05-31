@@ -117,6 +117,8 @@ explicit all-STRING schema.
 ```bash
 make vendor.permits vendor.stalled vendor.building
 make bq.load.permits bq.load.stalled bq.load.building   # raw_dob.*
+make vendor.pluto && make vendor.pluto.upload
+make vendor.geometry                                     # requires Docker
 make bq.load.pluto bq.load.geometry                     # raw_pluto.*
 make dbt.build
 ```

@@ -85,7 +85,7 @@ vendor.pluto.upload:
 	RAW_BUCKET=$(raw_bucket) ./build/upload_pluto_to_gcs.sh
 
 # Download the MapPLUTO shapefile, convert to GeoJSONL, and upload to the raw
-# bucket. Requires ogr2ogr (brew install gdal).
+# bucket. Requires Docker (runs ogr2ogr via ghcr.io/osgeo/gdal).
 vendor.geometry:
 	RAW_BUCKET=$(raw_bucket) DEST=pluto/MapPLUTO.geojsonl ./build/get_mappluto_geometry.sh
 

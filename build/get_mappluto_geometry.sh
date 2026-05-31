@@ -8,7 +8,7 @@
 # (one Feature per line, WGS-84, BBL property only) before uploading to
 # ${RAW_BUCKET}/${DEST} — the path bq.load.geometry reads.
 #
-# Requires: ogr2ogr (GDAL) — install with `brew install gdal` on macOS.
+# Requires: Docker (runs ogr2ogr via ghcr.io/osgeo/gdal:ubuntu-small-latest).
 #
 #   make vendor.geometry
 
@@ -21,8 +21,8 @@ bucket="${RAW_BUCKET:?set RAW_BUCKET (e.g. run via 'make vendor.geometry')}"
 bucket="${bucket%/}"
 dest_path="${DEST:?set DEST (e.g. run via 'make vendor.geometry')}"
 
-command -v ogr2ogr >/dev/null 2>&1 \
-  || { echo "error: ogr2ogr not found — install GDAL (brew install gdal)" >&2; exit 1; }
+command -v docker >/dev/null 2>&1 \
+  || { echo "error: docker not found — install Docker Desktop" >&2; exit 1; }
 [[ -f "$manifest" ]] \
   || { echo "error: manifest not found: $manifest" >&2; exit 1; }
 
@@ -54,12 +54,20 @@ shp="$(find "${tmpdir}/extracted" -name "*.shp" | head -1)"
 [[ -n "$shp" ]] || { echo "error: no .shp file found in zip" >&2; exit 1; }
 echo ">> found shapefile: $(basename "$shp")"
 
-geojsonl="${tmpdir}/$(basename "$dest_path")"
-echo ">> converting to GeoJSONL (WGS-84, BBL only)"
+geojsonl_name="$(basename "$dest_path")"
+geojsonl="${tmpdir}/${geojsonl_name}"
+shp_rel="${shp#"${tmpdir}/"}"   # path relative to tmpdir, e.g. extracted/MapPLUTO.shp
+
+echo ">> converting to GeoJSONL (WGS-84, BBL only) via Docker"
 # -makevalid repairs self-intersecting polygons that BigQuery's GEOGRAPHY
 # ingester would otherwise reject.  -select BBL keeps the file small;
 # bq.load.geometry already uses --ignore_unknown_values for any extras.
-ogr2ogr -f GeoJSONSeq -t_srs EPSG:4326 -makevalid -select BBL "$geojsonl" "$shp"
+docker run --rm \
+  -v "${tmpdir}:/data" \
+  ghcr.io/osgeo/gdal:ubuntu-small-latest \
+  ogr2ogr -f GeoJSONSeq -t_srs EPSG:4326 -makevalid -select BBL \
+    "/data/${geojsonl_name}" \
+    "/data/${shp_rel}"
 
 dest="${bucket}/${dest_path}"
 echo ">> uploading -> ${dest}"
