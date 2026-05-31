@@ -20,9 +20,10 @@ manifest="${here}/sources.tsv"
 bucket="${RAW_BUCKET:?set RAW_BUCKET (e.g. run via 'make vendor.geometry')}"
 bucket="${bucket%/}"
 dest_path="${DEST:?set DEST (e.g. run via 'make vendor.geometry')}"
+container_cmd="${CONTAINER_CMD:-docker}"
 
-command -v docker >/dev/null 2>&1 \
-  || { echo "error: docker not found — install Docker Desktop" >&2; exit 1; }
+command -v "$container_cmd" >/dev/null 2>&1 \
+  || { echo "error: ${container_cmd} not found — install Docker Desktop or set CONTAINER_CMD" >&2; exit 1; }
 [[ -f "$manifest" ]] \
   || { echo "error: manifest not found: $manifest" >&2; exit 1; }
 
@@ -62,7 +63,7 @@ echo ">> converting to GeoJSONL (WGS-84, BBL only) via Docker"
 # -makevalid repairs self-intersecting polygons that BigQuery's GEOGRAPHY
 # ingester would otherwise reject.  -select BBL keeps the file small;
 # bq.load.geometry already uses --ignore_unknown_values for any extras.
-docker run --rm \
+"$container_cmd" run --rm \
   -v "${tmpdir}:/data" \
   ghcr.io/osgeo/gdal:ubuntu-small-latest \
   ogr2ogr -f GeoJSONSeq -t_srs EPSG:4326 -makevalid -select BBL \
