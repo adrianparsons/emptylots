@@ -57,17 +57,15 @@ tiles.vacant_bq:
 ## Raw data: vendor (snapshot to GCS), then bq load into native BigQuery tables.
 ## Source URLs for every dataset live in build/sources.tsv (looked up by slug).
 ##
-## 1. `make vendor.<dataset>` downloads from NYC -> immutable dated path in the
-##    bucket, and prints a provenance block to paste into
-##    dbt/models/staging/sources.yml.
-## 2. Bump the matching *_CSV path below to the dated snapshot it printed.
-## 3. `make bq.load.<dataset>` loads that snapshot into raw_dob.* (schema from
+## 1. `make vendor.<dataset>` downloads from NYC -> stable path in the bucket
+##    (overwriting the previous snapshot; the bucket records upload time/history).
+## 2. `make bq.load.<dataset>` loads that snapshot into raw_dob.* (schema from
 ##    build/schemas/, --replace so the table mirrors the snapshot).
 
-# Vendored snapshots to load from (bump the date after each `make vendor.*`).
-PERMITS_CSV  = $(raw_bucket)/dob_permit_issuance/TODO/permit_issuance.csv
-STALLED_CSV  = $(raw_bucket)/dob_stalled_construction/TODO/stalled_construction.csv
-BUILDING_CSV = $(raw_bucket)/dob_building/TODO/building.csv
+# Vendored snapshots to load from (overwritten in place by `make vendor.*`).
+PERMITS_CSV  = $(raw_bucket)/dob_permit_issuance/permit_issuance.csv
+STALLED_CSV  = $(raw_bucket)/dob_stalled_construction/stalled_construction.csv
+BUILDING_CSV = $(raw_bucket)/dob_building/building.csv
 
 vendor.permits:
 	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug dob_permit_issuance

@@ -3,15 +3,14 @@
 # vendor_dataset.sh — fetch a City of New York dataset and snapshot it to GCS.
 #
 # Looks the dataset up by --slug in build/sources.tsv (url, filename, publisher,
-# dataset_id), downloads it, uploads it to a dated path in the raw bucket
-# (<bucket>/<slug>/<version>/<file>), and
-# prints a block to paste into dbt/models/staging/sources.yml.
+# dataset_id), downloads it, and uploads it to a stable path in the raw bucket
+# (<bucket>/<slug>/<file>), overwriting the previous snapshot. The bucket records
+# the upload time (and full history, if object versioning is enabled), so there's
+# no date to track by hand.
 #
 # Usage:
 #   build/vendor_dataset.sh --slug dob_permit_issuance \
-#     [--version 2026-05-29]              # snapshot date, defaults to today (UTC) \
 #     [--bucket gs://...]                 # defaults to $RAW_BUCKET
-#     [--force]                           # allow overwriting an existing version
 
 set -euo pipefail
 
@@ -19,17 +18,14 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 manifest="${here}/sources.tsv"
 
 bucket="${RAW_BUCKET:-}"   # default from env; --bucket overrides
-version="$(date -u +%Y-%m-%d)"
-slug="" force=""
+slug=""
 
 die() { echo "error: $*" >&2; exit 1; }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --slug)    slug="$2"; shift 2 ;;
-    --version) version="$2"; shift 2 ;;
     --bucket)  bucket="${2%/}"; shift 2 ;;
-    --force)   force=1; shift ;;
     -h|--help) sed -n '2,15p' "$0"; exit 0 ;;
     *)         die "unknown argument: $1" ;;
   esac
@@ -51,12 +47,7 @@ done < "$manifest"
 
 [[ -n "$url" ]] || die "slug '$slug' not found in $manifest"
 
-dest="${bucket}/${slug}/${version}/${filename}"
-
-# Dated paths are meant to be stable snapshots; don't clobber one by accident.
-if [[ -z "$force" ]] && gcloud storage ls "$dest" >/dev/null 2>&1; then
-  die "$dest already exists — bump --version, or pass --force to overwrite."
-fi
+dest="${bucket}/${slug}/${filename}"
 
 tmpdir="$(mktemp -d)"; trap 'rm -rf "$tmpdir"' EXIT
 local_file="${tmpdir}/${filename}"
@@ -75,7 +66,7 @@ gcloud storage cp "$local_file" "$dest"
 cat <<EOF
 
 ────────────────────────────────────────────────────────────────────────────
-Vendored ${slug} @ ${version}
+Vendored ${slug} @ ${retrieved_at}
   publisher: ${publisher}
   dataset:   ${dataset_id}
   snapshot:  ${dest}
@@ -83,9 +74,6 @@ Vendored ${slug} @ ${version}
   sha256:    ${sha256}
 
 Next:
-  1. In dbt/models/staging/sources.yml, set this table's meta.version: "${version}"
-  2. In the Makefile, point its *_CSV variable at:
-        ${dest}
-  3. make bq.load.<dataset>
+  make bq.load.<dataset>
 ────────────────────────────────────────────────────────────────────────────
 EOF
