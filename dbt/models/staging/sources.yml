@@ -41,6 +41,21 @@ sources:
           dataset_id: "5zhs-2jue"
           download_url: "https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD"
 
+  - name: raw_pluto
+    database: empty-lots
+    schema: raw_pluto
+    description: "NYC MapPLUTO / PLUTO data from DCP's BYTES of the BIG APPLE, vendored as shapefile and CSV snapshots."
+    tables:
+      - name: mappluto_geometry
+        description: >
+          Lot polygon geometry (GEOGRAPHY) keyed by BBL (float64), converted from
+          the MapPLUTO shapefile via ogr2ogr (WGS-84, BBL only). Loaded via
+          make vendor.geometry && make bq.load.geometry.
+        meta:
+          publisher: "NYC Department of City Planning"
+          source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
+          dataset_id: "26v1"
+
   - name: nyc_pluto_historical
     database: empty-lots
     schema: nyc_pluto_historical

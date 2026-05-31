@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 #
-# upload_geometry_to_gcs.sh — upload the MapPLUTO lot-geometry GeoJSONL to the
+# upload_geometry_to_gcs.sh — upload a pre-converted MapPLUTO GeoJSONL to the
 # raw bucket so bq.load.geometry can load it.
 #
-# MapPLUTO geometry isn't a cataloged download (it's derived from the DCP
-# MapPLUTO release, not a single open-data CSV), so this takes the local file
-# as an argument and copies it to ${RAW_BUCKET}/pluto/MapPLUTO.geojsonl — the
-# path load_geojson_to_bigquery.sh reads.
+# This is an escape hatch for when you already have the GeoJSONL locally.
+# The normal path is `make vendor.geometry` (get_mappluto_geometry.sh), which
+# downloads the shapefile from sources.tsv and converts it in one step.
 #
 #   make vendor.geometry.upload FILE=path/to/MapPLUTO.geojsonl
 #

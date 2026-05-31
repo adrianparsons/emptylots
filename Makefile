@@ -13,7 +13,7 @@ raw_dob_dataset = raw_dob
 
 .PHONY: clean watch tiles.cors build tiles_from_bq \
 	vendor.permits vendor.stalled vendor.building vendor.pluto vendor.pluto.upload \
-	vendor.geometry.upload \
+	vendor.geometry vendor.geometry.upload \
 	bq.load.permits bq.load.stalled bq.load.building \
 	bq.load.pluto bq.load.geometry dbt.build
 
@@ -84,8 +84,14 @@ vendor.pluto:
 vendor.pluto.upload:
 	RAW_BUCKET=$(raw_bucket) ./build/upload_pluto_to_gcs.sh
 
-# Upload the MapPLUTO geometry GeoJSONL to the raw bucket so bq.load.geometry
-# can read it. FILE defaults to MapPLUTO.geojsonl in the repo root.
+# Download the MapPLUTO shapefile, convert to GeoJSONL, and upload to the raw
+# bucket. Requires Docker (runs ogr2ogr via ghcr.io/osgeo/gdal).
+_mappluto_url := $(shell awk -F'\t' '$$1 == "mappluto" {print $$3; exit}' build/sources.tsv)
+vendor.geometry:
+	RAW_BUCKET=$(raw_bucket) URL=$(_mappluto_url) DEST=pluto/MapPLUTO.geojsonl ./build/get_mappluto_geometry.sh
+
+# Escape hatch: upload a pre-converted local GeoJSONL to the raw bucket.
+# FILE defaults to MapPLUTO.geojsonl in the repo root.
 vendor.geometry.upload:
 	RAW_BUCKET=$(raw_bucket) FILE=$(FILE) ./build/upload_geometry_to_gcs.sh
 

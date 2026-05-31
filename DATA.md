@@ -97,8 +97,14 @@ MapPLUTO lot polygons (GeoJSON with a `GEOGRAPHY` column), loaded into
 `raw_pluto.mappluto_geometry`:
 
 ```bash
-make bq.load.geometry
+make vendor.geometry      # download shapefile, convert to GeoJSONL, upload to GCS
+make bq.load.geometry     # load from GCS into raw_pluto.mappluto_geometry
 ```
+
+`vendor.geometry` reads the `mappluto` entry from `build/sources.tsv`, downloads
+the DCP shapefile zip, converts it to GeoJSONL (WGS-84, `BBL` property only) via
+`ogr2ogr`, and uploads it to `${RAW_BUCKET}/pluto/MapPLUTO.geojsonl`. Requires
+Docker (runs ogr2ogr via `ghcr.io/osgeo/gdal:ubuntu-small-latest`).
 
 ## Loading and building
 
@@ -117,6 +123,8 @@ explicit all-STRING schema.
 ```bash
 make vendor.permits vendor.stalled vendor.building
 make bq.load.permits bq.load.stalled bq.load.building   # raw_dob.*
+make vendor.pluto && make vendor.pluto.upload
+make vendor.geometry                                     # requires Docker
 make bq.load.pluto bq.load.geometry                     # raw_pluto.*
 make dbt.build
 ```
