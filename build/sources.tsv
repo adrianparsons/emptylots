@@ -21,6 +21,9 @@ pluto	pluto_21v3	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tool
 pluto	pluto_20v8	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_20v8_arc_csv.zip	pluto_20v8.zip	NYC Department of City Planning	20v8
 pluto	pluto_19v2	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_19v2_csv.zip	pluto_19v2.zip	NYC Department of City Planning	19v2
 pluto	pluto_18v2_1	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_18v2_1_csv.zip	pluto_18v2_1.zip	NYC Department of City Planning	18v2_1
+# MapPLUTO lot geometry (DCP) — zip of a shapefile, converted to GeoJSONL and
+# loaded into raw_pluto.mappluto_geometry (make bq.load.geometry).
+mappluto	mappluto_26v1	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/mappluto/nyc_mappluto_26v1_shp.zip	mappluto_26v1.zip	NYC Department of City Planning	26v1
 # DOB open datasets (data.cityofnewyork.us) — single CSV, fetched + snapshotted
 # to GCS by build/vendor_dataset.sh  (make vendor.permits / vendor.stalled / vendor.building).
 dob	dob_permit_issuance	https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD	permit_issuance.csv	NYC Department of Buildings	ipu4-2q9a

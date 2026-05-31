@@ -17,8 +17,8 @@ project="${GCP_PROJECT:?set GCP_PROJECT (e.g. run via 'make bq.load.pluto')}"
 dataset="${project}:${PLUTO_DATASET:?set PLUTO_DATASET (e.g. run via 'make bq.load.pluto')}"
 here="$(cd "$(dirname "$0")" && pwd)"
 
-# Yearly snapshots are pluto_<version>.csv; skip the legacy combined file.
-gcloud storage ls "${bucket}/pluto_*.csv" \
+# Yearly snapshots are pluto/pluto_<version>.csv; skip the legacy combined file.
+gcloud storage ls "${bucket}/pluto/pluto_*.csv" \
   | grep -v 'pluto_historical\.csv' \
   | while IFS= read -r uri; do
       base="$(basename "$uri" .csv)"          # e.g. pluto_25v3

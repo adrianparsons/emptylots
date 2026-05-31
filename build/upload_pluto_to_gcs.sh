@@ -5,7 +5,7 @@
 #
 # get_historical_pluto.sh (make vendor.pluto) downloads + unzips each release
 # into historical/<slug>/. This step copies each release's CSV up to
-# ${RAW_BUCKET}/<slug>.csv — the flat layout load_pluto_to_bigquery.sh reads.
+# ${RAW_BUCKET}/pluto/<slug>.csv — the layout load_pluto_to_bigquery.sh reads.
 #
 # Reads the same build/sources.tsv catalog as the fetch step, so it only uploads
 # releases that are actually cataloged.
@@ -31,7 +31,7 @@ while IFS=$'\t' read -r type slug url filename publisher dataset_id || [[ -n "$t
   csv="${root}/historical/${slug}/${slug}.csv"
   [[ -f "$csv" ]] || { echo "error: missing ${csv} — run 'make vendor.pluto' first" >&2; exit 1; }
 
-  dest="${bucket}/${slug}.csv"
+  dest="${bucket}/pluto/${slug}.csv"
   echo ">> uploading ${slug} -> ${dest}"
   gcloud storage cp "$csv" "$dest"
 done < "$manifest"
