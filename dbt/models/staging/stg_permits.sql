@@ -11,11 +11,35 @@
     unique_key='permit_key'
 ) }}
 
+with source as (
+    select *
+    from {{ source('raw_dob', 'permit_issuance') }}
+    where BOROUGH is not null
+      and Block is not null
+      and Lot is not null
+
+    {% if is_incremental() %}
+      and coalesce(
+        safe.parse_date('%m/%d/%Y', Filing_Date),
+        safe.parse_date('%Y-%m-%d', Filing_Date)
+      ) > (select max(filing_date) from {{ this }})
+    {% endif %}
+),
+
+-- The source data contains duplicate Job_No+Job_doc_No pairs; keep the row
+-- with the latest issuance date so the MERGE unique_key constraint is satisfied.
+deduped as (
+    select *
+    from source
+    qualify row_number() over (
+        partition by concat(Job_No, '-', Job_doc_No)
+        order by coalesce(safe.parse_date('%m/%d/%Y', Issuance_Date), safe.parse_date('%Y-%m-%d', Issuance_Date)) desc nulls last
+    ) = 1
+)
+
 select
-    -- Unique key for deduplication
     concat(Job_No, '-', Job_doc_No) as permit_key,
 
-    -- Construct BBL key: {borocode 1}{block 5}{lot 5}
     concat(
         case BOROUGH
             when 'MANHATTAN' then '1'
@@ -28,7 +52,6 @@ select
         Lot
     ) as bbl_key,
 
-    -- Permit details
     Job_No,
     Job_Type,
     Work_Type,
@@ -36,21 +59,9 @@ select
     Permit_Status,
     Permit_Subtype,
 
-    -- Dates (mixed formats: MM/DD/YYYY and YYYY-MM-DD)
     coalesce(safe.parse_date('%m/%d/%Y', Filing_Date), safe.parse_date('%Y-%m-%d', Filing_Date)) as filing_date,
     coalesce(safe.parse_date('%m/%d/%Y', Issuance_Date), safe.parse_date('%Y-%m-%d', Issuance_Date)) as issuance_date,
     coalesce(safe.parse_date('%m/%d/%Y', Expiration_Date), safe.parse_date('%Y-%m-%d', Expiration_Date)) as expiration_date,
     coalesce(safe.parse_date('%m/%d/%Y', Job_Start_Date), safe.parse_date('%Y-%m-%d', Job_Start_Date)) as job_start_date
 
-from {{ source('raw_dob', 'permit_issuance') }}
-where BOROUGH is not null
-  and Block is not null
-  and Lot is not null
-
-{% if is_incremental() %}
-  -- Only process rows newer than what we already have
-  and coalesce(
-    safe.parse_date('%m/%d/%Y', Filing_Date),
-    safe.parse_date('%Y-%m-%d', Filing_Date)
-  ) > (select max(filing_date) from {{ this }})
-{% endif %}
+from deduped
