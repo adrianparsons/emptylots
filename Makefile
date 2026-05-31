@@ -12,7 +12,7 @@ raw_pluto_dataset = raw_pluto
 raw_dob_dataset = raw_dob
 
 .PHONY: clean watch tiles.cors build tiles_from_bq \
-	vendor.permits vendor.stalled vendor.building vendor.pluto \
+	vendor.permits vendor.stalled vendor.building vendor.pluto vendor.pluto.upload \
 	bq.load.permits bq.load.stalled bq.load.building \
 	bq.load.pluto bq.load.geometry dbt.build
 
@@ -80,6 +80,11 @@ vendor.building:
 vendor.pluto:
 	./build/get_historical_pluto.sh
 
+# Upload the locally-vendored PLUTO CSVs to the raw bucket so bq.load.pluto can
+# read them (vendor.pluto only downloads into historical/).
+vendor.pluto.upload:
+	RAW_BUCKET=$(raw_bucket) ./build/upload_pluto_to_gcs.sh
+
 bq.load.permits:
 	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
 		$(gcproject):$(raw_dob_dataset).permit_issuance \
@@ -100,6 +105,8 @@ bq.load.building:
 
 # PLUTO: one all-STRING table per yearly release in raw_pluto (dataset is
 # created in terraform/bigquery.tf). Combining the releases is a dbt concern.
+# Run `make vendor.pluto && make vendor.pluto.upload` first to get the CSVs into
+# the raw bucket that this target loads from.
 bq.load.pluto:
 	RAW_BUCKET=$(raw_bucket) GCP_PROJECT=$(gcproject) PLUTO_DATASET=$(raw_pluto_dataset) ./build/load_pluto_to_bigquery.sh
 
