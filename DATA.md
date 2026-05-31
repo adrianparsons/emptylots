@@ -11,7 +11,7 @@ checkout).
 NYC source (data.cityofnewyork.us, DCP BYTES)
    │  vendor: download → snapshot in GCS (overwritten in place)
    ▼
-gs://nyc-lots-raw-data/<dataset>/<file>.csv                      (raw snapshots)
+gs://nyc-lots-raw-data/<type>/<file>.csv                         (raw snapshots, grouped by source type: dob/, pluto/)
    │  bq load (explicit all-STRING schema from build/schemas/)
    ▼
 BigQuery native tables  (raw_dob.*, raw_pluto.*)                  (one dataset per source)
@@ -68,10 +68,10 @@ make vendor.permits      # or vendor.stalled / vendor.building
 ```
 
 This runs [`build/vendor_dataset.sh`](build/vendor_dataset.sh): downloads from
-NYC and uploads to a stable path (`<dataset>/<file>.csv`), overwriting the
-previous snapshot, then prints a provenance block. No paths to bump — the
-matching `*_CSV` variable in the Makefile already points at that stable path,
-and GCS records the upload time (and history, with object versioning enabled).
+NYC and uploads to a stable path (`dob/<file>.csv`), overwriting the previous
+snapshot, then prints a provenance block. No paths to bump — the matching
+`*_CSV` variable in the Makefile already points at that stable path, and GCS
+records the upload time (and history, with object versioning enabled).
 
 ### PLUTO (multi-version)
 
