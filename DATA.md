@@ -9,9 +9,9 @@ checkout).
 
 ```
 NYC source (data.cityofnewyork.us, DCP BYTES)
-   │  vendor: download → immutable dated snapshot in GCS
+   │  vendor: download → snapshot in GCS (overwritten in place)
    ▼
-gs://nyc-lots-raw-data/<dataset>/<version>/<file>.csv            (raw snapshots)
+gs://nyc-lots-raw-data/<dataset>/<file>.csv                      (raw snapshots)
    │  bq load (explicit all-STRING schema from build/schemas/)
    ▼
 BigQuery native tables  (raw_dob.*, raw_pluto.*)                  (one dataset per source)
@@ -21,17 +21,19 @@ staging → intermediate → marts                                    (dbt model
 ```
 
 Raw data is **vendored**: we snapshot a copy into our own bucket rather than
-querying NYC live, so rebuilds are deterministic even as NYC updates the source.
+querying NYC live, so a rebuild always loads the same bytes we last pulled.
+Each `make vendor.*` overwrites the snapshot in place; GCS records the upload
+time (and, with object versioning enabled, the history of prior pulls).
 Tables are **native** (data copied into BigQuery via `bq load`), loaded from the
 GCS snapshot with an explicit schema.
 
 ## Provenance
 
 Every raw table is declared in [`dbt/models/staging/sources.yml`](dbt/models/staging/sources.yml)
-with a `meta:` block recording `publisher`, `source_url`, the NYC Open Data
-`dataset_id`, the `schema_file`, and the vendored `version`. This surfaces in
-`dbt docs`, so the lineage from a model back to its City of New York origin is
-visible without digging.
+with a `meta:` block recording `publisher`, `source_url`, and the NYC Open Data
+`dataset_id`. This surfaces in `dbt docs`, so the lineage from a model back to
+its City of New York origin is visible without digging. (When a snapshot was
+pulled is tracked by GCS, not here.)
 
 ### Dataset inventory
 
@@ -66,10 +68,10 @@ make vendor.permits      # or vendor.stalled / vendor.building
 ```
 
 This runs [`build/vendor_dataset.sh`](build/vendor_dataset.sh): downloads from
-NYC, uploads to a dated, never-overwritten path (`<dataset>/<YYYY-MM-DD>/`),
-and prints a provenance block. Paste the relevant bits into the matching table
-in `sources.yml` (set `version`), and bump the matching `*_CSV` variable in the
-Makefile to the new dated path.
+NYC and uploads to a stable path (`<dataset>/<file>.csv`), overwriting the
+previous snapshot, then prints a provenance block. No paths to bump — the
+matching `*_CSV` variable in the Makefile already points at that stable path,
+and GCS records the upload time (and history, with object versioning enabled).
 
 ### PLUTO (multi-version)
 
@@ -114,7 +116,6 @@ explicit all-STRING schema.
 
 ```bash
 make vendor.permits vendor.stalled vendor.building
-# set each version in sources.yml and each *_CSV path in the Makefile
 make bq.load.permits bq.load.stalled bq.load.building   # raw_dob.*
 make bq.load.pluto bq.load.geometry                     # raw_pluto.*
 make dbt.build
