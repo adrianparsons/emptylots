@@ -95,9 +95,33 @@ resource "google_compute_managed_ssl_certificate" "prod_emptynyc" {
   }
 }
 
+resource "google_compute_url_map" "http_redirect" {
+  name = "http-redirect"
+
+  default_url_redirect {
+    https_redirect         = true
+    redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
+    strip_query            = false
+  }
+}
+
 resource "google_compute_target_http_proxy" "nyc_lots_tiles" {
   name    = "nyc-lots-tiles-target-proxy"
-  url_map = google_compute_url_map.nyc_lots_tiles.self_link
+  url_map = google_compute_url_map.http_redirect.self_link
+}
+
+resource "google_compute_global_address" "cdn_empty_frontend" {
+  name    = "cdn-empty-frontend-ip"
+  address = var.lb_ip
+}
+
+resource "google_compute_global_forwarding_rule" "cdn_empty_frontend_http" {
+  name                  = "cdn-empty-frontend-http"
+  target                = google_compute_target_http_proxy.nyc_lots_tiles.self_link
+  ip_address            = google_compute_global_address.cdn_empty_frontend.address
+  ip_protocol           = "TCP"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+  port_range            = "80-80"
 }
 
 resource "google_compute_target_https_proxy" "nyc_lots_tiles" {
@@ -116,29 +140,9 @@ resource "google_compute_target_https_proxy" "nyc_lots_tiles" {
 resource "google_compute_global_forwarding_rule" "cdn_empty_frontend" {
   name                  = "cdn-empty-frontend"
   target                = google_compute_target_https_proxy.nyc_lots_tiles.self_link
-  ip_address            = "34.54.115.250"
+  ip_address            = google_compute_global_address.cdn_empty_frontend.address
   ip_protocol           = "TCP"
   ip_version            = "IPV4"
   load_balancing_scheme = "EXTERNAL_MANAGED"
   port_range            = "443-443"
-}
-
-resource "google_compute_global_forwarding_rule" "nyc_lots_tiles_ipv4" {
-  name                  = "nyc-lots-tiles-forwarding-rule-ipv4"
-  target                = google_compute_target_http_proxy.nyc_lots_tiles.self_link
-  ip_address            = "34.149.219.106"
-  ip_protocol           = "TCP"
-  ip_version            = "IPV4"
-  load_balancing_scheme = "EXTERNAL_MANAGED"
-  port_range            = "80-80"
-}
-
-resource "google_compute_global_forwarding_rule" "nyc_lots_tiles_ipv6" {
-  name                  = "nyc-lots-tiles-forwarding-rule-ipv6"
-  target                = google_compute_target_http_proxy.nyc_lots_tiles.self_link
-  ip_address            = "2600:1901:0:f058::"
-  ip_protocol           = "TCP"
-  ip_version            = "IPV6"
-  load_balancing_scheme = "EXTERNAL_MANAGED"
-  port_range            = "80-80"
 }
