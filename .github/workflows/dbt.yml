@@ -38,7 +38,7 @@ jobs:
         python-version: '3.12'
 
     # Pinned to match the locally installed toolchain (dbt-core 1.11.x).
-    - run: pip install 'dbt-bigquery==1.10.2'
+    - run: pip install 'dbt-bigquery==1.11.1'
 
     - id: auth
       uses: 'google-github-actions/auth@v3'
