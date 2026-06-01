@@ -63,3 +63,8 @@ variable "pagespeed_api_key_uid" {
   description = "UUID of the existing PageSpeed Insights API key (from `gcloud services api-keys list`). Imported, not created — changing this would force replacement and rotate the key string used by CI."
   type        = string
 }
+
+variable "lb_ip" {
+  description = "Reserved static IPv4 address for the load balancer (handles both port 80 and 443)."
+  type        = string
+}
