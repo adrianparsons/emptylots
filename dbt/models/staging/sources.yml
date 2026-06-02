@@ -19,27 +19,30 @@ sources:
     tables:
       - name: permit_issuance
         description: "DOB Permit Issuance — permits for construction and demolition."
-        meta:
-          publisher: "NYC Department of Buildings"
-          source_url: "https://data.cityofnewyork.us/Housing-Development/DOB-Permit-Issuance/ipu4-2q9a"
-          dataset_id: "ipu4-2q9a"
-          download_url: "https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD"
+        config:
+          meta:
+            publisher: "NYC Department of Buildings"
+            source_url: "https://data.cityofnewyork.us/Housing-Development/DOB-Permit-Issuance/ipu4-2q9a"
+            dataset_id: "ipu4-2q9a"
+            download_url: "https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD"
 
       - name: stalled_construction
         description: "DOB Stalled Construction Sites — complaints where construction has halted."
-        meta:
-          publisher: "NYC Department of Buildings"
-          source_url: "https://data.cityofnewyork.us/Housing-Development/DOB-Stalled-Construction-Sites/i296-73x5"
-          dataset_id: "i296-73x5"
-          download_url: "https://data.cityofnewyork.us/api/views/i296-73x5/rows.csv?accessType=DOWNLOAD"
+        config:
+          meta:
+            publisher: "NYC Department of Buildings"
+            source_url: "https://data.cityofnewyork.us/Housing-Development/DOB-Stalled-Construction-Sites/i296-73x5"
+            dataset_id: "i296-73x5"
+            download_url: "https://data.cityofnewyork.us/api/views/i296-73x5/rows.csv?accessType=DOWNLOAD"
 
       - name: building
         description: "NYC Building Footprints — authoritative BIN to BBL mapping."
-        meta:
-          publisher: "NYC Department of Information Technology & Telecommunications (DOITT)"
-          source_url: "https://data.cityofnewyork.us/City-Government/Building-Footprints/5zhs-2jue"
-          dataset_id: "5zhs-2jue"
-          download_url: "https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD"
+        config:
+          meta:
+            publisher: "NYC Department of Information Technology & Telecommunications (DOITT)"
+            source_url: "https://data.cityofnewyork.us/City-Government/Building-Footprints/5zhs-2jue"
+            dataset_id: "5zhs-2jue"
+            download_url: "https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD"
 
   - name: raw_pluto
     database: empty-lots
@@ -51,10 +54,11 @@ sources:
           Lot polygon geometry (GEOGRAPHY) keyed by BBL (float64), converted from
           the MapPLUTO shapefile via ogr2ogr (WGS-84, BBL only). Loaded via
           make vendor.geometry && make bq.load.geometry.
-        meta:
-          publisher: "NYC Department of City Planning"
-          source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
-          dataset_id: "26v1"
+        config:
+          meta:
+            publisher: "NYC Department of City Planning"
+            source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
+            dataset_id: "26v1"
 
   - name: nyc_pluto_historical
     database: empty-lots
@@ -65,17 +69,19 @@ sources:
         description: >
           Legacy combined PLUTO (all yearly releases in one table). Superseded by
           the per-release raw_pluto.pluto_<version> tables; pending repoint + removal.
-        meta:
-          publisher: "NYC Department of City Planning"
-          source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
-          releases: "18v2_1, 19v2, 20v8, 21v3, 22v3, 23v3_1, 24v4_1, 25v3"
+        config:
+          meta:
+            publisher: "NYC Department of City Planning"
+            source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
+            releases: "18v2_1, 19v2, 20v8, 21v3, 22v3, 23v3_1, 24v4_1, 25v3"
 
       - name: stg_geometry
         description: >
           Lot polygon geometry (GEOGRAPHY) keyed by BBL (float64), from
           MapPLUTO.geojsonl. Loaded via build/load_geojson_to_bigquery.sh
           (NEWLINE_DELIMITED_JSON / GEOJSON).
-        meta:
-          publisher: "NYC Department of City Planning"
-          source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
-          loaded_by: "build/load_geojson_to_bigquery.sh"
+        config:
+          meta:
+            publisher: "NYC Department of City Planning"
+            source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
+            loaded_by: "build/load_geojson_to_bigquery.sh"
