@@ -10,7 +10,7 @@ with vacant_lots as (
         *,
         {{ bbl_key_from_parts('borocode', 'block', 'lot') }} as bbl_key
     from {{ ref('stg_vacant') }}
-    where version = (select max(version) from {{ ref('stg_vacant') }})
+    where version = {{ current_pluto_version() }}
 ),
 
 geometry as (
