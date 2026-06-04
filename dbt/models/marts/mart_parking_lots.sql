@@ -13,7 +13,7 @@ with parking as (
 
 geometry as (
     select bbl, geometry
-    from {{ source('nyc_pluto_historical', 'stg_geometry') }}
+    from {{ ref('stg_geometry') }}
 )
 
 select
