@@ -1,0 +1,49 @@
+# Development
+
+## Data
+
+Requirements:
+
+- Google cloud creds (contact maintainer)
+
+- Google cloud [CLI](https://docs.cloud.google.com/sdk/docs/install-sdk)
+
+- [dbt core](https://docs.getdbt.com/docs/local/install-dbt?version=2.0&name=Fusion#dbt-core) with the bigquery adapter
+
+
+### Creating a dbt "development" dataset:
+
+Add a "dev" target to `~/.dbt/profiles.yml`. Specify a dataset with a name like `yourname_dev` (this will be created automatically)
+
+`profiles.yaml` can define a default target, or you can specify a target when running dbt. For example: `dbt run --target=dev`
+
+Example `profiles.yaml`:
+```
+empty_lots:
+  outputs:
+    dev:
+      dataset: amp_dev
+      location: us-east4
+      method: service-account
+      priority: interactive
+      project: empty-lots
+      threads: 1
+      type: bigquery
+    prod:
+      dataset: nyc_pluto_historical
+      location: us-east4
+      method: service-account
+      project: empty-lots
+      threads: 1
+      type: bigquery
+  target: dev
+```
+## Frontend
+
+Google Streetview requires an API key to work locally (contact maintainer for this). The key is pulled from `.env.development`
+
+## Build/Infrastructure
+
+Infrastructure is primarily on GCP and managed by [terraform](https://developer.hashicorp.com/terraform/install).
+
+Contact the maintainer for terraform state access and for private variables. Private keys and variable names live in `terraform/terraform.tfvars`.
