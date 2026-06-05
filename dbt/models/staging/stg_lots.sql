@@ -55,6 +55,9 @@ select
     splitzone,
     zonemap,
     zmcode,
+    spdist1,
+    spdist2,
+    spdist3,
 
     -- Building and land use
     bldgclass,
@@ -84,11 +87,19 @@ select
     safe_cast(lotdepth as float64)  as lotdepth,
     safe_cast(bldgfront as float64) as bldgfront,
     safe_cast(bldgdepth as float64) as bldgdepth,
+    ext,
+    proxcode,
+    irrlotcode,
+    lottype,
+    bsmtcode,
+    safe_cast(condono as int64)     as condono,
+    tract2010,
 
     -- Assessment and valuation
     safe_cast(assessland as float64) as assessland,
     safe_cast(assesstot as float64)  as assesstot,
     safe_cast(exempttot as float64)  as exempttot,
+    safe_cast(exemptland as int64)   as exemptland,
 
     -- Dates and history
     safe_cast(yearbuilt as int64)  as yearbuilt,
