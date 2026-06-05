@@ -93,3 +93,21 @@ resource "google_storage_bucket_iam_member" "github_web_object_viewer" {
   role   = "roles/storage.objectViewer"
   member = local.github_principal
 }
+
+# --- Public read access ---
+# The tiles and static-site buckets are served directly to the world (and via
+# the CDN), so they grant objectViewer to allUsers. Codified here so the
+# public-by-design exposure is explicit and reviewable rather than console-only.
+# This relies on each bucket's public_access_prevention = "inherited" (see
+# storage.tf); flipping that to "enforced" would override these grants.
+resource "google_storage_bucket_iam_member" "public_tiles_object_viewer" {
+  bucket = google_storage_bucket.nyc_lots_tiles.name
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
+}
+
+resource "google_storage_bucket_iam_member" "public_web_object_viewer" {
+  bucket = google_storage_bucket.nyc_lots_web.name
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
+}
