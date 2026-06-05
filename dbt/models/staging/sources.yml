@@ -48,6 +48,10 @@ sources:
     database: empty-lots
     schema: raw_pluto
     description: "NYC MapPLUTO / PLUTO data from DCP's BYTES of the BIG APPLE, vendored as shapefile and CSV snapshots."
+    config:
+      meta:
+        publisher: "NYC Department of City Planning"
+        source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
     tables:
       - name: mappluto_geometry
         description: >
@@ -56,9 +60,24 @@ sources:
           make vendor.geometry && make bq.load.geometry.
         config:
           meta:
-            publisher: "NYC Department of City Planning"
-            source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
             dataset_id: "26v1"
+
+      - name: pluto_18v2_1
+        description: "PLUTO release 18v2_1 (all columns STRING). Loaded via make bq.load.pluto."
+      - name: pluto_19v2
+        description: "PLUTO release 19v2 (all columns STRING). Loaded via make bq.load.pluto."
+      - name: pluto_20v8
+        description: "PLUTO release 20v8 (all columns STRING). Loaded via make bq.load.pluto."
+      - name: pluto_21v3
+        description: "PLUTO release 21v3 (all columns STRING). Loaded via make bq.load.pluto."
+      - name: pluto_22v3
+        description: "PLUTO release 22v3 (all columns STRING). Loaded via make bq.load.pluto."
+      - name: pluto_23v3_1
+        description: "PLUTO release 23v3_1 (all columns STRING). Loaded via make bq.load.pluto."
+      - name: pluto_24v4_1
+        description: "PLUTO release 24v4_1 (all columns STRING). Loaded via make bq.load.pluto."
+      - name: pluto_25v3
+        description: "PLUTO release 25v3 (all columns STRING). Loaded via make bq.load.pluto."
 
   - name: nyc_pluto_historical
     database: empty-lots
