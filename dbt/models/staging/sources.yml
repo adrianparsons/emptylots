@@ -78,18 +78,3 @@ sources:
         description: "PLUTO release 24v4_1 (all columns STRING). Loaded via make bq.load.pluto."
       - name: pluto_25v3
         description: "PLUTO release 25v3 (all columns STRING). Loaded via make bq.load.pluto."
-
-  - name: nyc_pluto_historical
-    database: empty-lots
-    schema: nyc_pluto_historical
-    description: "NYC Primary Land Use Tax Lot Output (PLUTO) from DCP's BYTES of the BIG APPLE."
-    tables:
-      - name: pluto
-        description: >
-          Legacy combined PLUTO (all yearly releases in one table). Superseded by
-          the per-release raw_pluto.pluto_<version> tables; pending repoint + removal.
-        config:
-          meta:
-            publisher: "NYC Department of City Planning"
-            source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
-            releases: "18v2_1, 19v2, 20v8, 21v3, 22v3, 23v3_1, 24v4_1, 25v3"

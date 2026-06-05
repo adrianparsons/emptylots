@@ -43,18 +43,6 @@ resource "google_storage_bucket" "nyc_lots_raw" {
   }
 }
 
-# Legacy raw-data bucket. Misnamed (holds more than historical PLUTO) and not on
-# the `${var.bucket_prefix}-` convention; superseded by nyc_lots_raw above.
-# Retained until its contents are migrated, then can be removed.
-resource "google_storage_bucket" "nyc_pluto_historical" {
-  name     = "nyc-pluto-historical"
-  location = "US"
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 resource "google_storage_bucket" "nyc_lots_tiles" {
   name     = "${var.bucket_prefix}-tiles"
   location = "US-EAST4"

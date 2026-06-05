@@ -2,8 +2,8 @@
 version: 2
 
 models:
-  - name: stg_lots_filtered
-    description: "Subset of columns to make working with the data slightly more sane"
+  - name: stg_lots
+    description: "Staging model for NYC PLUTO lots data with all columns and proper data types"
     columns: &pluto_base_columns
       # Identifiers
       - name: borough
@@ -99,7 +99,6 @@ models:
       - name: overlay2
         description: "Secondary overlay district"
         data_type: string
-
       - name: ltdheight
         description: "Limited height district"
         data_type: string
@@ -259,11 +258,7 @@ models:
         description: "PLUTO version"
         data_type: string
 
-  - name: stg_lots
-    description: "Staging model for NYC PLUTO lots data with all columns and proper data types"
-    columns:
-      - <<: *pluto_base_columns
-
+      # Special purpose districts
       - name: spdist1
         description: "Primary special purpose district"
         data_type: string
