@@ -74,14 +74,3 @@ sources:
             publisher: "NYC Department of City Planning"
             source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
             releases: "18v2_1, 19v2, 20v8, 21v3, 22v3, 23v3_1, 24v4_1, 25v3"
-
-      - name: stg_geometry
-        description: >
-          Lot polygon geometry (GEOGRAPHY) keyed by BBL (float64), from
-          MapPLUTO.geojsonl. Loaded via build/load_geojson_to_bigquery.sh
-          (NEWLINE_DELIMITED_JSON / GEOJSON).
-        config:
-          meta:
-            publisher: "NYC Department of City Planning"
-            source_url: "https://www.nyc.gov/content/planning/pages/resources/datasets/mappluto-pluto-change"
-            loaded_by: "build/load_geojson_to_bigquery.sh"

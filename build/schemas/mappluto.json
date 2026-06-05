@@ -1,0 +1,10 @@
+[
+  {
+    "name": "BBL",
+    "type": "STRING"
+  },
+  {
+    "name": "geometry",
+    "type": "STRING"
+  }
+]

@@ -349,6 +349,16 @@ models:
         description: "E-designation date"
         data_type: string
 
+  - name: stg_geometry
+    description: "Geometry (polygons) for each lot"
+    columns:
+      - name: BBL
+        description: "Borough-Block-Lot identifier (concatenated)"
+        data_type: float64
+      - name: geometry
+        description: "Geometry column (spatial data)"
+        data_type: geography
+
   - name: stg_vacant
     description: "Staging model for NYC PLUTO lots data with all columns and proper data types"
     columns: *pluto_base_columns
