@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/google.maps": "^3.64.1",
+    "@types/google.maps": "^3.65.0",
     "parcel": "^2.16.0"
   },
   "dependencies": {
