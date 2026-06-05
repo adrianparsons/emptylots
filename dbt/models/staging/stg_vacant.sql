@@ -1,3 +1,3 @@
 select *
-from {{ ref('stg_lots_filtered') }}
+from {{ ref('stg_lots') }}
 where landuse = '11'
