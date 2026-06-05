@@ -15,7 +15,7 @@ with vacant_lots as (
 
 geometry as (
     select bbl, geometry
-    from {{ source('nyc_pluto_historical', 'stg_geometry') }}
+    from {{ ref('stg_geometry') }}
 ),
 
 permit_summary as (
