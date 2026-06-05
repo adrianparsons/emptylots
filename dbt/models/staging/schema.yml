@@ -4,8 +4,9 @@ version: 2
 models:
   - name: stg_lots
     description: "Staging model for NYC PLUTO lots data with all columns and proper data types"
-    meta:
-      removed_columns:
+    config:
+      meta:
+        removed_columns:
         - name: geom
           reason: "Lot geometry is sourced from stg_geometry instead"
         - name: sanborn
