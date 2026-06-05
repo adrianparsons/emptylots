@@ -37,6 +37,11 @@ variable "bucket_prefix" {
   type        = string
 }
 
+variable "github_owner" {
+  description = "GitHub account/org that owns the repos allowed to authenticate via the Workload Identity Federation provider (matched against the OIDC token's repository_owner claim)."
+  type        = string
+}
+
 variable "maps_api_key_uid" {
   description = "UUID of the existing Google Maps Platform API key (from `gcloud services api-keys list`). Imported, not created — changing this would force replacement and rotate the key string used by the frontend."
   type        = string
