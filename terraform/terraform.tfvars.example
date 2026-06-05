@@ -5,6 +5,7 @@ billing_account = "XXXXXX-XXXXXX-XXXXXX"
 org_id          = "000000000000"
 domain          = "example.com"
 bucket_prefix   = "myapp"
+github_owner    = "your-github-username-or-org"
 
 # UUIDs of existing Google Maps Platform API keys (see `gcloud services api-keys list`).
 maps_api_key_uid               = "00000000-0000-0000-0000-000000000000"
