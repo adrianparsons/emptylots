@@ -4,7 +4,7 @@
 -- same version concept, so this is the single source of truth.
 
 {% macro current_pluto_version() %}
-  {%- set result = run_query("select max(version) as v from " ~ ref('stg_lots_filtered')) -%}
+  {%- set result = run_query("select max(version) as v from " ~ ref('stg_lots')) -%}
   {%- if execute -%}
     '{{ result.rows[0][0] }}'
   {%- else -%}
