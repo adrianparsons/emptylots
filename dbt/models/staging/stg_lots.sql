@@ -106,6 +106,14 @@ select
     safe_cast(yearalter1 as int64) as yearalter1,
     safe_cast(yearalter2 as int64) as yearalter2,
     appdate,
+    rpaddate,
+    dcasdate,
+    zoningdate,
+    landmkdate,
+    basempdate,
+    masdate,
+    polidate,
+    edesigdate,
 
     -- Historic and landmark
     histdist,
@@ -125,6 +133,14 @@ select
     edesignum,
     safe_cast(appbbl as float64)   as appbbl,
     safe_cast(plutomapid as int64) as plutomapid,
+    sanborn,
+    mappluto_f,
+    geom,
+
+    -- Flags
+    firm07_flag,
+    pfirm15_flag,
+    dcpedited,
 
     -- Metadata
     version

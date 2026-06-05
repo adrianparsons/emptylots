@@ -4,37 +4,6 @@ version: 2
 models:
   - name: stg_lots
     description: "Staging model for NYC PLUTO lots data with all columns and proper data types"
-    config:
-      meta:
-        removed_columns:
-        - name: geom
-          reason: "Lot geometry is sourced from stg_geometry instead"
-        - name: sanborn
-          reason: "Sanborn map reference retained in raw source but not needed downstream"
-        - name: mappluto_f
-          reason: "MapPLUTO edit flag not used downstream"
-        - name: firm07_flag
-          reason: "2007 FEMA flood zone flag not used downstream"
-        - name: pfirm15_flag
-          reason: "2015 preliminary FEMA flood zone flag not used downstream"
-        - name: dcpedited
-          reason: "DCP manual edit flag not used downstream"
-        - name: rpaddate
-          reason: "Removed from PLUTO source data in 2020"
-        - name: dcasdate
-          reason: "Removed from PLUTO source data in 2020"
-        - name: zoningdate
-          reason: "Removed from PLUTO source data in 2020"
-        - name: landmkdate
-          reason: "Removed from PLUTO source data in 2020"
-        - name: basempdate
-          reason: "Removed from PLUTO source data in 2020"
-        - name: masdate
-          reason: "Removed from PLUTO source data in 2020"
-        - name: polidate
-          reason: "Removed from PLUTO source data in 2020"
-        - name: edesigdate
-          reason: "Removed from PLUTO source data in 2020"
     columns: &pluto_base_columns
       # Identifiers
       - name: borough
