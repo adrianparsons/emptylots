@@ -64,6 +64,9 @@ jobs:
               location: us-east4
         EOF
 
+    - name: dbt deps
+      run: dbt deps
+
     - name: dbt docs generate
       # Compiles the manifest from this branch's models and reads table/column
       # metadata from BigQuery. --static bundles manifest + catalog into a
