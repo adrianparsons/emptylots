@@ -19,11 +19,7 @@ vacancy_by_bbl as (
 select
     filtered.*,
     range_start as vacant_since,
-    st_asgeojson(geo.geometry) as geometry
 from vacancy_by_bbl
-right join `empty-lots`.`nyc_pluto_historical.stg_lots_filtered` as filtered
+right join {{ ref('stg_vacant') }} as filtered
     on bbl_key = cast(filtered.bbl as string)
-join `empty-lots.nyc_pluto_historical.stg_geometry` as geo
-    on filtered.bbl = geo.bbl
 where filtered.version = {{ current_pluto_version() }}
-    and landuse = '11'
