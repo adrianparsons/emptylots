@@ -38,7 +38,7 @@ stalled_summary as (
 select
     v.*,
     vs.vacant_since,
-    g.geometry,
+    st_asgeojson(g.geometry) as geometry,
     coalesce(p.num_permits, 0) as num_permits,
     p.latest_permit_date,
     p.latest_filing_date,
