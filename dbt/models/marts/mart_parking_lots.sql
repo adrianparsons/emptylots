@@ -17,7 +17,7 @@ geometry as (
 )
 
 select
-    p.*,
+    p.* except (spdist3, zonedist4),
     g.geometry
 from parking p
 join geometry g on p.bbl = g.bbl

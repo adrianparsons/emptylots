@@ -36,7 +36,7 @@ stalled_summary as (
 )
 
 select
-    v.*,
+    v.* except (spdist3, zonedist4),
     vs.vacant_since,
     st_asgeojson(g.geometry) as geometry,
     coalesce(p.num_permits, 0) as num_permits,
