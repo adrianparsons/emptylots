@@ -5,6 +5,7 @@
 
 select
   bbl_key,
+  ownername,
   vacant_year,
   session_range
 from range_sessionize(
