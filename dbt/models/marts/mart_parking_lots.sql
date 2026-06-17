@@ -18,6 +18,7 @@ geometry as (
 
 select
     p.* except (spdist3, zonedist4),
-    g.geometry
+    st_asgeojson(g.geometry) as geometry
 from parking p
-join geometry g on p.bbl = g.bbl
+join geometry g
+    on p.bbl = g.bbl
