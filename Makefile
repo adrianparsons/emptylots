@@ -10,11 +10,12 @@ raw_bucket = gs://nyc-lots-raw-data
 # BigQuery datasets the raw data loads into (project is $(gcproject) above).
 raw_pluto_dataset = raw_pluto
 raw_dob_dataset = raw_dob
+raw_planimetric_dataset = raw_planimetric
 
 .PHONY: clean watch tiles.cors build tiles_from_bq \
 	vendor.permits vendor.stalled vendor.building vendor.parking vendor.pluto vendor.pluto.upload \
 	vendor.geometry vendor.geometry.upload \
-	bq.load.permits bq.load.stalled bq.load.building \
+	bq.load.permits bq.load.stalled bq.load.building bq.load.parking \
 	bq.load.pluto bq.load.geometry dbt.build
 
 clean:
@@ -66,6 +67,7 @@ tiles.vacant_bq:
 PERMITS_CSV  = $(raw_bucket)/dob/permit_issuance.csv
 STALLED_CSV  = $(raw_bucket)/dob/stalled_construction.csv
 BUILDING_CSV = $(raw_bucket)/dob/building.csv
+PARKING_CSV  = $(raw_bucket)/planimetric/planimetric_parking.csv
 
 vendor.permits:
 	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug dob_permit_issuance
@@ -117,6 +119,14 @@ bq.load.building:
 		$(gcproject):$(raw_dob_dataset).building \
 		$(BUILDING_CSV) \
 		build/schemas/building.json
+
+# Planimetric parking lots (OTI) -> raw_planimetric.planimetric_parking.
+# Run `make vendor.parking` first to snapshot the CSV into the raw bucket.
+bq.load.parking:
+	bq load --source_format=CSV --skip_leading_rows=1 --allow_quoted_newlines --replace \
+		$(gcproject):$(raw_planimetric_dataset).planimetric_parking \
+		$(PARKING_CSV) \
+		build/schemas/planimetric_parking.json
 
 # PLUTO: one all-STRING table per yearly release in raw_pluto (dataset is
 # created in terraform/bigquery.tf). Combining the releases is a dbt concern.

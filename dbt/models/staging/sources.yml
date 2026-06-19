@@ -44,6 +44,22 @@ sources:
             dataset_id: "5zhs-2jue"
             download_url: "https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD"
 
+  - name: raw_planimetric
+    database: empty-lots
+    schema: raw_planimetric
+    description: "NYC planimetric open data (OTI), vendored as CSV snapshots with WKT geometry."
+    tables:
+      - name: planimetric_parking
+        description: >
+          Parking lot polygons (the_geom as WKT MULTIPOLYGON, all columns STRING).
+          Loaded via make vendor.parking && make bq.load.parking.
+        config:
+          meta:
+            publisher: "NYC Office of Technology & Innovation"
+            source_url: "https://data.cityofnewyork.us/d/7cgt-uhhz"
+            dataset_id: "7cgt-uhhz"
+            download_url: "https://data.cityofnewyork.us/api/v3/views/7cgt-uhhz/export.csv?accessType=DOWNLOAD"
+
   - name: raw_pluto
     database: empty-lots
     schema: raw_pluto
