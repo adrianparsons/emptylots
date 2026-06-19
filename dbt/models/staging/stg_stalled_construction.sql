@@ -19,8 +19,8 @@ stalled as (
         House_Number as house_number,
         Street_Name as street_name,
         Complaint_Number as complaint_number,
-        safe.parse_timestamp('%Y %b %d %I:%M:%S %p', Date_Complaint_Received) as complaint_received_at,
-        safe.parse_timestamp('%Y %b %d %I:%M:%S %p', DOBRunDate) as dob_run_date
+        safe.parse_timestamp('%m/%d/%Y %I:%M:%S %p', Date_Complaint_Received) as complaint_received_at,
+        safe.parse_timestamp('%m/%d/%Y %I:%M:%S %p', DOBRunDate) as dob_run_date
     from {{ source('raw_dob', 'stalled_construction') }}
     where BIN is not null
 )

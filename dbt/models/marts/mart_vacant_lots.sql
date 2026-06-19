@@ -13,11 +13,6 @@ with vacant_lots as (
     where version = {{ current_pluto_version() }}
 ),
 
-geometry as (
-    select bbl, geometry
-    from {{ ref('stg_geometry') }}
-),
-
 permit_summary as (
     select
         bbl_key,
@@ -41,8 +36,9 @@ stalled_summary as (
 )
 
 select
-    v.*,
-    g.geometry,
+    v.* except (spdist3, zonedist4),
+    vs.vacant_since,
+    st_asgeojson(g.geometry) as geometry,
     coalesce(p.num_permits, 0) as num_permits,
     p.latest_permit_date,
     p.latest_filing_date,
@@ -51,9 +47,11 @@ select
     s.earliest_stalled_complaint,
     s.latest_stalled_report
 from vacant_lots v
-left join geometry g
+left join {{ ref('stg_geometry') }} g
     on v.bbl = g.bbl
 left join permit_summary p
     on v.bbl_key = p.bbl_key
 left join stalled_summary s
     on v.bbl_key = s.bbl_key
+left join {{ ref('int_vacant_since') }} vs
+    on v.bbl_key = vs.bbl_key
