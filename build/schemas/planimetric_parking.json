@@ -1,0 +1,9 @@
+[
+  {"name": "the_geom", "type": "STRING"},
+  {"name": "SOURCE_ID", "type": "STRING"},
+  {"name": "FEAT_CODE", "type": "STRING"},
+  {"name": "SUB_CODE", "type": "STRING"},
+  {"name": "STATUS", "type": "STRING"},
+  {"name": "SHAPE_Leng", "type": "STRING"},
+  {"name": "SHAPE_Area", "type": "STRING"}
+]
