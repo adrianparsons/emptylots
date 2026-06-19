@@ -29,3 +29,6 @@ mappluto	mappluto_26v1	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/dat
 dob	dob_permit_issuance	https://data.cityofnewyork.us/api/views/ipu4-2q9a/rows.csv?accessType=DOWNLOAD	permit_issuance.csv	NYC Department of Buildings	ipu4-2q9a
 dob	dob_stalled_construction	https://data.cityofnewyork.us/api/views/i296-73x5/rows.csv?accessType=DOWNLOAD	stalled_construction.csv	NYC Department of Buildings	i296-73x5
 dob	dob_building	https://data.cityofnewyork.us/api/views/5zhs-2jue/rows.csv?accessType=DOWNLOAD	building.csv	NYC DOITT	5zhs-2jue
+# Planimetric datasets (data.cityofnewyork.us) — single CSV with WKT geometry,
+# fetched + snapshotted to GCS by build/vendor_dataset.sh (make vendor.parking).
+planimetric	planimetric_parking	https://data.cityofnewyork.us/api/v3/views/7cgt-uhhz/export.csv?accessType=DOWNLOAD	planimetric_parking.csv	NYC Office of Technology & Innovation	7cgt-uhhz
