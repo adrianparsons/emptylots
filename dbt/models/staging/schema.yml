@@ -334,3 +334,35 @@ models:
         description: "Building Identification Number"
         tests:
           - not_null
+
+  - name: stg_planimetric_parking
+    description: >
+      Staged NYC planimetric parking lots (OTI basemap): comma-separated numeric
+      codes/measurements cleaned to numbers and the_geom WKT parsed to GEOGRAPHY.
+      Distinct from stg_parking, which is PLUTO landuse-derived.
+    columns:
+      - name: source_id
+        description: "Unique feature identification number; 0 for features new in the 2022 collection."
+        data_type: int64
+      - name: feat_code
+        description: "Feature code indicating the type of feature in the planimetric basemap."
+        data_type: int64
+      - name: sub_code
+        description: "Sub-feature code: a subset of features within a given feat_code."
+        data_type: int64
+      - name: status
+        description: "Feature status in the 2022 planimetrics update: New, Updated, or Unchanged."
+        data_type: string
+        tests:
+          - not_null
+      - name: shape_length
+        description: "Polygon perimeter in US feet (source projection NAD83 / NY Long Island ftUS)."
+        data_type: float64
+      - name: shape_area
+        description: "Polygon area in square US feet (source projection NAD83 / NY Long Island ftUS)."
+        data_type: float64
+      - name: geometry
+        description: "Parking lot polygon (GEOGRAPHY, WGS-84), parsed from the_geom WKT; make_valid repairs 13 invalid rows."
+        data_type: geography
+        tests:
+          - not_null
