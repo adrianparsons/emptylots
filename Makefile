@@ -12,7 +12,7 @@ raw_pluto_dataset = raw_pluto
 raw_dob_dataset = raw_dob
 
 .PHONY: clean watch tiles.cors build tiles_from_bq \
-	vendor.permits vendor.stalled vendor.building vendor.pluto vendor.pluto.upload \
+	vendor.permits vendor.stalled vendor.building vendor.parking vendor.pluto vendor.pluto.upload \
 	vendor.geometry vendor.geometry.upload \
 	bq.load.permits bq.load.stalled bq.load.building \
 	bq.load.pluto bq.load.geometry dbt.build
@@ -75,6 +75,11 @@ vendor.stalled:
 
 vendor.building:
 	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug dob_building
+
+# Planimetric parking lots (OTI) — single CSV with WKT geometry, snapshotted to
+# $(raw_bucket)/planimetric/planimetric_parking.csv.
+vendor.parking:
+	RAW_BUCKET=$(raw_bucket) ./build/vendor_dataset.sh --slug planimetric_parking
 
 vendor.pluto:
 	./build/get_historical_pluto.sh
