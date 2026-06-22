@@ -38,9 +38,6 @@ watch:
 tiles.deploy:
 	./build/cp_to_gcloud_bucket.sh tiles/*.pmtiles $(bucket) $(gcproject)
 
-tiles.cors:
-	gcloud storage buckets update $(bucket) --cors-file=config/gcloud-bucket-cors-config.json
-
 tiles.from_bq:
 	./build/pull_bigquery_data_for_tiles.sh build/all_lots_with_vacancy_data.sql > tiles/lots.json
 	./build/pull_bigquery_data_for_tiles.sh build/parking_lots_from_bq.sql > tiles/parking.json
