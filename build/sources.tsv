@@ -14,7 +14,7 @@
 # build/get_historical_pluto.sh  (make vendor.pluto).
 type	slug	url	filename	publisher	dataset_id
 pluto	pluto_26v1	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_26v1_csv.zip	pluto_26v1.zip	NYC Department of City Planning	26v1
-pluto	pluto_25v3	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_25v4_arc_csv.zip	pluto_25v4.zip	NYC Department of City Planning	25v4
+pluto	pluto_25v4	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_25v4_arc_csv.zip	pluto_25v4.zip	NYC Department of City Planning	25v4
 pluto	pluto_24v4_1	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_24v4_1_arc_csv.zip	pluto_24v4_1.zip	NYC Department of City Planning	24v4_1
 pluto	pluto_23v3_1	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_23v3_1_arc_csv.zip	pluto_23v3_1.zip	NYC Department of City Planning	23v3_1
 pluto	pluto_22v3	https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/pluto/nyc_pluto_22v3_arc_csv.zip	pluto_22v3.zip	NYC Department of City Planning	22v3
