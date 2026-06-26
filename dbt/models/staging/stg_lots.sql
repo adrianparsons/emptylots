@@ -8,9 +8,8 @@ with combined as (
             source('raw_pluto', 'pluto_22v3'),
             source('raw_pluto', 'pluto_23v3_1'),
             source('raw_pluto', 'pluto_24v4_1'),
-            source('raw_pluto', 'pluto_25v3'),
+            source('raw_pluto', 'pluto_25v4'),
             source('raw_pluto', 'pluto_26v1'),
-
         ],
         source_column_name=none
     ) }}
