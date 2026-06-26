@@ -94,3 +94,5 @@ sources:
         description: "PLUTO release 24v4_1 (all columns STRING). Loaded via make bq.load.pluto."
       - name: pluto_25v3
         description: "PLUTO release 25v3 (all columns STRING). Loaded via make bq.load.pluto."
+      - name: pluto_26v1
+        description: "PLUTO release 25v3 (all columns STRING). Loaded via make bq.load.pluto."
