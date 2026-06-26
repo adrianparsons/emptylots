@@ -23,6 +23,8 @@ bucket="${bucket%/}"
 
 [[ -f "$manifest" ]] || { echo "error: manifest not found: $manifest" >&2; exit 1; }
 
+# Collect the cataloged CSV paths, then upload them all in one batched cp below.
+csvs=()
 while IFS=$'\t' read -r type slug url filename publisher dataset_id || [[ -n "$type" ]]; do
   # Skip blank lines, comments (#...), and the header row.
   case "$type" in ''|'#'*|type) continue ;; esac
@@ -30,10 +32,18 @@ while IFS=$'\t' read -r type slug url filename publisher dataset_id || [[ -n "$t
 
   csv="${root}/historical/${slug}/${slug}.csv"
   [[ -f "$csv" ]] || { echo "error: missing ${csv} — run 'make vendor.pluto' first" >&2; exit 1; }
-
-  dest="${bucket}/pluto/${slug}.csv"
-  echo ">> uploading ${slug} -> ${dest}"
-  gcloud storage cp "$csv" "$dest"
+  csvs+=("$csv")
 done < "$manifest"
+
+[[ ${#csvs[@]} -gt 0 ]] || { echo "no cataloged PLUTO CSVs found"; exit 0; }
+
+# One batched upload of all cataloged CSVs into the flat pluto/ prefix (each
+# lands as pluto/<slug>.csv — basename preserved). --no-clobber skips any
+# release already in the bucket: PLUTO releases are version-pinned and immutable
+# (a new release is a new slug), so a run after adding one release uploads just
+# that release instead of re-pushing every CSV. gcloud parallelizes across the
+# files and slices each large file via composite upload.
+echo ">> uploading ${#csvs[@]} CSV(s) to ${bucket}/pluto/ (skipping any already present)"
+gcloud storage cp --no-clobber "${csvs[@]}" "${bucket}/pluto/"
 
 echo "All PLUTO uploads complete."
