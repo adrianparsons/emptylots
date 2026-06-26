@@ -1,0 +1,398 @@
+[
+  {
+    "name": "borough",
+    "type": "STRING"
+  },
+  {
+    "name": "block",
+    "type": "STRING"
+  },
+  {
+    "name": "lot",
+    "type": "STRING"
+  },
+  {
+    "name": "cd",
+    "type": "STRING"
+  },
+  {
+    "name": "bct2020",
+    "type": "STRING"
+  },
+  {
+    "name": "bctcb2020",
+    "type": "STRING"
+  },
+  {
+    "name": "ct2010",
+    "type": "STRING"
+  },
+  {
+    "name": "cb2010",
+    "type": "STRING"
+  },
+  {
+    "name": "schooldist",
+    "type": "STRING"
+  },
+  {
+    "name": "council",
+    "type": "STRING"
+  },
+  {
+    "name": "zipcode",
+    "type": "STRING"
+  },
+  {
+    "name": "firecomp",
+    "type": "STRING"
+  },
+  {
+    "name": "policeprct",
+    "type": "STRING"
+  },
+  {
+    "name": "healthcenterdistrict",
+    "type": "STRING"
+  },
+  {
+    "name": "healtharea",
+    "type": "STRING"
+  },
+  {
+    "name": "sanitboro",
+    "type": "STRING"
+  },
+  {
+    "name": "sanitdistrict",
+    "type": "STRING"
+  },
+  {
+    "name": "sanitsub",
+    "type": "STRING"
+  },
+  {
+    "name": "address",
+    "type": "STRING"
+  },
+  {
+    "name": "zonedist1",
+    "type": "STRING"
+  },
+  {
+    "name": "zonedist2",
+    "type": "STRING"
+  },
+  {
+    "name": "zonedist3",
+    "type": "STRING"
+  },
+  {
+    "name": "zonedist4",
+    "type": "STRING"
+  },
+  {
+    "name": "overlay1",
+    "type": "STRING"
+  },
+  {
+    "name": "overlay2",
+    "type": "STRING"
+  },
+  {
+    "name": "spdist1",
+    "type": "STRING"
+  },
+  {
+    "name": "spdist2",
+    "type": "STRING"
+  },
+  {
+    "name": "spdist3",
+    "type": "STRING"
+  },
+  {
+    "name": "ltdheight",
+    "type": "STRING"
+  },
+  {
+    "name": "splitzone",
+    "type": "STRING"
+  },
+  {
+    "name": "bldgclass",
+    "type": "STRING"
+  },
+  {
+    "name": "landuse",
+    "type": "STRING"
+  },
+  {
+    "name": "easements",
+    "type": "STRING"
+  },
+  {
+    "name": "ownertype",
+    "type": "STRING"
+  },
+  {
+    "name": "ownername",
+    "type": "STRING"
+  },
+  {
+    "name": "lotarea",
+    "type": "STRING"
+  },
+  {
+    "name": "bldgarea",
+    "type": "STRING"
+  },
+  {
+    "name": "comarea",
+    "type": "STRING"
+  },
+  {
+    "name": "resarea",
+    "type": "STRING"
+  },
+  {
+    "name": "officearea",
+    "type": "STRING"
+  },
+  {
+    "name": "retailarea",
+    "type": "STRING"
+  },
+  {
+    "name": "garagearea",
+    "type": "STRING"
+  },
+  {
+    "name": "strgearea",
+    "type": "STRING"
+  },
+  {
+    "name": "factryarea",
+    "type": "STRING"
+  },
+  {
+    "name": "otherarea",
+    "type": "STRING"
+  },
+  {
+    "name": "areasource",
+    "type": "STRING"
+  },
+  {
+    "name": "numbldgs",
+    "type": "STRING"
+  },
+  {
+    "name": "numfloors",
+    "type": "STRING"
+  },
+  {
+    "name": "unitsres",
+    "type": "STRING"
+  },
+  {
+    "name": "unitstotal",
+    "type": "STRING"
+  },
+  {
+    "name": "lotfront",
+    "type": "STRING"
+  },
+  {
+    "name": "lotdepth",
+    "type": "STRING"
+  },
+  {
+    "name": "bldgfront",
+    "type": "STRING"
+  },
+  {
+    "name": "bldgdepth",
+    "type": "STRING"
+  },
+  {
+    "name": "ext",
+    "type": "STRING"
+  },
+  {
+    "name": "proxcode",
+    "type": "STRING"
+  },
+  {
+    "name": "irrlotcode",
+    "type": "STRING"
+  },
+  {
+    "name": "lottype",
+    "type": "STRING"
+  },
+  {
+    "name": "bsmtcode",
+    "type": "STRING"
+  },
+  {
+    "name": "assessland",
+    "type": "STRING"
+  },
+  {
+    "name": "assesstot",
+    "type": "STRING"
+  },
+  {
+    "name": "exempttot",
+    "type": "STRING"
+  },
+  {
+    "name": "yearbuilt",
+    "type": "STRING"
+  },
+  {
+    "name": "yearalter1",
+    "type": "STRING"
+  },
+  {
+    "name": "yearalter2",
+    "type": "STRING"
+  },
+  {
+    "name": "histdist",
+    "type": "STRING"
+  },
+  {
+    "name": "landmark",
+    "type": "STRING"
+  },
+  {
+    "name": "builtfar",
+    "type": "STRING"
+  },
+  {
+    "name": "residfar",
+    "type": "STRING"
+  },
+  {
+    "name": "commfar",
+    "type": "STRING"
+  },
+  {
+    "name": "facilfar",
+    "type": "STRING"
+  },
+  {
+    "name": "borocode",
+    "type": "STRING"
+  },
+  {
+    "name": "bbl",
+    "type": "STRING"
+  },
+  {
+    "name": "condono",
+    "type": "STRING"
+  },
+  {
+    "name": "tract2010",
+    "type": "STRING"
+  },
+  {
+    "name": "xcoord",
+    "type": "STRING"
+  },
+  {
+    "name": "ycoord",
+    "type": "STRING"
+  },
+  {
+    "name": "zonemap",
+    "type": "STRING"
+  },
+  {
+    "name": "zmcode",
+    "type": "STRING"
+  },
+  {
+    "name": "sanborn",
+    "type": "STRING"
+  },
+  {
+    "name": "taxmap",
+    "type": "STRING"
+  },
+  {
+    "name": "edesignum",
+    "type": "STRING"
+  },
+  {
+    "name": "appbbl",
+    "type": "STRING"
+  },
+  {
+    "name": "appdate",
+    "type": "STRING"
+  },
+  {
+    "name": "plutomapid",
+    "type": "STRING"
+  },
+  {
+    "name": "firm07_flag",
+    "type": "STRING"
+  },
+  {
+    "name": "pfirm15_flag",
+    "type": "STRING"
+  },
+  {
+    "name": "version",
+    "type": "STRING"
+  },
+  {
+    "name": "dcpedited",
+    "type": "STRING"
+  },
+  {
+    "name": "latitude",
+    "type": "STRING"
+  },
+  {
+    "name": "longitude",
+    "type": "STRING"
+  },
+  {
+    "name": "notes",
+    "type": "STRING"
+  },
+  {
+    "name": "mih_opt1",
+    "type": "STRING"
+  },
+  {
+    "name": "mih_opt2",
+    "type": "STRING"
+  },
+  {
+    "name": "mih_opt3",
+    "type": "STRING"
+  },
+  {
+    "name": "mih_opt4",
+    "type": "STRING"
+  },
+  {
+    "name": "trnstzone",
+    "type": "STRING"
+  },
+  {
+    "name": "affresfar",
+    "type": "STRING"
+  },
+  {
+    "name": "mnffar",
+    "type": "STRING"
+  }
+]
