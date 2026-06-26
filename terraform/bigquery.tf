@@ -27,3 +27,14 @@ resource "google_bigquery_dataset" "raw_dob" {
 
   depends_on = [google_project_service.bigquery]
 }
+
+# Raw vendored NYC planimetric open data (OTI) — single-CSV snapshots with WKT
+# geometry (e.g. parking lots), loaded from gs://nyc-lots-raw-data — not dbt-built.
+resource "google_bigquery_dataset" "raw_planimetric" {
+  dataset_id  = "raw_planimetric"
+  project     = google_project.empty_lots.project_id
+  location    = "us-east4"
+  description = "Raw vendored NYC planimetric open data (OTI; loaded from CSV snapshots, not dbt-built)."
+
+  depends_on = [google_project_service.bigquery]
+}
