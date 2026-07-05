@@ -135,4 +135,3 @@ select
     version
 
 from combined
-where address is not null
