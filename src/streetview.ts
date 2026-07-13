@@ -28,7 +28,9 @@ export function showStreetViewPanorama([lng, lat]: [number, number])  {
     location: {lng: parseFloat(lng), lat: parseFloat(lat)},
     sources: [google.maps.StreetViewSource.OUTDOOR],
     radius: 50,
-  }, (panoData: google.maps.StreetViewPanoramaData | null) => {
+  })
+  .then(
+    ({data: panoData}: google.maps.StreetViewResponse) => {
 
     const lat1 = panoData?.location?.latLng?.lat() || 0
     const lng1 = panoData?.location?.latLng?.lng() || 0
@@ -40,5 +42,14 @@ export function showStreetViewPanorama([lng, lat]: [number, number])  {
 
     panoData?.location?.pano && panorama.setPano(panoData.location.pano)
     panorama.setPov({heading, pitch: 0})
+    panorama.setOptions({imageDateControl: true})
+    panorama.setVisible(true)
   })
+  .catch(
+    (err: unknown) => {
+      // If we don't have a streetview image, hide the streetview element (and previous results)
+      panorama.setVisible(false)
+      console.error("streetview error", err)
+    }
+  )
 }
