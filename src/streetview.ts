@@ -46,9 +46,10 @@ export function showStreetViewPanorama([lng, lat]: [number, number])  {
     panorama.setVisible(true)
   })
   .catch(
-    () => {
+    (err: unknown) => {
       // If we don't have a streetview image, hide the streetview element (and previous results)
       panorama.setVisible(false)
+      console.error("streetview error", err)
     }
   )
 }
