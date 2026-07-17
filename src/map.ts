@@ -1,4 +1,4 @@
-import maplibregl, { Map, MapLayerMouseEvent, Popup } from 'maplibre-gl';
+import maplibregl, { Map, Popup, MapLayerMouseEvent } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Protocol } from "pmtiles";
 
@@ -7,7 +7,8 @@ import "./infoWindow"
 const center_default = [-73.979736, 40.7565749]
 const zoom_default = 13
 
-export function createInfoWindow(props): Popup {
+// TODO: define type for props passed in.
+export function createInfoWindow(props: any): Popup {
   const lotinfowindow = document.createElement("info-window") as any
 
   lotinfowindow.data = {
@@ -25,7 +26,6 @@ export function createInfoWindow(props): Popup {
   return new maplibregl.Popup({ offset: { bottom: [0, -5] } })
     .setDOMContent(lotinfowindow)
 }
-
 
 export async function initMap(loadlat=null,loadlng=null): Promise<Map>{
   let protocol = new Protocol();
@@ -120,7 +120,7 @@ export async function initMap(loadlat=null,loadlng=null): Promise<Map>{
       }
     });
 
-    map.on('click', ['lotpolygons', 'parkinglots'], (e: MapSourceMapEvent) => {
+    map.on('click', ['lotpolygons', 'parkinglots'], (e: MapLayerMouseEvent) => {
       const { lng, lat } = e.lngLat
       if (!e.features || e.features.length === 0) return;
       const properties = e.features[0].properties;

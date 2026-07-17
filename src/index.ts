@@ -15,6 +15,10 @@ async function init(): Promise<void> {
   const libremap = initMap(lat,lng)
 
   libremap.then((m: Map)=>{
+    m.on('load', () => {
+      if (!lat || !lng) return
+      showStreetViewPanorama([lng, lat])
+    })
     m.once('idle', () => {
       if (!lat || !lng) return
       showStreetViewPanorama([lng, lat])
