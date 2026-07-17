@@ -1,20 +1,42 @@
-import maplibregl, { Map, MapLayerMouseEvent } from 'maplibre-gl';
+import maplibregl, { Map, MapLayerMouseEvent, Popup } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Protocol } from "pmtiles";
 
 import "./infoWindow"
 
-export async function initMap(): Promise<Map>{
+const center_default = [-73.979736, 40.7565749]
+const zoom_default = 13
+
+export function createInfoWindow(props): Popup {
+  const lotinfowindow = document.createElement("info-window") as any
+
+  lotinfowindow.data = {
+    bbl: props.bbl,
+    address: props.address,
+    ownername: props.ownername,
+    lotArea: Number(props.lotarea).toLocaleString(),
+    zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.borocode}/${props.block}/${props.lot}`,
+    numPermits: Number(props.num_permits) || 0,
+    latestPermitDate: props.latest_permit_date,
+    numStalledComplaints: Number(props.num_stalled_complaints) || 0,
+    vacantSince: props.vacant_since ? new Date(`${props.vacant_since}T00:00:00`) : null
+  }
+
+  return new maplibregl.Popup({ offset: { bottom: [0, -5] } })
+    .setDOMContent(lotinfowindow)
+}
+
+
+export async function initMap(loadlat=null,loadlng=null): Promise<Map>{
   let protocol = new Protocol();
   maplibregl.addProtocol("pmtiles",protocol.tile);
 
-  var center = [-73.979736, 40.7565749]
-  var zoom = 13
+  var center = center_default
+  var zoom = zoom_default
 
-  const params = new URLSearchParams(window.location.search)
-  if ( params.size >= 2) {
-    center = [params.get("lng"), params.get("lat")]
-    console.log(`setting center to ${center}`)
+  if (loadlat && loadlng) {
+    center = [loadlng,loadlat]
+    console.debug(`setting center to ${center}`)
     zoom = 16
   }
 
@@ -26,7 +48,6 @@ export async function initMap(): Promise<Map>{
   })
 
   map.on('load', async () => {
-
     // Add geolocate control to the map.
     map.addControl(
       new maplibregl.GeolocateControl({
@@ -102,33 +123,23 @@ export async function initMap(): Promise<Map>{
     map.on('click', ['lotpolygons', 'parkinglots'], (e: MapSourceMapEvent) => {
       const { lng, lat } = e.lngLat
       if (!e.features || e.features.length === 0) return;
-      const props = e.features[0].properties;
-
+      const properties = e.features[0].properties;
 
       map.removeFeatureState({ source: 'vacant', sourceLayer:'lots' });
       map.setFeatureState(
         {
           source: 'vacant',
           sourceLayer: 'lots',
-          id: props.bbl,
+          id: properties.bbl,
         },
         {
           selected: true,
         }
       );
 
-      const lotinfowindow = document.createElement("info-window") as any
-      lotinfowindow.data = {
-        bbl: props.bbl,
-        address: props.address,
-        ownername: props.ownername,
-        lotArea: Number(props.lotarea).toLocaleString(),
-        zolaLink: `https://zola.planning.nyc.gov/l/lot/${props.borocode}/${props.block}/${props.lot}`,
-        numPermits: Number(props.num_permits) || 0,
-        latestPermitDate: props.latest_permit_date,
-        numStalledComplaints: Number(props.num_stalled_complaints) || 0,
-        vacantSince: props.vacant_since ? new Date(`${props.vacant_since}T00:00:00`) : null
-      }
+      createInfoWindow(properties)
+        .setLngLat([lng, lat])
+        .addTo(map);
 
       map.easeTo({center: [lng, lat]})
 
@@ -136,11 +147,6 @@ export async function initMap(): Promise<Map>{
       url.searchParams.set("lat", lat);
       url.searchParams.set("lng", lng);
       history.pushState({}, "", url)
-
-      new maplibregl.Popup({ offset: { 'bottom': [0, -5] } })
-        .setLngLat([lng, lat])
-        .setDOMContent(lotinfowindow)
-        .addTo(map);
     })
   })
   return map

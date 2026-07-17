@@ -1,5 +1,5 @@
 import { initStreetview, showStreetViewPanorama  } from "./streetview";
-import { initMap } from "./map";
+import { initMap, createInfoWindow } from "./map";
 import type { Map, MapLayerMouseEvent} from "maplibre-gl";
 
 function markerClickHandler(e: MapLayerMouseEvent) {
@@ -8,13 +8,26 @@ function markerClickHandler(e: MapLayerMouseEvent) {
 }
 
 async function init(): Promise<void> {
-  const libremap = initMap()
+  const params = new URLSearchParams(window.location.search)
+  const lat = Number(params.get("lat"))
+  const lng = Number(params.get("lng"))
+
+  const libremap = initMap(lat,lng)
+
   libremap.then((m: Map)=>{
-    m.on('load', () => {
-        const params = new URLSearchParams(window.location.search)
-        if ( params.size >= 2) {
-          showStreetViewPanorama([params.get("lng"), params.get("lat")])
-        }
+    m.once('idle', () => {
+      if (!lat || !lng) return
+      showStreetViewPanorama([lng, lat])
+
+      let point = m.project([lng, lat])
+      let features = m.queryRenderedFeatures(point)
+
+      if (!features || features.length === 0) return;
+      const properties = features[0].properties;
+
+      createInfoWindow(properties)
+        .setLngLat([lng, lat])
+        .addTo(m)
     })
     m.on('click', ['parkinglots', 'lotpolygons'], markerClickHandler);
   })
