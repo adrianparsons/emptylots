@@ -140,8 +140,8 @@ export async function initMap(init_lat=lat_default,init_lng=lng_default, zoom=zo
       map.easeTo({center: [lng, lat]})
 
       const url = new URL(window.location);
-      url.searchParams.set("lat", lat);
-      url.searchParams.set("lng", lng);
+      url.searchParams.set("lat", String(lat));
+      url.searchParams.set("lng", String(lng));
       history.pushState({}, "", url)
     })
   })
