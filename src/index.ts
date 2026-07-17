@@ -9,10 +9,11 @@ function markerClickHandler(e: MapLayerMouseEvent) {
 
 async function init(): Promise<void> {
   const params = new URLSearchParams(window.location.search)
-  const lat = Number(params.get("lat"))
-  const lng = Number(params.get("lng"))
+  const lat = Number(params.get("lat")) || undefined
+  const lng = Number(params.get("lng")) || undefined
+  const zoom = lat && lng && 16
 
-  const libremap = initMap(lat,lng)
+  const libremap = initMap(lat, lng, zoom)
 
   libremap.then((m: Map)=>{
     m.on('load', () => {

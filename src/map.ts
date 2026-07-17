@@ -4,7 +4,8 @@ import { Protocol } from "pmtiles";
 
 import "./infoWindow"
 
-const center_default = [-73.979736, 40.7565749]
+const lng_default = -73.979736
+const lat_default = 40.7565749
 const zoom_default = 13
 
 // TODO: define type for props passed in.
@@ -27,18 +28,13 @@ export function createInfoWindow(props: any): Popup {
     .setDOMContent(lotinfowindow)
 }
 
-export async function initMap(loadlat=null,loadlng=null): Promise<Map>{
+export async function initMap(init_lat=lat_default,init_lng=lng_default, zoom=zoom_default): Promise<Map>{
   let protocol = new Protocol();
   maplibregl.addProtocol("pmtiles",protocol.tile);
 
-  var center = center_default
-  var zoom = zoom_default
+  const center = [init_lng, init_lat]
 
-  if (loadlat && loadlng) {
-    center = [loadlng,loadlat]
-    console.debug(`setting center to ${center}`)
-    zoom = 16
-  }
+  console.debug(`setting center to ${center}`)
 
   const map = new maplibregl.Map({
     container: 'map', // container id
