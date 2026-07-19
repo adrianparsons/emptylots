@@ -116,7 +116,7 @@ export async function initMap(init_lat=lat_default,init_lng=lng_default, zoom=zo
 
       map.easeTo({center: [lng, lat]})
 
-      const url = new URL(window.location);
+      const url = new URL(window.location.href);
       url.searchParams.set("lat", String(lat));
       url.searchParams.set("lng", String(lng));
       history.pushState({}, "", url)
