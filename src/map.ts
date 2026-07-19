@@ -32,8 +32,7 @@ export async function initMap(init_lat=lat_default,init_lng=lng_default, zoom=zo
   let protocol = new Protocol();
   maplibregl.addProtocol("pmtiles",protocol.tile);
 
-  const center = [init_lng, init_lat]
-
+  const center: [number, number] = [init_lng, init_lat]
   console.debug(`setting center to ${center}`)
 
   const map = new maplibregl.Map({
