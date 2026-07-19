@@ -86,34 +86,12 @@ export async function initMap(init_lat=lat_default,init_lng=lng_default, zoom=zo
       }
     });
 
-
-    var hovered: [] = []
-
     map.on('mousemove', ['lotpolygons', 'parkinglots'], (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "pointer";
-      if (e.features && e.features.length > 0) {
-        map.setFeatureState({
-          source: 'vacant',
-          sourceLayer: 'lots',
-          id: e.features[0].properties.bbl,
-        }, {
-          hover: true
-        });
-        e.features[0].id && hovered.push(e.features[0].properties.bbl)
-      }
     });
 
     map.on('mouseleave',['parkinglots', 'lotpolygons'], (e: MapLayerMouseEvent) => {
       map.getCanvas().style.cursor = "default";
-      while (hovered.length > 0) {
-        map.setFeatureState({
-          source: 'vacant',
-          sourceLayer: 'vacant',
-          id: hovered.pop(),
-        }, {
-          hover: false
-        });
-      }
     });
 
     map.on('click', ['lotpolygons', 'parkinglots'], (e: MapLayerMouseEvent) => {
