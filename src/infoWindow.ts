@@ -3,7 +3,6 @@ class InfoWindow extends HTMLElement {
 
   constructor() {
     super();
-    //this.render();
   }
 
   set data(value: any) {
